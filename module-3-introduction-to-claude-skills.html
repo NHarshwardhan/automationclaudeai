@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Module 3 — Introduction to Claude Skills | Claude Code Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root{
+  --ink:#2c353b;
+  --ink-soft:#566169;
+  --paper:#fafbfc;
+  --paper-2:#eef2f5;
+  --surface:#ffffff;
+  --stage:#222b32;
+  --stage-2:#2f3b44;
+  --teal:#0694d1;
+  --teal-d:#0574a4;
+  --teal-l:#e6f4fb;
+  --coral:#e08a3c;
+  --coral-l:#fdf0e2;
+  --amber:#e0a32e;
+  --amber-l:#fcf3dc;
+  --green:#2f8b62;
+  --green-l:#e0f1e8;
+  --red:#c0473f;
+  --red-l:#f8e3e1;
+  --blue:#3c6bb0;
+  --blue-l:#e6eefb;
+  --line:#dfe5e9;
+  --muted:#7b8791;
+  --shadow:0 24px 60px rgba(0,0,0,.45),0 4px 14px rgba(0,0,0,.18);
+  --radius:18px;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-head:'Space Grotesk',var(--font-body);
+  --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --font-hand:'Caveat',cursive;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font-body);
+  background:var(--stage);
+  background-image:radial-gradient(1200px 600px at 50% -10%,#243241 0%,transparent 60%);
+  color:var(--ink);
+  overflow:hidden;
+  height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+
+#deck{position:relative;height:100vh;width:100vw;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:26px 30px 74px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:slideIn .45s cubic-bezier(.2,.8,.25,1)}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+.sheet{
+  position:relative;width:min(1180px,100%);height:100%;
+  background:var(--paper);
+  background-image:linear-gradient(rgba(255,255,255,.55) 1px,transparent 1px),radial-gradient(circle at 12% 8%,rgba(6,148,209,.035),transparent 40%);
+  background-size:100% 28px,100% 100%;
+  border-radius:22px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.6);
+}
+.sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) 78%,var(--amber) 78%,var(--coral) 100%)}
+.sheet-inner{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:34px 46px 26px;scrollbar-width:thin;scrollbar-color:#cbd5dc transparent}
+.sheet-inner::-webkit-scrollbar{width:8px}
+.sheet-inner::-webkit-scrollbar-thumb{background:#cbd5dc;border-radius:8px}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);background:var(--teal-l);padding:6px 12px;border-radius:100px;margin-bottom:14px}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.15;margin:0}
+h1{font-size:clamp(34px,5vw,60px);letter-spacing:-.02em}
+h2{font-size:clamp(26px,3.2vw,38px);letter-spacing:-.015em}
+h3{font-size:19px}
+h4{font-size:15px}
+.subtitle{font-size:15px;color:var(--ink-soft);margin:10px 0 0;max-width:820px;line-height:1.55}
+.lead{font-size:16px;line-height:1.7;color:var(--ink-soft)}
+p{line-height:1.6}
+strong{color:var(--ink);font-weight:700}
+.hl{background:linear-gradient(transparent 62%,rgba(217,149,47,.32) 62%);font-weight:700}
+.hl-teal{background:linear-gradient(transparent 62%,rgba(6,148,209,.18) 62%);font-weight:700}
+code.inline{font-family:var(--font-mono);font-size:.88em;background:var(--paper-2);border:1px solid var(--line);padding:1px 6px;border-radius:6px;color:var(--teal-d)}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px;flex-wrap:wrap}
+.head-row .num{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 12px;background:var(--surface)}
+
+.sheet-foot{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-top:1px solid var(--line);background:rgba(250,247,241,.9);backdrop-filter:blur(4px);font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+.sheet-foot .brand{display:flex;align-items:center;gap:9px}
+.brand-logo{height:19px;width:auto;display:block;background:#fff;border-radius:4px;padding:2px 5px;box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.hero-logo{display:inline-block;background:#fff;border-radius:14px;padding:14px 22px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.hero-logo img{display:block;width:205px;height:auto}
+.divider-logo{position:absolute;left:46px;top:30px;background:#fff;border-radius:10px;padding:8px 14px;box-shadow:0 8px 22px rgba(0,0,0,.3);z-index:3}
+.divider-logo img{display:block;width:150px;height:auto}
+.page-num{font-variant-numeric:tabular-nums}
+
+.dock{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:50;background:rgba(20,27,36,.86);border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:100px;backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:17px;display:grid;place-items:center;transition:.2s}
+.nav-btn:hover{background:var(--teal);border-color:var(--teal);transform:translateY(-1px)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.progress-track{width:min(36vw,300px);height:5px;background:rgba(255,255,255,.15);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#8ad4f0);border-radius:100px;transition:width .35s ease}
+.dock-count{color:#cfd8e0;font-size:12px;font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:600}
+.hint-key{color:#7d8b98;font-size:11px;padding:0 4px;white-space:nowrap}
+.dots{display:flex;gap:5px;align-items:center;max-width:min(30vw,260px);overflow:hidden}
+.dot-btn{width:7px;height:7px;border-radius:50%;border:none;background:rgba(255,255,255,.25);padding:0;transition:.2s;flex:0 0 auto}
+.dot-btn:hover{background:#fff;transform:scale(1.3)}
+.dot-btn.active{background:var(--amber);width:20px;border-radius:100px}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.25,1)}
+.slide.active .reveal{opacity:1;transform:none}
+.slide.active .reveal:nth-child(1){transition-delay:.05s}
+.slide.active .reveal:nth-child(2){transition-delay:.12s}
+.slide.active .reveal:nth-child(3){transition-delay:.19s}
+.slide.active .reveal:nth-child(4){transition-delay:.26s}
+.slide.active .reveal:nth-child(5){transition-delay:.33s}
+.slide.active .reveal:nth-child(6){transition-delay:.40s}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;box-shadow:0 2px 0 rgba(24,36,48,.03);transition:transform .2s,box-shadow .2s,border-color .2s}
+.card.hoverable{cursor:pointer}
+.card.hoverable:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(24,36,48,.1);border-color:#c9d8d5}
+.card .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;margin-bottom:12px;background:var(--teal-l);color:var(--teal-d)}
+.card h3{margin-bottom:6px}
+.card p{font-size:13.5px;color:var(--ink-soft);margin:0;line-height:1.55}
+
+.word{position:relative;cursor:pointer;user-select:none;text-align:center;background:var(--surface);border:2px dashed var(--line);border-radius:16px;padding:20px 16px;transition:.25s}
+.word:hover{border-color:var(--teal);transform:translateY(-3px)}
+.word .big{font-family:var(--font-head);font-size:30px;font-weight:700;color:var(--teal-d);letter-spacing:-.02em}
+.word .def{display:none;margin-top:10px;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.word.revealed{border-style:solid;background:var(--teal-l)}
+.word.revealed .def{display:block;animation:fade .3s}
+.word .tap{display:block;font-size:11px;color:var(--muted);margin-top:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.vs{display:grid;grid-template-columns:1fr 40px 1fr;gap:10px;align-items:stretch}
+@media(max-width:780px){.vs{grid-template-columns:1fr}}
+.vs .arrow-mid{display:grid;place-items:center;font-size:22px;color:var(--muted)}
+.panel{border-radius:14px;padding:16px 18px;border:1px solid;transition:.25s}
+.panel.bad{background:var(--red-l);border-color:#f0c4c0}
+.panel.good{background:var(--green-l);border-color:#bfe0cf}
+.panel:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(24,36,48,.08)}
+.panel .tag{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;display:inline-flex;gap:6px;align-items:center;margin-bottom:9px}
+.panel.bad .tag{color:var(--red)}
+.panel.good .tag{color:var(--green)}
+.panel .tag .x,.panel .tag .v{font-size:13px}
+.panel .txt{font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:var(--ink)}
+.panel.bad .txt{opacity:.72;text-decoration:line-through;text-decoration-color:rgba(192,71,63,.4)}
+.panel .note{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5}
+
+.flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:6px 0}
+.fnode{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:11px;padding:10px 13px;text-align:center;min-width:96px;box-shadow:0 3px 8px rgba(24,36,48,.05)}
+.fnode .n{display:block;font-family:var(--font-head);font-size:13px;font-weight:700}
+.fnode .s{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.farr{color:var(--coral);font-weight:800;font-size:18px}
+.fnode.alt{border-top-color:var(--amber)}
+.fnode.alt2{border-top-color:var(--blue)}
+
+.code-wrap{position:relative;margin:12px 0 0}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--stage-2);color:#a9b6c2;padding:7px 12px;border-radius:10px 10px 0 0;font-size:11px;font-family:var(--font-mono)}
+.code-head .file{color:#79cdf5}
+.copy-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#cfd8e0;border-radius:6px;padding:3px 9px;font-size:10.5px;transition:.2s}
+.copy-btn:hover{background:var(--teal);color:#fff}
+pre{margin:0;background:#0f1620;color:#dbe4ec;border-radius:0 0 10px 10px;padding:14px 16px;overflow-x:auto;font-family:var(--font-mono);font-size:12px;line-height:1.65;scrollbar-width:thin}
+pre .k{color:#c792ea}pre .s{color:#c3e88d}pre .c{color:#5f7183;font-style:italic}pre .f{color:#82aaff}pre .n{color:#f78c6c}pre .hl2{background:rgba(6,148,209,.22);display:inline-block;width:100%}
+
+details.note{margin-top:12px;border:1px solid var(--line);border-radius:11px;background:var(--amber-l);overflow:hidden}
+details.note summary{cursor:pointer;padding:10px 14px;font-size:12.5px;font-weight:700;color:#8a5e12;list-style:none;display:flex;align-items:center;gap:9px}
+details.note summary::-webkit-details-marker{display:none}
+details.note summary::before{content:"▸";transition:.2s;display:inline-block;font-size:12px}
+details.note[open] summary::before{transform:rotate(90deg)}
+details.note .body{padding:0 14px 13px;font-size:12.5px;color:#6d521f;line-height:1.6;border-top:1px dashed #e6cd96;padding-top:10px;margin:0 14px;padding-left:0;padding-right:0}
+details.note.teal{background:var(--teal-l)}
+details.note.teal summary{color:var(--teal-d)}
+details.note.teal .body{color:#1c5f80;border-top-color:#bcdfe9}
+
+.scribble{font-family:var(--font-hand);color:var(--coral);font-size:21px;line-height:1.2;transform:rotate(-2deg);display:inline-block}
+.sticky{background:#fff6cf;border:1px solid #ecdc9a;border-radius:4px;box-shadow:2px 4px 10px rgba(120,90,20,.14);padding:12px 14px;font-family:var(--font-hand);font-size:19px;color:#6b5410;transform:rotate(-1.5deg);position:relative}
+.sticky::before{content:"";position:absolute;top:-8px;left:42%;width:52px;height:16px;background:rgba(230,210,140,.6);transform:rotate(2deg)}
+
+.term{border-bottom:2px dotted var(--teal);cursor:help;position:relative;color:var(--teal-d);font-weight:600}
+.term .tip{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%) translateY(6px);background:var(--ink);color:#fff;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:400;width:230px;text-align:left;line-height:1.5;opacity:0;pointer-events:none;transition:.2s;z-index:20;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.term:hover .tip,.term:focus .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.term .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--paper-2);border:1px solid var(--line);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink-soft)}
+.chip.teal{background:var(--teal-l);border-color:#bcdfe9;color:var(--teal-d)}
+.chip.coral{background:var(--coral-l);border-color:#f0c9bd;color:#9b4327}
+.chip.amber{background:var(--amber-l);border-color:#ecd39a;color:#8a5e12}
+.chip.red{background:var(--red-l);border-color:#f0c4c0;color:var(--red)}
+.bignum{font-family:var(--font-head);font-size:46px;font-weight:700;color:var(--teal);line-height:1}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+table.tbl th{background:var(--ink);color:#fff;text-align:left;padding:9px 12px;font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+table.tbl td{border-bottom:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.45}
+table.tbl tr:nth-child(even) td{background:rgba(242,237,227,.5)}
+table.tbl td:first-child{font-weight:600;color:var(--ink)}
+table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)}
+
+.tree{font-family:var(--font-mono);font-size:12.5px;line-height:1.9;background:var(--stage-2);color:#c9d4de;border-radius:10px;padding:14px 18px;overflow-x:auto}
+.tree .folder{color:#82aaff}.tree .file{color:#c3e88d}.tree .mark{color:#f78c6c;font-weight:700}
+.tree .indent{padding-left:20px}
+
+.anatomy{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start}
+@media(max-width:820px){.anatomy{grid-template-columns:1fr}}
+.prompt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(24,36,48,.06);position:relative}
+.seg{display:block;border-radius:8px;padding:8px 11px;margin:5px 0;font-family:var(--font-mono);font-size:11.5px;line-height:1.5;transition:.25s;cursor:default;border-left:4px solid}
+.seg:hover,.seg.lit{transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,.09)}
+.seg.action{background:var(--teal-l);border-color:var(--teal)}
+.seg.what{background:var(--blue-l);border-color:var(--blue)}
+.seg.where{background:var(--amber-l);border-color:var(--amber)}
+.seg.constraints{background:var(--coral-l);border-color:var(--coral)}
+.legend{display:flex;flex-direction:column;gap:8px}
+.leg{display:flex;gap:11px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer;transition:.2s}
+.leg:hover,.leg.lit{transform:translateX(4px);border-color:var(--teal);box-shadow:0 6px 16px rgba(24,36,48,.08)}
+.leg .b{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-family:var(--font-head);font-weight:700;color:#fff;font-size:14px;flex:0 0 auto}
+.leg.a .b{background:var(--teal)}.leg.w .b{background:var(--blue)}.leg.h .b{background:var(--amber)}.leg.c .b{background:var(--coral)}
+.leg .t{font-size:12.5px;line-height:1.4}
+.leg .t b{display:block;font-size:13px}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:700;transition:.2s}
+.tab:hover{border-color:var(--teal)}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tab-body{display:none;animation:fade .3s}
+.tab-body.active{display:block}
+
+.quiz-q{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-bottom:12px}
+.quiz-q .q{font-size:13.5px;font-weight:700;margin-bottom:10px}
+.opts{display:grid;gap:7px}
+.opt{border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:12.5px;cursor:pointer;transition:.18s;background:var(--paper)}
+.opt:hover{border-color:var(--teal);background:var(--teal-l)}
+.opt.correct{background:var(--green-l);border-color:var(--green);color:var(--green);font-weight:700}
+.opt.wrong{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.expl{display:none;margin-top:9px;font-size:12px;color:var(--ink-soft);border-left:3px solid var(--amber);padding-left:10px;line-height:1.5}
+.expl.show{display:block;animation:fade .3s}
+
+.slide.divider .sheet{background:var(--ink);border-color:#2a3947}
+.slide.divider .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0)}
+.slide.divider .sheet-inner{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;background-image:radial-gradient(600px 400px at 85% 40%,rgba(6,148,209,.28),transparent 70%)}
+.slide.divider h2{color:#fff;font-size:clamp(38px,6vw,72px);letter-spacing:-.03em;max-width:820px}
+.slide.divider .kicker{background:rgba(255,255,255,.1);color:#8fd4f5}
+.slide.divider .subtitle{color:#9fb0bd;font-size:17px}
+.slide.divider .big-index{position:absolute;right:46px;top:60px;font-family:var(--font-head);font-size:180px;font-weight:700;color:rgba(255,255,255,.05);line-height:1;pointer-events:none}
+.slide.divider .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+
+.slide.title .sheet{background:var(--ink)}
+.slide.title .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0,var(--amber))}
+.slide.title .sheet-inner{display:flex;flex-direction:column;justify-content:center;background-image:radial-gradient(700px 500px at 80% 30%,rgba(6,148,209,.3),transparent 70%),radial-gradient(500px 400px at 10% 90%,rgba(224,138,60,.18),transparent 70%)}
+.slide.title .badge{display:inline-flex;gap:10px;align-items:center;color:#8fd4f5;font-weight:700;letter-spacing:.18em;font-size:12px;text-transform:uppercase;margin-bottom:18px}
+.slide.title .badge .ln{width:34px;height:2px;background:var(--amber)}
+.slide.title h1{color:#fff;max-width:900px}
+.slide.title h1 .em{color:#69c6f2}
+.slide.title .sub{color:#b7c4cf;font-size:18px;margin-top:18px;max-width:680px;line-height:1.6}
+.slide.title .meta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.slide.title .meta .m{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:8px 15px;color:#d6e0e7;font-size:12.5px;font-weight:600}
+.slide.title .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+.slide.title .orbit{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:250px;height:250px;opacity:.5}
+@media(max-width:900px){.slide.title .orbit{display:none}}
+
+.bullets{list-style:none;padding:0;margin:10px 0;display:grid;gap:9px}
+.bullets li{position:relative;padding-left:26px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.bullets li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;background:var(--teal);transform:rotate(45deg)}
+.bullets.coral li::before{background:var(--coral)}
+.bullets.amber li::before{background:var(--amber)}
+.callout{border-left:4px solid var(--teal);background:var(--teal-l);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13px;color:#185d7d;line-height:1.55}
+.callout.coral{border-color:var(--coral);background:var(--coral-l);color:#8c4129}
+.callout.amber{border-color:var(--amber);background:var(--amber-l);color:#7a5616}
+.mini-head{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.spacer{height:14px}
+.center{text-align:center}
+.kbd{font-family:var(--font-mono);font-size:10px;border:1px solid rgba(255,255,255,.25);border-bottom-width:2px;border-radius:4px;padding:1px 5px;color:#cfd8e0}
+@media print{
+  body{overflow:visible;background:#fff;height:auto}
+  #deck{height:auto}
+  .slide{display:flex!important;position:relative;page-break-after:always;height:100vh;padding:0}
+  .dock{display:none}
+  .sheet{box-shadow:none;border-radius:0}
+}
+</style>
+</head>
+<body>
+<div id="deck">
+<!-- =========================================================
+     SLIDE 1 — TITLE
+     ========================================================= -->
+<section class="slide title active">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <svg class="orbit" viewBox="0 0 250 250" fill="none" stroke="#69c6f2" stroke-width="1.2">
+        <circle cx="125" cy="125" r="100" opacity=".3"/><circle cx="125" cy="125" r="66" opacity=".45"/>
+        <circle cx="125" cy="125" r="30" opacity=".6"/>
+        <circle cx="125" cy="25" r="7" fill="#69c6f2" stroke="none"/>
+        <circle cx="191" cy="75" r="5" fill="#69c6f2" stroke="none"/>
+        <circle cx="59" cy="185" r="5" fill="#e08a3c" stroke="none"/>
+        <path d="M125 25 A100 100 0 0 1 191 75" stroke="#69c6f2" stroke-width="2"/>
+        <path d="M191 75 A100 100 0 0 1 59 185" stroke="#69c6f2" stroke-width="2"/>
+      </svg>
+      <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
+      <div class="reveal"><div class="badge"><span class="ln"></span> Claude Code Training · Module 03</div></div>
+      <div class="reveal"><h1>Introduction to<br><span class="em">Claude Skills</span></h1></div>
+      <div class="reveal"><p class="sub">Reusable instruction packages that teach Claude how to perform a particular type of task — consistently, professionally, and at scale.</p></div>
+      <div class="reveal">
+        <div class="meta">
+          <span class="m">◈ What &amp; Why</span>
+          <span class="m">◈ Anatomy &amp; Triggers</span>
+          <span class="m">◈ Scope &amp; Selection</span>
+          <span class="m">◈ Effective Descriptions</span>
+          <span class="m">◈ Versioning &amp; Lifecycle</span>
+          <span class="m">◈ Folder Structure</span>
+          <span class="m">◈ FAQs</span>
+          <span class="m">◈ Quiz &amp; Scenarios</span>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot">
+      <span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> KOENIG SOLUTIONS · CLAUDE CODE TRAINING</span>
+      <span>Use ← → keys or the controls below to navigate</span>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 2 — AGENDA
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Roadmap</span><h2>What we'll cover</h2><p class="subtitle">Eight connected ideas. Click any card to jump to that section.</p></div>
+        <span class="num">AGENDA</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card hoverable" data-goto="3"><div class="ico" style="background:var(--teal-l);color:var(--teal)">01</div><h3>What are Claude Skills?</h3><p>The repetition problem, the definition, and why companies use them.</p></div>
+        <div class="card hoverable" data-goto="10"><div class="ico" style="background:var(--blue-l);color:var(--blue)">02</div><h3>Skill Anatomy</h3><p>Description, triggers and instructions — the signboard, relevance and recipe.</p></div>
+        <div class="card hoverable" data-goto="17"><div class="ico" style="background:var(--amber-l);color:var(--amber)">03</div><h3>Project vs User Scope</h3><p>Company rules vs personal notebooks — where a Skill lives and who uses it.</p></div>
+        <div class="card hoverable" data-goto="23"><div class="ico" style="background:var(--coral-l);color:var(--coral)">04</div><h3>Runtime Selection</h3><p>How Claude picks a Skill, plus Progressive Disclosure in three levels.</p></div>
+        <div class="card hoverable" data-goto="30"><div class="ico" style="background:var(--green-l);color:var(--green)">05</div><h3>Effective Descriptions</h3><p>Five rules for accurate triggering, and what to do when Skills overlap.</p></div>
+        <div class="card hoverable" data-goto="36"><div class="ico" style="background:var(--blue-l);color:var(--blue)">06</div><h3>Versioning &amp; Lifecycle</h3><p>Semantic Versioning, the seven-stage lifecycle, and Git-based management.</p></div>
+        <div class="card hoverable" data-goto="42"><div class="ico" style="background:var(--amber-l);color:var(--amber)">07</div><h3>Folder Structure</h3><p>SKILL.md, references, scripts and assets — with a complete example.</p></div>
+        <div class="card hoverable" data-goto="46"><div class="ico" style="background:var(--coral-l);color:var(--coral)">08</div><h3>Industry FAQs</h3><p>17 common doubts answered — from tokens and MCP to security and testing.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:16px"><span class="scribble">Big idea:</span> A Skill is not a new AI model — it is a <strong>reusable instruction package</strong> that guides an existing model.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">02 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 3 — DIVIDER: WHAT ARE CLAUDE SKILLS?
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">01</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part One</span></div>
+      <div class="reveal"><h2>What are Claude Skills<br>and why do they matter?</h2></div>
+      <div class="reveal"><p class="subtitle">Start with the repetition problem — then see the simple idea that solves it.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">03 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 4 — THE REPETITION PROBLEM
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> The problem</span><h2>First, understand the problem</h2><p class="subtitle">Imagine you work in a software company and ask an AI assistant to do different tasks every day.</p></div>
+        <span class="num">01 · WHY SKILLS</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="chip teal">Review JavaScript code</div><div class="chip teal">Generate React components</div><div class="chip teal">Write technical documentation</div>
+        <div class="chip teal">Analyze Excel files</div><div class="chip teal">Create test cases</div><div class="chip teal">Find security issues in code</div>
+      </div>
+      <p class="mini-head reveal" style="margin-top:18px">BUT EVERY TIME YOU ASK CLAUDE TO REVIEW CODE, YOU EXPLAIN:</p>
+      <div class="grid g2 reveal">
+        <div class="card" style="padding:12px"><div class="ico">1</div><p>What coding standards to follow</p></div>
+        <div class="card" style="padding:12px"><div class="ico">2</div><p>How to structure the review</p></div>
+        <div class="card" style="padding:12px"><div class="ico">3</div><p>What security checks to perform</p></div>
+        <div class="card" style="padding:12px"><div class="ico">4</div><p>How to format the output</p></div>
+        <div class="card" style="padding:12px;grid-column:1/-1"><div class="ico">5</div><p>What things to avoid</p></div>
+      </div>
+      <div class="callout coral reveal" style="margin-top:14px"><strong>This becomes repetitive.</strong> The same standards, the same structure, the same checks — typed again and again, in conversation after conversation.</div>
+      <div class="scribble reveal" style="margin-top:10px;font-size:23px">There has to be a better way → Claude Skills.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">04 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 5 — WHAT IS A CLAUDE SKILL?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> The solution</span><h2>Claude Skills solve this problem</h2><p class="subtitle">Define the guidance once. Use it whenever the task is relevant.</p></div>
+        <span class="num">01 · WHY SKILLS</span>
+      </div>
+      <div class="card reveal" style="border-top:4px solid var(--teal);padding:20px;background:var(--teal-l);border-color:#bcdfe9">
+        <h3 style="margin-bottom:8px">A Claude Skill is a reusable set of instructions, guidelines, and sometimes supporting files that teaches Claude how to perform a particular type of task.</h3>
+        <p style="font-size:13.5px">Instead of explaining everything repeatedly, you <strong>create a Skill once</strong> and Claude can use it whenever the task is relevant.</p>
+      </div>
+      <div class="flow reveal" style="margin-top:20px;justify-content:flex-start;gap:8px">
+        <div class="fnode"><span class="n">WRITE ONCE</span><span class="s">create the Skill</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">MAKE AVAILABLE</span><span class="s">scope &amp; store it</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">CLAUDE SELECTS</span><span class="s">by relevance</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">APPLY REPEATEDLY</span><span class="s">consistent result</span></div>
+      </div>
+      <div class="grid g3 reveal" style="margin-top:18px;gap:10px">
+        <div class="card" style="padding:12px"><h4>Instructions</h4><p style="font-size:12.5px">The rules and procedure Claude should follow.</p></div>
+        <div class="card" style="padding:12px"><h4>Guidelines</h4><p style="font-size:12.5px">Standards, formats and things to avoid.</p></div>
+        <div class="card" style="padding:12px"><h4>Supporting files</h4><p style="font-size:12.5px">References, templates and scripts — when needed.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">05 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 6 — EMPLOYEE TRAINING MANUAL ANALOGY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Real-life analogy</span><h2>Employee training manual</h2><p class="subtitle">A company hires a new employee and provides different training manuals.</p></div>
+        <span class="num">01 · WHY SKILLS</span>
+      </div>
+      <div class="grid g4 reveal" style="gap:10px">
+        <div class="card" style="padding:12px;border-top:3px solid var(--teal)"><h4>HR Manual</h4><p style="font-size:12px">How to handle HR-related work</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--blue)"><h4>Coding Manual</h4><p style="font-size:12px">How to write software</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--amber)"><h4>Testing Manual</h4><p style="font-size:12px">How to test applications</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--coral)"><h4>Documentation Manual</h4><p style="font-size:12px">How to prepare documents</p></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:14px">When an employee receives a task, they <strong>refer to the appropriate manual</strong>. Claude Skills work in exactly the same way.</div>
+      <p class="mini-head reveal" style="margin-top:16px">THE MAPPING</p>
+      <table class="tbl reveal">
+        <tr><th>Real-world company</th><th>Claude Skills</th></tr>
+        <tr><td>Employee</td><td>Claude</td></tr>
+        <tr><td>Training manual</td><td>Skill</td></tr>
+        <tr><td>Manual instructions</td><td>Skill instructions</td></tr>
+        <tr><td>Task assigned to employee</td><td>User prompt</td></tr>
+        <tr><td>Choosing the relevant manual</td><td>Skill selection</td></tr>
+        <tr><td>Following company procedure</td><td>Applying the Skill</td></tr>
+      </table>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">06 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 7 — A SKILL IS NOT A NEW AI MODEL
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Important clarification</span><h2>A Skill is not a new AI model</h2><p class="subtitle">One of the most common misunderstandings — clear it up now.</p></div>
+        <span class="num">01 · WHY SKILLS</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad">
+          <span class="tag"><span class="x">✕</span> MISCONCEPTION</span>
+          <p class="txt">"A Skill is a special AI model trained for React reviews."</p>
+          <p class="note">Skills do not train or replace the underlying model.</p>
+        </div>
+        <div class="arrow-mid">→</div>
+        <div class="panel good">
+          <span class="tag"><span class="v">✓</span> REALITY</span>
+          <p class="txt">"A Skill is a reusable instruction package that guides an existing AI model to perform tasks in a particular way."</p>
+          <p class="note">The model stays the same — the guidance changes.</p>
+        </div>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:18px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:14px"><h4>What changes</h4><ul class="bullets" style="margin:0"><li>The instructions available at task time</li><li>The standards and procedures described</li><li>The supporting references and templates</li></ul></div>
+        <div class="card" style="border-top:3px solid var(--blue);padding:14px"><h4>What does not change</h4><ul class="bullets amber" style="margin:0"><li>The model weights</li><li>The model's fundamental capabilities</li><li>The need to test that the Skill triggers</li></ul></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>Remember:</strong> a Skill guides an existing model — it does not create a new one.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">07 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 8 — PRACTICAL EXAMPLE: REACT-CODE-REVIEW
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Practical example</span><h2>A Skill called <code class="inline">react-code-review</code></h2><p class="subtitle">Its purpose: teach Claude how your company reviews React code.</p></div>
+        <span class="num">01 · WHY SKILLS</span>
+      </div>
+      <div class="code-wrap reveal" style="margin-top:0"><div class="code-head"><span class="file">▸ the Skill instructions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>You are a senior React code reviewer.
+
+Whenever reviewing React code:
+
+1. Check component structure.
+2. Identify unnecessary re-renders.
+3. Check proper usage of React hooks.
+4. Identify security vulnerabilities.
+5. Check error handling.
+6. Suggest performance improvements.
+
+Return the result in this format:
+
+- Issue
+- Why it matters
+- Recommended solution
+- Corrected code</pre>
+      </div>
+      <div class="callout amber reveal" style="margin-top:14px"><strong>Now, instead of writing these instructions every time,</strong> you simply ask: <em>"Review this React component."</em></div>
+      <div class="flow reveal" style="justify-content:flex-start;gap:8px;margin-top:12px">
+        <div class="fnode"><span class="n">SHORT PROMPT</span><span class="s">"Review this React component"</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">SKILL SELECTED</span><span class="s">react-code-review</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">FULL REVIEW</span><span class="s">company standard format</span></div>
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px" class="reveal">When the Skill is available and selected, Claude can follow its instructions.</p>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">08 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 9 — WHY COMPANIES USE SKILLS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Business value</span><h2>Why do companies use Skills?</h2><p class="subtitle">Five reasons that turn individual prompts into organizational assets.</p></div>
+        <span class="num">01 · WHY SKILLS</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:12px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:14px"><div class="ico">◆</div><h3>Consistency</h3><p>Different developers receive reviews using the <strong>same standards</strong>.</p></div>
+        <div class="card" style="border-top:3px solid var(--blue);padding:14px"><div class="ico" style="background:var(--blue-l);color:var(--blue)">⚡</div><h3>Productivity</h3><p>No need to <strong>repeat lengthy instructions</strong> in every conversation.</p></div>
+        <div class="card" style="border-top:3px solid var(--amber);padding:14px"><div class="ico" style="background:var(--amber-l);color:var(--amber)">▤</div><h3>Standardization</h3><p>Follow <strong>company-defined processes</strong> every time.</p></div>
+        <div class="card" style="border-top:3px solid var(--coral);padding:14px"><div class="ico" style="background:var(--coral-l);color:var(--coral)">↻</div><h3>Reusability</h3><p>Use the <strong>same Skill</strong> across multiple relevant tasks.</p></div>
+        <div class="card" style="border-top:3px solid var(--green);padding:14px;grid-column:1/-1"><div class="ico" style="background:var(--green-l);color:var(--green)">✎</div><h3>Maintainability</h3><p><strong>Update the Skill</strong> when company standards change — one edit improves every future task.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:14px;font-size:23px">One Skill → consistent output for the whole team.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">09 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 10 — DIVIDER: SKILL ANATOMY
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">02</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Two</span></div>
+      <div class="reveal"><h2>Skill anatomy:<br>Description, triggers<br>and instructions</h2></div>
+      <div class="reveal"><p class="subtitle">A Skill is not simply a text prompt — it has a structure.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">10 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 11 — RESTAURANT ANALOGY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Analogy</span><h2>Think of a restaurant</h2><p class="subtitle">Three things decide what happens when you walk in.</p></div>
+        <span class="num">02 · ANATOMY</span>
+      </div>
+      <div class="grid g3 reveal" style="gap:12px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:14px"><div class="ico">1</div><h3>The signboard</h3><p>Tells you <strong>what the restaurant offers</strong>.</p></div>
+        <div class="card" style="border-top:3px solid var(--amber);padding:14px"><div class="ico" style="background:var(--amber-l);color:var(--amber)">2</div><h3>Your requirement</h3><p>Determines whether the restaurant is <strong>relevant</strong>.</p></div>
+        <div class="card" style="border-top:3px solid var(--coral);padding:14px"><div class="ico" style="background:var(--coral-l);color:var(--coral)">3</div><h3>The kitchen</h3><p>Follows <strong>recipes</strong> to prepare your order.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:18px"><strong>A Claude Skill follows a similar concept:</strong> a signboard (description), a relevance check (trigger), and a recipe (instructions).</div>
+      <div class="flow reveal" style="justify-content:flex-start;gap:8px;margin-top:14px">
+        <div class="fnode"><span class="n">SIGNBOARD</span><span class="s">description</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">RELEVANCE</span><span class="s">trigger</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">RECIPE</span><span class="s">instructions</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">11 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 12 — ANATOMY OF A CLAUDE SKILL
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> The three parts</span><h2>Anatomy of a Claude Skill</h2><p class="subtitle">What it does, when it's relevant, and how the work gets done.</p></div>
+        <span class="num">02 · ANATOMY</span>
+      </div>
+      <table class="tbl reveal">
+        <tr><th>Part</th><th>Question it answers</th><th>Example</th></tr>
+        <tr><td>1. Description</td><td>What does this Skill do? <em>(the signboard)</em></td><td>Reviews React code for performance, security, and best practices.</td></tr>
+        <tr><td>2. Triggers</td><td>When is it relevant?</td><td>User asks to review, audit, or improve React code.</td></tr>
+        <tr><td>3. Instructions</td><td>How should the work be done? <em>(the recipe)</em></td><td>Check hooks, performance, security, and provide corrected code.</td></tr>
+      </table>
+      <div class="grid g3 reveal" style="margin-top:18px;gap:10px">
+        <div class="card" style="padding:12px;text-align:center"><div class="bignum" style="font-size:34px">1</div><h4 style="margin-top:4px">Description</h4><p style="font-size:12px">Purpose</p></div>
+        <div class="card" style="padding:12px;text-align:center"><div class="bignum" style="font-size:34px;color:var(--amber)">2</div><h4 style="margin-top:4px">Triggers</h4><p style="font-size:12px">Relevance</p></div>
+        <div class="card" style="padding:12px;text-align:center"><div class="bignum" style="font-size:34px;color:var(--coral)">3</div><h4 style="margin-top:4px">Instructions</h4><p style="font-size:12px">Procedure</p></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:14px">Let's understand each part in detail.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">12 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 13 — A. DESCRIPTION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Anatomy · A</span><h2>Description — what is the Skill about?</h2><p class="subtitle">The signboard that explains the purpose of the Skill.</p></div>
+        <span class="num">02 · ANATOMY</span>
+      </div>
+      <div class="code-wrap reveal" style="margin-top:0"><div class="code-head"><span class="file">▸ example description</span></div>
+<pre>description: &gt;
+  Reviews React applications for code quality,
+  performance, security, and React best practices.</pre>
+      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>In simple language:</strong> it tells Claude what this Skill is about.</div>
+      <p class="mini-head reveal" style="margin-top:16px">INDUSTRY EXAMPLE — A COMPANY HAS 50 DIFFERENT SKILLS</p>
+      <div class="chips reveal">
+        <span class="chip teal">React Code Review</span><span class="chip teal">Angular Code Review</span><span class="chip teal">SQL Query Optimization</span>
+        <span class="chip teal">API Documentation</span><span class="chip teal">Python Unit Testing</span>
+      </div>
+      <div class="callout coral reveal" style="margin-top:14px"><strong>Each Skill needs a clear description</strong> so Claude can distinguish between them. A <strong>vague description</strong> can make the <strong>wrong Skill more likely to be considered</strong>.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">13 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 14 — B. TRIGGERS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Anatomy · B</span><h2>Triggers — when is it relevant?</h2><p class="subtitle">A trigger is the situation in which a Skill becomes relevant.</p></div>
+        <span class="num">02 · ANATOMY</span>
+      </div>
+      <div class="card reveal" style="background:var(--paper-2);padding:12px"><p style="font-size:13px"><strong>Example:</strong> you have a <strong>React Code Review Skill</strong>. Consider these user requests:</p></div>
+      <table class="tbl reveal">
+        <tr><th>User request</th><th>Skill relevance</th></tr>
+        <tr><td>Review my React code</td><td><span class="chip teal">High</span></td></tr>
+        <tr><td>Find unnecessary React re-renders</td><td><span class="chip teal">High</span></td></tr>
+        <tr><td>Explain what React is</td><td><span class="chip amber">Low</span></td></tr>
+        <tr><td>Write a birthday message</td><td><span class="chip red">Not relevant</span></td></tr>
+      </table>
+      <div class="card reveal" style="border-left:4px solid var(--blue);background:var(--blue-l);border-color:#bcd0ec;margin-top:16px;padding:14px">
+        <h4>Important technical distinction</h4>
+        <p style="font-size:12.5px">Claude Skills do <strong>not necessarily require a separate manually configured trigger</strong> for every Skill. Claude uses the Skill's <strong>description and the user's request</strong> to determine relevance. Explicit trigger conditions can also be described in the instructions.</p>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">14 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 15 — C. INSTRUCTIONS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Anatomy · C</span><h2>Instructions — how should the work be done?</h2><p class="subtitle">The actual recipe or procedure.</p></div>
+        <span class="num">02 · ANATOMY</span>
+      </div>
+      <div class="code-wrap reveal" style="margin-top:0"><div class="code-head"><span class="file">▸ React Code Review Instructions</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre># React Code Review Instructions
+
+## Step 1: Code Quality
+- Check naming conventions.
+- Identify duplicate code.
+- Check component readability.
+
+## Step 2: Performance
+- Identify unnecessary re-renders.
+- Check useMemo and useCallback usage.
+- Identify expensive operations.
+
+## Step 3: Security
+- Check unsafe HTML rendering.
+- Identify exposed API keys.
+
+## Step 4: Output
+Provide:
+1. Issues found
+2. Severity
+3. Explanation
+4. Recommended fix
+5. Corrected code</pre>
+      </div>
+      <div class="callout amber reveal" style="margin-top:12px"><strong>Good instructions</strong> are step-by-step, specific, and define the expected output format.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">15 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 16 — ANATOMY SUMMARY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Anatomy · summary</span><h2>Think of it this way</h2><p class="subtitle">Three questions — like consulting a manual.</p></div>
+        <span class="num">02 · ANATOMY</span>
+      </div>
+      <div class="grid g3 reveal" style="gap:12px">
+        <div class="card" style="padding:18px;border-top:4px solid var(--teal)"><div class="ico">?</div><h3>Description</h3><p style="font-size:15px;color:var(--ink)"><strong>What is this manual about?</strong></p><p style="font-size:12.5px;margin-top:6px">The signboard — the Skill's purpose.</p></div>
+        <div class="card" style="padding:18px;border-top:4px solid var(--amber)"><div class="ico" style="background:var(--amber-l);color:var(--amber)">?</div><h3>Trigger / relevance</h3><p style="font-size:15px;color:var(--ink)"><strong>When should I consult this manual?</strong></p><p style="font-size:12.5px;margin-top:6px">The situation that makes it relevant.</p></div>
+        <div class="card" style="padding:18px;border-top:4px solid var(--coral)"><div class="ico" style="background:var(--coral-l);color:var(--coral)">?</div><h3>Instructions</h3><p style="font-size:15px;color:var(--ink)"><strong>What steps should I follow?</strong></p><p style="font-size:12.5px;margin-top:6px">The recipe — the actual procedure.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:18px"><strong>All three work together:</strong> a clear description gets the Skill considered, relevance matching gets it selected, and good instructions get the task done correctly.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">16 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 17 — DIVIDER: PROJECT VS USER SCOPE
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">03</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Three</span></div>
+      <div class="reveal"><h2>Project-scoped Skills<br>vs User-scoped Skills</h2></div>
+      <div class="reveal"><p class="subtitle">One of the most important concepts in a professional environment.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">17 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 18 — PROJECT VS USER
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Setting the scene</span><h2>First, understand project vs user</h2><p class="subtitle">Different projects have different coding standards. Developers also have personal preferences.</p></div>
+        <span class="num">03 · SCOPE</span>
+      </div>
+      <p class="mini-head reveal">A SOFTWARE COMPANY HAS THREE PROJECTS</p>
+      <div class="grid g3 reveal" style="gap:10px">
+        <div class="card" style="padding:12px;border-top:3px solid var(--teal)"><h4>Project A</h4><p style="font-size:12.5px">Banking Application</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--blue)"><h4>Project B</h4><p style="font-size:12.5px">E-commerce Application</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--amber)"><h4>Project C</h4><p style="font-size:12.5px">Hospital Management System</p></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:16px"><strong>Different projects have different coding standards.</strong> At the same time, a developer may have personal working preferences they want to use across projects.</div>
+      <div class="grid g2 reveal" style="margin-top:14px;gap:10px">
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9;padding:12px"><h4>Project need</h4><p style="font-size:12.5px">"Follow <strong>this project's</strong> API naming and security rules."</p></div>
+        <div class="card" style="background:var(--blue-l);border-color:#bcd0ec;padding:12px"><h4>User need</h4><p style="font-size:12.5px">"Apply <strong>my preferred</strong> style wherever I work."</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:12px;font-size:22px">This is where scope becomes important.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">18 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 19 — COMPANY RULES VS PERSONAL NOTEBOOK
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Real-life analogy</span><h2>Company rules vs personal notebook</h2><p class="subtitle">Two very different kinds of guidance.</p></div>
+        <span class="num">03 · SCOPE</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel good" style="background:var(--teal-l);border-color:#bcdfe9">
+          <span class="tag" style="color:var(--teal-d)">▣ PROJECT-SCOPED</span>
+          <p style="font-size:14px;color:var(--ink);font-weight:700;margin:0 0 8px">Company rules</p>
+          <p class="note" style="font-size:13px">Rules associated with a <strong>particular project</strong>. They apply to everyone working on that project — and should not leak into other projects.</p>
+        </div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good" style="background:var(--blue-l);border-color:#bcd0ec">
+          <span class="tag" style="color:var(--blue)">▤ USER-SCOPED</span>
+          <p style="font-size:14px;color:var(--ink);font-weight:700;margin:0 0 8px">Personal notebook</p>
+          <p class="note" style="font-size:13px"><strong>Personal reusable instructions</strong> for an individual — carried across projects wherever that Skill is available.</p>
+        </div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:18px"><strong>Key question:</strong> "Does this rule belong to the <em>project</em>, or to the <em>person</em>?" The answer determines the Skill's scope.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">19 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 20 — PROJECT-SCOPED SKILLS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scope · project</span><h2>Project-scoped Skills</h2><p class="subtitle">Intended to be available within a particular project or workspace, depending on the Claude environment and configuration.</p></div>
+        <span class="num">03 · SCOPE</span>
+      </div>
+      <div class="card reveal" style="background:var(--paper-2);padding:14px"><p style="font-size:13px"><strong>Example:</strong> your banking application requires:</p>
+        <ul class="bullets" style="margin:8px 0 0"><li>Specific API naming conventions</li><li>Banking security guidelines</li><li>Standardized error responses</li><li>Company-approved logging formats</li></ul>
+      </div>
+      <div class="flow reveal" style="justify-content:flex-start;gap:8px;margin-top:16px">
+        <div class="fnode"><span class="n">BANKING RULES</span><span class="s">project-specific</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">PROJECT SKILL</span><span class="s">stored with project</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">BANKING PROJECT</span><span class="s">rules applied here</span></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>This avoids applying banking-specific rules</strong> to an unrelated e-commerce application.</div>
+      <div class="callout coral reveal" style="margin-top:10px"><strong>Best suited for:</strong> team standards, project conventions, and any guidance that must stay inside one workspace.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">20 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 21 — USER-SCOPED SKILLS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scope · user</span><h2>User-scoped Skills</h2><p class="subtitle">Intended for an individual user's reusable workflow across projects where that Skill is available.</p></div>
+        <span class="num">03 · SCOPE</span>
+      </div>
+      <div class="card reveal" style="background:var(--paper-2);padding:14px"><p style="font-size:13px"><strong>You personally prefer:</strong></p>
+        <ul class="bullets amber" style="margin:8px 0 0"><li>Functional React components</li><li>TypeScript instead of plain JavaScript</li><li>Meaningful variable names</li><li>Comments for complex business logic</li><li>Explanations with practical examples</li></ul>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>You can reuse this Skill across different projects</strong> — it travels with you rather than living inside one codebase.</div>
+      <div class="flow reveal" style="justify-content:flex-start;gap:8px;margin-top:14px">
+        <div class="fnode"><span class="n">PERSONAL SKILL</span><span class="s">my preferences</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">PROJECT A</span></div><span class="farr">·</span>
+        <div class="fnode alt2"><span class="n">PROJECT B</span></div><span class="farr">·</span>
+        <div class="fnode"><span class="n">PROJECT C</span></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:14px"><strong>Best suited for:</strong> individual productivity and consistent personal working style.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">21 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 22 — COMPARISON + INDUSTRY CLARIFICATION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scope · comparison</span><h2>Project-scoped vs User-scoped</h2><p class="subtitle">A side-by-side view — and an important industry clarification.</p></div>
+        <span class="num">03 · SCOPE</span>
+      </div>
+      <table class="tbl reveal">
+        <tr><th>Feature</th><th>Project-scoped</th><th>User-scoped</th></tr>
+        <tr><td>Main purpose</td><td>Project-specific requirements</td><td>Personal reusable workflows</td></tr>
+        <tr><td>Scope</td><td>Particular project</td><td>Individual user</td></tr>
+        <tr><td>Example</td><td>Banking API standards</td><td>Personal React coding preferences</td></tr>
+        <tr><td>Reuse</td><td>Within relevant project</td><td>Across accessible projects</td></tr>
+        <tr><td>Best suited for</td><td>Team/project standards</td><td>Individual productivity</td></tr>
+      </table>
+      <div class="card reveal" style="border-left:4px solid var(--coral);background:var(--coral-l);border-color:#f0c9bd;margin-top:16px;padding:14px">
+        <h4>Important industry clarification</h4>
+        <p style="font-size:12.5px">Scope and storage location <strong>depend on the Claude product and environment</strong>. Claude Code supports project-level and user-level Skill directories, while Claude.ai has its own Skill availability and sharing mechanisms. <strong>Do not assume that a project Skill is automatically shared with every team member.</strong></p>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">22 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 23 — DIVIDER: RUNTIME SELECTION
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">04</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Four</span></div>
+      <div class="reveal"><h2>How Claude selects<br>and applies Skills<br>at runtime</h2></div>
+      <div class="reveal"><p class="subtitle">The technically interesting part — what actually happens while Claude works.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">23 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 24 — RUNTIME + HOSPITAL RECEPTIONIST
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Runtime · meaning</span><h2>First, understand "runtime"</h2><p class="subtitle">Runtime simply means the time when a program or application is running and performing its work.</p></div>
+        <span class="num">04 · RUNTIME</span>
+      </div>
+      <div class="callout teal reveal"><strong>For Claude,</strong> Skill selection happens <strong>while Claude is processing your request</strong> — not beforehand.</div>
+      <p class="mini-head reveal" style="margin-top:16px">REAL-LIFE ANALOGY — A HOSPITAL RECEPTIONIST</p>
+      <div class="card reveal" style="background:var(--paper-2);padding:14px"><p style="font-size:13px">You tell the receptionist: <strong>"I have a problem with my teeth."</strong> The receptionist identifies that you need a <strong>dentist, not a cardiologist</strong>. The dentist then checks your problem and follows the appropriate medical procedure.</p></div>
+      <div class="flow reveal" style="justify-content:flex-start;gap:8px;margin-top:14px">
+        <div class="fnode"><span class="n">RECEIVE REQUEST</span><span class="s">"teeth problem"</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">IDENTIFY RELEVANCE</span><span class="s">dentist not cardiologist</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">FOLLOW PROCEDURE</span><span class="s">appropriate care</span></div>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:14px;gap:10px">
+        <div class="card" style="padding:12px"><h4>Claude receives</h4><p style="font-size:12.5px">Your request and the available Skill descriptions.</p></div>
+        <div class="card" style="padding:12px"><h4>Claude determines</h4><p style="font-size:12.5px">Which Skill is relevant, loads its instructions, and follows them.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">24 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 25 — STEP-BY-STEP RUNTIME WORKFLOW
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Runtime · workflow</span><h2>How Skill selection works</h2><p class="subtitle">Seven steps from user request to delivered result.</p></div>
+        <span class="num">04 · RUNTIME</span>
+      </div>
+      <table class="tbl reveal">
+        <tr><th>Step</th><th>What happens</th></tr>
+        <tr><td>1. User sends a request</td><td>Example: "Review my React application and identify performance issues."</td></tr>
+        <tr><td>2. Examine metadata</td><td>Claude has access to Skill names and descriptions.</td></tr>
+        <tr><td>3. Identify relevant Skills</td><td>Determines the React Code Review Skill may be useful.</td></tr>
+        <tr><td>4. Load instructions</td><td>Reads the main <code class="inline">SKILL.md</code> instructions.</td></tr>
+        <tr><td>5. Access extra resources</td><td>Reads reference documents, uses templates, or runs scripts when the environment allows.</td></tr>
+        <tr><td>6. Perform the task</td><td>Reviews the code using the Skill's guidelines.</td></tr>
+        <tr><td>7. Provide the result</td><td>Returns the review in the prescribed format.</td></tr>
+      </table>
+      <div class="callout amber reveal" style="margin-top:14px"><strong>Notice:</strong> resources in step 5 are loaded <em>only when needed</em> — the next idea is called Progressive Disclosure.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">25 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 26 — PROGRESSIVE DISCLOSURE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Runtime · progressive disclosure</span><h2>Understanding Progressive Disclosure</h2><p class="subtitle">Claude does not need to load every instruction and supporting file immediately — it loads information in stages.</p></div>
+        <span class="num">04 · RUNTIME</span>
+      </div>
+      <div class="card reveal" style="background:var(--amber-l);padding:12px"><p style="font-size:12.5px"><strong>Think of reading a textbook:</strong> you don't read the entire book whenever you have a question. First the table of contents → then the relevant chapter → then, if necessary, the appendix.</p></div>
+      <p class="mini-head reveal" style="margin-top:16px">THREE LEVELS OF PROGRESSIVE DISCLOSURE</p>
+      <div class="grid g3 reveal" style="gap:10px">
+        <div class="card" style="padding:14px;border-top:4px solid var(--teal)"><div class="bignum" style="font-size:32px">1</div><h4 style="margin-top:4px">Metadata</h4><p style="font-size:12.5px">Skill name and description are available so Claude can identify relevant Skills. <strong>Loaded initially</strong>.</p></div>
+        <div class="card" style="padding:14px;border-top:4px solid var(--amber)"><div class="bignum" style="font-size:32px;color:var(--amber)">2</div><h4 style="margin-top:4px">SKILL.md</h4><p style="font-size:12.5px">When the Skill is relevant, Claude loads its detailed instructions. <strong>Loaded when needed</strong>.</p></div>
+        <div class="card" style="padding:14px;border-top:4px solid var(--coral)"><div class="bignum" style="font-size:32px;color:var(--coral)">3</div><h4 style="margin-top:4px">Supporting files</h4><p style="font-size:12.5px">References, templates, examples and scripts when the task requires them. <strong>Accessed when needed</strong>.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>Benefit:</strong> only the information actually required for the task enters the context — keeping Claude focused and efficient.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">26 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 27 — ENTERPRISE REACT PROJECT TREE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Runtime · example</span><h2>An enterprise React project Skill</h2><p class="subtitle">One Skill directory with multiple supporting resources.</p></div>
+        <span class="num">04 · RUNTIME</span>
+      </div>
+      <div class="tree reveal">
+<span class="folder">react-code-review/</span>
+│
+├── <span class="file mark">SKILL.md</span>
+│
+├── <span class="folder">references/</span>
+│   ├── <span class="file">coding-standards.md</span>
+│   ├── <span class="file">security-guidelines.md</span>
+│   └── <span class="file">performance-checklist.md</span>
+│
+├── <span class="folder">scripts/</span>
+│   └── <span class="file">analyze-code.py</span>
+│
+└── <span class="folder">assets/</span>
+    └── <span class="file">review-template.md</span>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:14px;gap:10px">
+        <div class="card" style="padding:12px;border-top:3px solid var(--teal)"><h4>Level 1 — Metadata</h4><p style="font-size:12.5px">Name + description available initially.</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--amber)"><h4>Level 2 — SKILL.md</h4><p style="font-size:12.5px">Core instructions loaded on selection.</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--coral);grid-column:1/-1"><h4>Level 3 — Supporting files</h4><p style="font-size:12.5px">References, scripts and templates accessed only for the requests that need them.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">27 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 28 — TWO REQUESTS, TWO REFERENCES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Runtime · in action</span><h2>Two requests, different files</h2><p class="subtitle">The same Skill — but Claude reads only what each task needs.</p></div>
+        <span class="num">04 · RUNTIME</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:12px">
+        <div class="card" style="border-top:4px solid var(--teal);padding:14px">
+          <h3>Request 1</h3>
+          <p style="font-size:12.5px;color:var(--ink);margin:8px 0"><em>"Check whether my React component follows our coding standards."</em></p>
+          <div class="flow" style="justify-content:flex-start;gap:4px">
+            <div class="fnode"><span class="n">IDENTIFY SKILL</span></div><span class="farr">→</span>
+            <div class="fnode alt"><span class="n">READ SKILL.md</span></div><span class="farr">→</span>
+            <div class="fnode alt2"><span class="n">coding-standards.md</span></div>
+          </div>
+        </div>
+        <div class="card" style="border-top:4px solid var(--coral);padding:14px">
+          <h3>Request 2</h3>
+          <p style="font-size:12.5px;color:var(--ink);margin:8px 0"><em>"Check whether my React application has security vulnerabilities."</em></p>
+          <div class="flow" style="justify-content:flex-start;gap:4px">
+            <div class="fnode"><span class="n">IDENTIFY SKILL</span></div><span class="farr">→</span>
+            <div class="fnode alt"><span class="n">READ SKILL.md</span></div><span class="farr">→</span>
+            <div class="fnode alt2"><span class="n">security-guidelines.md</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Notice:</strong> Claude does <strong>not necessarily need to read every file for every request</strong>. That is Progressive Disclosure in practice.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">28 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 29 — CONTEXT, COST & COMPOSABILITY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Runtime · why it matters</span><h2>Context, cost &amp; composability</h2><p class="subtitle">Why loading less is better — and what to expect when Skills overlap.</p></div>
+        <span class="num">04 · RUNTIME</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:12px">
+        <div class="card" style="border-top:3px solid var(--amber);padding:14px"><div class="ico" style="background:var(--amber-l);color:var(--amber)">▣</div><h3>Context-window &amp; cost</h3><p>Loading unnecessary information consumes <strong>context-window capacity</strong> and can <strong>increase processing costs</strong>. Progressive Disclosure keeps both under control.</p></div>
+        <div class="card" style="border-top:3px solid var(--blue);padding:14px"><div class="ico" style="background:var(--blue-l);color:var(--blue)">⊕</div><h3>Skills are composable</h3><p>Claude <strong>may use multiple relevant Skills</strong> for one request — combining their knowledge when several are applicable.</p></div>
+      </div>
+      <div class="card reveal" style="border-left:4px solid var(--coral);background:var(--coral-l);border-color:#f0c9bd;margin-top:16px;padding:14px">
+        <h4>Industry understanding</h4>
+        <p style="font-size:12.5px">Skill selection is <strong>model-driven</strong>, so it is <strong>not guaranteed</strong> that every intended Skill will always trigger. This is why clear descriptions and real-world testing matter.</p>
+      </div>
+      <div class="scribble reveal" style="margin-top:14px;font-size:22px">Clear description → right Skill → right files → right result.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">29 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 30 — DIVIDER: EFFECTIVE DESCRIPTIONS
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">05</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Five</span></div>
+      <div class="reveal"><h2>Writing effective Skill<br>descriptions for<br>accurate triggering</h2></div>
+      <div class="reveal"><p class="subtitle">A perfect Skill with an unclear description may never be used.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">30 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 31 — JOB ADVERTISEMENT ANALOGY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Analogy</span><h2>Real-life analogy: job advertisement</h2><p class="subtitle">A company wants to hire a Python developer. Which description is better?</p></div>
+        <span class="num">05 · DESCRIPTIONS</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad">
+          <span class="tag"><span class="x">✕</span> DESCRIPTION A</span>
+          <p class="txt">"We need a technical person."</p>
+          <p class="note">Vague — could mean anyone in technology.</p>
+        </div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good">
+          <span class="tag"><span class="v">✓</span> DESCRIPTION B</span>
+          <p class="txt">"We need a Python developer experienced in Django, REST APIs, PostgreSQL, debugging, and backend application development."</p>
+          <p class="note">Specific — clear technologies and responsibilities.</p>
+        </div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:18px"><strong>Obviously, Description B is better</strong> because it clearly explains the job. <strong>The same principle applies to Claude Skills.</strong></div>
+      <div class="callout amber reveal" style="margin-top:10px">You may create a <strong>perfect Skill</strong> with excellent instructions — but if its description is unclear, Claude may not recognize when it should be used.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">31 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 32 — BAD VS GOOD DESCRIPTIONS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Descriptions · examples</span><h2>Bad vs good descriptions</h2><p class="subtitle">Notice how specificity replaces vagueness.</p></div>
+        <span class="num">05 · DESCRIPTIONS</span>
+      </div>
+      <table class="tbl reveal">
+        <tr><th>Weak description</th><th>Better description</th></tr>
+        <tr><td>Helps with coding</td><td>Reviews React and TypeScript code for quality, security and performance</td></tr>
+        <tr><td>Works with databases</td><td>Analyzes SQL queries, identifies performance bottlenecks and suggests indexing improvements</td></tr>
+        <tr><td>Helps with documents</td><td>Creates and formats professional Word documents using company templates</td></tr>
+        <tr><td>Helps with testing</td><td>Generates Python unit tests, pytest fixtures and test cases for application modules</td></tr>
+      </table>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Pattern:</strong> every better description names the <strong>action</strong>, the <strong>technology</strong>, and the <strong>outcome</strong>.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">32 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 33 — FIVE RULES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Descriptions · method</span><h2>Five rules for better descriptions</h2><p class="subtitle">A professional checklist before you publish a Skill.</p></div>
+        <span class="num">05 · DESCRIPTIONS</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:10px">
+        <div class="card" style="padding:12px;border-top:3px solid var(--teal)"><div class="ico">1</div><h4>Clearly mention the purpose</h4><p style="font-size:12.5px">What exactly does the Skill do?</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--blue)"><div class="ico" style="background:var(--blue-l);color:var(--blue)">2</div><h4>Mention relevant situations</h4><p style="font-size:12.5px">When should Claude use it?</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--amber)"><div class="ico" style="background:var(--amber-l);color:var(--amber)">3</div><h4>Include specific task keywords</h4><p style="font-size:12.5px">Debugging, reviewing, optimizing, testing, generating, documenting.</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--coral)"><div class="ico" style="background:var(--coral-l);color:var(--coral)">4</div><h4>Mention relevant technologies</h4><p style="font-size:12.5px">React, Node.js, PostgreSQL, Python.</p></div>
+        <div class="card" style="padding:12px;border-top:3px solid var(--green);grid-column:1/-1"><div class="ico" style="background:var(--green-l);color:var(--green)">5</div><h4>Avoid vague descriptions</h4><p style="font-size:12.5px">Do not write something like <em>"This Skill helps developers."</em></p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">33 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 34 — SQL OPTIMIZATION EXAMPLE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Descriptions · practical example</span><h2>SQL Query Optimization Skill</h2><p class="subtitle">A recommended frontmatter that follows all five rules.</p></div>
+        <span class="num">05 · DESCRIPTIONS</span>
+      </div>
+      <div class="code-wrap reveal" style="margin-top:0"><div class="code-head"><span class="file">▸ SKILL.md — frontmatter</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>---
+name: sql-query-optimization
+description: &gt;
+  Analyzes and optimizes SQL queries for
+  PostgreSQL and MySQL databases. Use when
+  users ask to improve slow queries, examine
+  execution plans, identify indexing problems,
+  optimize joins, or investigate database
+  performance issues.
+---</pre>
+      </div>
+      <div class="grid g4 reveal" style="margin-top:14px;gap:8px">
+        <div class="card" style="padding:10px;text-align:center"><h4>Purpose</h4><p style="font-size:12px">Analyzes &amp; optimizes</p></div>
+        <div class="card" style="padding:10px;text-align:center"><h4>Situations</h4><p style="font-size:12px">"Use when users ask..."</p></div>
+        <div class="card" style="padding:10px;text-align:center"><h4>Keywords</h4><p style="font-size:12px">slow queries, joins</p></div>
+        <div class="card" style="padding:10px;text-align:center"><h4>Technologies</h4><p style="font-size:12px">PostgreSQL, MySQL</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>Result:</strong> when a user mentions slow queries or execution plans, Claude has strong signals that this Skill is relevant.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">34 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 35 — OVERLAPPING DESCRIPTIONS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Descriptions · overlap</span><h2>What if descriptions overlap?</h2><p class="subtitle">Three Skills, one ambiguous request.</p></div>
+        <span class="num">05 · DESCRIPTIONS</span>
+      </div>
+      <div class="chips reveal">
+        <span class="chip teal">SQL Query Optimization</span><span class="chip amber">Database Performance</span><span class="chip coral">Database Troubleshooting</span>
+      </div>
+      <div class="card reveal" style="background:var(--paper-2);padding:14px;margin-top:14px"><p style="font-size:13px"><strong>All three may be relevant</strong> when the user asks:</p><p style="font-size:14px;font-weight:700;color:var(--ink);margin:6px 0 0"><em>"Why is my database query running slowly?"</em></p></div>
+      <div class="callout amber reveal" style="margin-top:12px">Claude may select <strong>one or more Skills</strong> based on their descriptions and the task.</div>
+      <p class="mini-head reveal" style="margin-top:16px">TO REDUCE CONFUSION</p>
+      <ul class="bullets reveal">
+        <li>Define a <strong>clear responsibility</strong> for each Skill.</li>
+        <li>Avoid unnecessary overlap.</li>
+        <li>Mention specific <strong>technologies and task boundaries</strong>.</li>
+        <li><strong>Test descriptions</strong> with different real-world prompts.</li>
+      </ul>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">35 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 36 — DIVIDER: VERSIONING & LIFECYCLE
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">06</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Six</span></div>
+      <div class="reveal"><h2>Skill versioning<br>and lifecycle<br>management</h2></div>
+      <div class="reveal"><p class="subtitle">Treat Skills as maintainable organizational assets — not one-off prompts.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">36 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 37 — WHY SKILLS NEED UPDATES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> The need for change</span><h2>Why Skills must evolve</h2><p class="subtitle">A real scenario from a software company.</p></div>
+        <span class="num">06 · VERSIONING</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:12px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:14px">
+          <h3>Initially</h3>
+          <p style="font-size:13px;margin:8px 0 0">A React Code Review Skill checks:</p>
+          <ul class="bullets" style="margin:8px 0 0"><li>Code quality</li><li>Component structure</li><li>React Hooks</li></ul>
+        </div>
+        <div class="card" style="border-top:3px solid var(--coral);padding:14px">
+          <h3>After six months</h3>
+          <p style="font-size:13px;margin:8px 0 0">The company introduces new standards:</p>
+          <ul class="bullets coral" style="margin:8px 0 0"><li>TypeScript strict mode</li><li>Accessibility</li><li>Security checks</li><li>Performance optimization</li></ul>
+        </div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>The Skill must be updated.</strong> This is where <strong>versioning and lifecycle management</strong> come in.</div>
+      <div class="scribble reveal" style="margin-top:12px;font-size:22px">Standards change → Skills change → track the release.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">37 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 38 — WHAT IS VERSIONING + SEMVER
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Versioning</span><h2>What is versioning?</h2><p class="subtitle">Maintaining different identifiable releases of a Skill as it evolves.</p></div>
+        <span class="num">06 · VERSIONING</span>
+      </div>
+      <table class="tbl reveal">
+        <tr><th>Version</th><th>Changes</th></tr>
+        <tr><td>1.0.0</td><td>Initial React code review instructions</td></tr>
+        <tr><td>1.1.0</td><td>Added TypeScript guidelines</td></tr>
+        <tr><td>1.2.0</td><td>Added accessibility checks</td></tr>
+        <tr><td>2.0.0</td><td>Major restructuring of review workflow</td></tr>
+      </table>
+      <div class="card reveal" style="background:var(--teal-l);border-color:#bcdfe9;margin-top:16px;padding:14px">
+        <h4>Semantic Versioning — MAJOR.MINOR.PATCH</h4>
+        <ul class="bullets" style="margin:8px 0 0">
+          <li><strong>MAJOR</strong> — significant or potentially incompatible changes</li>
+          <li><strong>MINOR</strong> — new features or backward-compatible improvements</li>
+          <li><strong>PATCH</strong> — small fixes and corrections</li>
+        </ul>
+      </div>
+      <div class="callout amber reveal" style="margin-top:12px"><strong>Note:</strong> Semantic Versioning is a useful release-management <strong>convention</strong>, not an automatic versioning requirement for every Claude Skill.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">38 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 39 — MOBILE APP UPDATES ANALOGY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Analogy</span><h2>Real-life analogy: mobile app updates</h2><p class="subtitle">The release pattern you already know.</p></div>
+        <span class="num">06 · VERSIONING</span>
+      </div>
+      <div class="grid g3 reveal" style="gap:10px">
+        <div class="card" style="padding:14px;border-top:4px solid var(--teal);text-align:center"><div class="bignum">1</div><h4 style="margin-top:4px">Version 1</h4><p style="font-size:12.5px">Initial release</p></div>
+        <div class="card" style="padding:14px;border-top:4px solid var(--amber);text-align:center"><div class="bignum" style="color:var(--amber)">2</div><h4 style="margin-top:4px">Version 2</h4><p style="font-size:12.5px">New features</p></div>
+        <div class="card" style="padding:14px;border-top:4px solid var(--coral);text-align:center"><div class="bignum" style="color:var(--coral)">3</div><h4 style="margin-top:4px">Version 3</h4><p style="font-size:12.5px">Bug fixes &amp; improvements</p></div>
+      </div>
+      <div class="flow reveal" style="justify-content:flex-start;gap:8px;margin-top:18px">
+        <div class="fnode"><span class="n">WHATSAPP</span><span class="s">app updates</span></div><span class="farr">≈</span>
+        <div class="fnode alt"><span class="n">SKILLS</span><span class="s">version updates</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">STAY USEFUL</span><span class="s">over time</span></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Similarly, Skills need updates to remain useful</strong> as frameworks, standards and business processes change.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">39 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 40 — SKILL LIFECYCLE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Lifecycle</span><h2>Skill lifecycle</h2><p class="subtitle">Seven stages from idea to retirement.</p></div>
+        <span class="num">06 · LIFECYCLE</span>
+      </div>
+      <table class="tbl reveal">
+        <tr><th>Stage</th><th>What happens</th></tr>
+        <tr><td>1. Planning</td><td>Identify the business problem. <em>Example: developers spend too much time reviewing React code.</em></td></tr>
+        <tr><td>2. Development</td><td>Create the Skill folder and write <code class="inline">SKILL.md</code>.</td></tr>
+        <tr><td>3. Testing</td><td>Test the Skill against real requests and expected outputs.</td></tr>
+        <tr><td>4. Deployment</td><td>Make it available to the intended users or environment.</td></tr>
+        <tr><td>5. Monitoring</td><td>Observe whether it triggers correctly and produces useful results.</td></tr>
+        <tr><td>6. Maintenance</td><td>Update instructions, references and scripts when requirements change.</td></tr>
+        <tr><td>7. Retirement</td><td>Disable or remove outdated Skills and replace them when necessary.</td></tr>
+      </table>
+      <div class="callout amber reveal" style="margin-top:14px"><strong>Lifecycle thinking</strong> prevents orphaned, outdated Skills from lingering in an organization.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">40 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 41 — GIT-BASED MANAGEMENT
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Industry practice</span><h2>How companies manage Skill versions</h2><p class="subtitle">Skills can be managed like source code in a Git repository.</p></div>
+        <span class="num">06 · LIFECYCLE</span>
+      </div>
+      <div class="tree reveal">
+<span class="folder">company-ai-skills/</span>
+│
+├── <span class="folder">react-code-review/</span>
+│   ├── <span class="file mark">SKILL.md</span>
+│   └── <span class="folder">references/</span>
+│
+├── <span class="folder">sql-optimization/</span>
+│   ├── <span class="file mark">SKILL.md</span>
+│   └── <span class="folder">references/</span>
+│
+└── <span class="folder">api-documentation/</span>
+    ├── <span class="file mark">SKILL.md</span>
+    └── <span class="folder">templates/</span>
+      </div>
+      <div class="code-wrap reveal" style="margin-top:12px"><div class="code-head"><span class="file">▸ example Git workflow</span></div>
+<pre># Clone the company Skill repository
+git clone https://github.com/company/ai-skills.git
+
+# Create a new branch
+git checkout -b update-react-skill
+
+# Modify Skill instructions, then test the updated Skill
+
+# Commit changes
+git add .
+git commit -m "Add React security review guidelines"
+
+# Push changes
+git push origin update-react-skill</pre>
+      </div>
+      <div class="callout teal reveal" style="margin-top:12px"><strong>Team review:</strong> changes go through a <strong>pull request</strong> before merging into the main branch. Skills become <strong>maintainable organizational assets</strong> rather than individual prompts scattered across conversations.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">41 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 42 — DIVIDER: FOLDER STRUCTURE
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">07</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Seven</span></div>
+      <div class="reveal"><h2>Understanding the<br>actual Skill<br>folder structure</h2></div>
+      <div class="reveal"><p class="subtitle">Connecting the concepts to real implementation.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">42 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 43 — FOLDER STRUCTURE + FILE PURPOSE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Structure</span><h2>A Skill is a folder</h2><p class="subtitle">A mandatory <code class="inline">SKILL.md</code> plus optional supporting resources.</p></div>
+        <span class="num">07 · STRUCTURE</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:14px">
+        <div class="tree" style="margin-top:0">
+<span class="folder">react-code-review/</span>
+│
+├── <span class="file mark">SKILL.md</span>
+│
+├── <span class="folder">references/</span>
+│   ├── <span class="file">react-guidelines.md</span>
+│   └── <span class="file">security-rules.md</span>
+│
+├── <span class="folder">scripts/</span>
+│   └── <span class="file">validate.py</span>
+│
+└── <span class="folder">assets/</span>
+    └── <span class="file">report-template.md</span>
+        </div>
+        <div>
+          <table class="tbl" style="margin-top:0">
+            <tr><th>File / folder</th><th>Purpose</th></tr>
+            <tr><td><code class="inline">SKILL.md</code></td><td>Main Skill definition and instructions</td></tr>
+            <tr><td><code class="inline">references/</code></td><td>Additional technical documentation</td></tr>
+            <tr><td><code class="inline">scripts/</code></td><td>Supporting executable scripts</td></tr>
+            <tr><td><code class="inline">assets/</code></td><td>Templates and other resources</td></tr>
+          </table>
+          <div class="callout teal" style="margin-top:12px"><strong>Only <code class="inline">SKILL.md</code> is mandatory.</strong> Supporting folders are optional and added when the task needs them.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">43 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 44 — COMPLETE SKILL.MD EXAMPLE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Structure · example</span><h2>Example of a complete SKILL.md</h2><p class="subtitle">Frontmatter followed by the full instructions.</p></div>
+        <span class="num">07 · STRUCTURE</span>
+      </div>
+      <div class="code-wrap reveal" style="margin-top:0"><div class="code-head"><span class="file">▸ SKILL.md</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>---
+name: react-code-review
+description: &gt;
+  Reviews React and TypeScript applications
+  for code quality, performance, security,
+  and React best practices. Use when users
+  request React code reviews or optimization.
+---
+
+# React Code Review
+
+## Role
+Act as a senior React developer.
+
+## Instructions
+1. Understand the provided code.
+2. Identify code quality issues.
+3. Check React Hooks usage.
+4. Identify unnecessary re-renders.
+5. Check security vulnerabilities.
+6. Suggest improvements.
+
+## Output Format
+For every issue provide:
+
+- Issue title
+- Severity
+- Explanation
+- Recommended solution
+- Corrected code
+
+## Important Rules
+- Prefer functional components.
+- Follow modern React practices.
+- Avoid unnecessary dependencies.
+- Do not invent missing project requirements.</pre>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">44 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 45 — YAML FRONTMATTER
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Structure · frontmatter</span><h2>Understanding YAML Frontmatter</h2><p class="subtitle">The identity card of your Skill.</p></div>
+        <span class="num">07 · STRUCTURE</span>
+      </div>
+      <div class="code-wrap reveal" style="margin-top:0"><div class="code-head"><span class="file">▸ top of SKILL.md</span></div>
+<pre>---
+name: react-code-review
+description: Reviews React code for quality and security.
+---
+
+The content after the second --- contains
+the actual instructions.</pre>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:14px;gap:12px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:14px"><h4>It tells Claude</h4><ul class="bullets" style="margin:0"><li>What the Skill is called</li><li>What the Skill is designed to do</li><li>When it may be relevant</li></ul></div>
+        <div class="card" style="border-top:3px solid var(--amber);padding:14px"><h4>Key facts</h4><p style="font-size:12.5px">The content after the second <code class="inline">---</code> is the <strong>actual instruction body</strong>.</p><p style="font-size:12.5px;margin-top:6px">The standard Agent Skills format <strong>requires <code class="inline">name</code> and <code class="inline">description</code></strong>. Supporting files are optional.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>Think of frontmatter as an identity card</strong> — it is how Claude discovers and distinguishes your Skill.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">45 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 46 — DIVIDER: INDUSTRY FAQs
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">08</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Eight</span></div>
+      <div class="reveal"><h2>Industry-level doubts<br>and frequently<br>asked questions</h2></div>
+      <div class="reveal"><p class="subtitle">What developers, architects, AI engineers and enterprise teams commonly ask.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03</span><span class="page-num">46 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 47 — FAQ Q1-Q3
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQs · Q1–Q3</span><h2>Prompts, training &amp; activation</h2><p class="subtitle">The three most common beginner doubts.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <div class="grid g3 reveal" style="gap:10px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:13px"><div class="bignum" style="font-size:26px">Q1</div><h4 style="margin-top:4px">Is a Skill the same as a prompt?</h4><p style="font-size:12px"><strong>No.</strong> A prompt is an instruction for one request. A Skill is a reusable package applied to relevant requests. <em>Prompt = task; Skill = training manual.</em></p></div>
+        <div class="card" style="border-top:3px solid var(--amber);padding:13px"><div class="bignum" style="font-size:26px;color:var(--amber)">Q2</div><h4 style="margin-top:4px">Does a Skill train Claude?</h4><p style="font-size:12px"><strong>No.</strong> It does not retrain the model or change its weights. It provides instructions, knowledge and resources <strong>at task time</strong>.</p></div>
+        <div class="card" style="border-top:3px solid var(--coral);padding:13px"><div class="bignum" style="font-size:26px;color:var(--coral)">Q3</div><h4 style="margin-top:4px">Does Claude activate every Skill?</h4><p style="font-size:12px"><strong>No.</strong> It judges relevance. A Skill may not activate if the description is unclear or the request seems unrelated — hence good descriptions and testing.</p></div>
+      </div>
+      <table class="tbl reveal" style="margin-top:14px">
+        <tr><th>Prompt</th><th>Skill</th></tr>
+        <tr><td>Review this React component</td><td>React Code Review workflow</td></tr>
+        <tr><td>Explain this SQL query</td><td>SQL Optimization workflow</td></tr>
+        <tr><td>Generate Python tests</td><td>Python Testing workflow</td></tr>
+      </table>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">47 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 48 — FAQ Q4-Q5
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQs · Q4–Q5</span><h2>Multiple &amp; conflicting Skills</h2><p class="subtitle">When more than one Skill is in play.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <div class="card reveal" style="border-top:3px solid var(--teal);padding:14px">
+        <h4>Q4. Can Claude use two or more Skills simultaneously?</h4>
+        <p style="font-size:12.5px"><strong>Yes.</strong> For <em>"Create a secure REST API in Node.js, optimize its PostgreSQL queries, and write unit tests,"</em> Claude may need:</p>
+        <div class="chips" style="margin-top:8px"><span class="chip teal">Node.js API Development</span><span class="chip teal">SQL Optimization</span><span class="chip amber">Security Review</span><span class="chip amber">Unit Testing</span></div>
+        <p style="font-size:12px;margin-top:8px">Multiple Skills can work together on a single request.</p>
+      </div>
+      <div class="card reveal" style="border-top:3px solid var(--coral);padding:14px;margin-top:12px">
+        <h4>Q5. What if two Skills give conflicting instructions?</h4>
+        <p style="font-size:12.5px">Example: Skill A says <strong>"Use JavaScript"</strong>; Skill B says <strong>"Always use TypeScript."</strong></p>
+        <ul class="bullets coral" style="margin:8px 0 0"><li>Define <strong>clear responsibilities</strong></li><li>Avoid contradictory rules</li><li>Establish <strong>project-level standards</strong></li><li>Explicitly describe which requirements <strong>take priority</strong></li></ul>
+        <div class="callout coral" style="margin-top:10px"><strong>Do not assume</strong> conflicting Skills will always be resolved in a predictable way.</div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">48 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 49 — FAQ Q6-Q8
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQs · Q6–Q8</span><h2>Tokens, scripts &amp; databases</h2><p class="subtitle">What a Skill can and cannot do by itself.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <div class="grid g3 reveal" style="gap:10px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:13px"><div class="bignum" style="font-size:26px">Q6</div><h4 style="margin-top:4px">Does a Skill consume tokens?</h4><p style="font-size:12px"><strong>Yes.</strong> Metadata, loaded <code class="inline">SKILL.md</code>, reference documents, and requests/responses all use context. This is why Progressive Disclosure matters.</p></div>
+        <div class="card" style="border-top:3px solid var(--amber);padding:13px"><div class="bignum" style="font-size:26px;color:var(--amber)">Q7</div><h4 style="margin-top:4px">Can a Skill contain code?</h4><p style="font-size:12px"><strong>Yes</strong> — scripts such as <code class="inline">validate.py</code> or <code class="inline">check_security.js</code>. But including a script does <strong>not</strong> execute it; Claude needs an execution-capable environment and tool access.</p></div>
+        <div class="card" style="border-top:3px solid var(--coral);padding:13px"><div class="bignum" style="font-size:26px;color:var(--coral)">Q8</div><h4 style="margin-top:4px">Can Skills access databases?</h4><p style="font-size:12px"><strong>Not by themselves.</strong> They can explain queries, but actual access needs an MCP server, database connector, application API, or other authorized tool.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Example:</strong> a PostgreSQL Skill provides query instructions, while a PostgreSQL <strong>MCP server</strong> provides the actual connectivity.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">49 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 50 — FAQ Q9: SKILL VS MCP
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQ · Q9</span><h2>Skill vs MCP — recipe vs equipment</h2><p class="subtitle">An especially important interview and industry question.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:12px">
+        <div class="card" style="border-top:4px solid var(--teal);padding:14px"><div class="ico">▤</div><h3>Skill = Recipe</h3><p style="font-size:12.5px">A recipe tells the chef <strong>how to prepare a dish</strong>.</p></div>
+        <div class="card" style="border-top:4px solid var(--coral);padding:14px"><div class="ico" style="background:var(--coral-l);color:var(--coral)">⚙</div><h3>MCP = Kitchen equipment</h3><p style="font-size:12.5px">Equipment provides the <strong>ability to perform the work</strong>.</p></div>
+      </div>
+      <table class="tbl reveal" style="margin-top:14px">
+        <tr><th>Claude Skill</th><th>MCP</th></tr>
+        <tr><td>Provides instructions</td><td>Provides tool connectivity</td></tr>
+        <tr><td>Explains how to perform a task</td><td>Allows interaction with external systems</td></tr>
+        <tr><td>Contains workflows and knowledge</td><td>Exposes tools and resources</td></tr>
+        <tr><td>Example: how to query PostgreSQL safely</td><td>Example: connect to PostgreSQL and execute queries</td></tr>
+      </table>
+      <div class="callout amber reveal" style="margin-top:12px"><strong>Remember:</strong> a Skill does not itself provide database connectivity. Combine a Database Analysis Skill with PostgreSQL via MCP for both knowledge <em>and</em> access.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">50 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 51 — FAQ Q10-Q11
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQs · Q10–Q11</span><h2>Custom GPTs &amp; offline use</h2><p class="subtitle">Different platforms, different possibilities.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <div class="grid g2 reveal" style="gap:12px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:14px">
+          <h4>Q10. Is a Skill the same as a custom GPT?</h4>
+          <p style="font-size:12.5px"><strong>No.</strong> A Skill is a reusable instruction and resource package for compatible agent environments. A custom GPT is a configured assistant inside ChatGPT with its own instructions, knowledge and possible tools. They solve similar problems but have <strong>different implementation models</strong>.</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--amber);padding:14px">
+          <h4>Q11. Can a Skill work without internet?</h4>
+          <p style="font-size:12.5px"><strong>Potentially, yes.</strong> If the model and execution environment are available locally, and all Skill files and dependencies are local, the Skill can work offline. An <strong>online Claude service requires network access</strong> to reach its hosted service.</p>
+        </div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Rule of thumb:</strong> the Skill itself is just files — offline capability depends on where the model and tools run.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">51 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 52 — FAQ Q12-Q14
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQs · Q12–Q14</span><h2>Sharing, files &amp; commands</h2><p class="subtitle">Skills instruct — the environment enables.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <div class="grid g3 reveal" style="gap:10px">
+        <div class="card" style="border-top:3px solid var(--teal);padding:13px"><div class="bignum" style="font-size:26px">Q12</div><h4 style="margin-top:4px">Can Skills be shared?</h4><p style="font-size:12px"><strong>Yes, depending on the platform.</strong> Teams can store Skills in Git repos, share folders, distribute approved Skills, or use organization-managed distribution. Creating one personally does <strong>not</strong> make it automatically available to everyone.</p></div>
+        <div class="card" style="border-top:3px solid var(--amber);padding:13px"><div class="bignum" style="font-size:26px;color:var(--amber)">Q13</div><h4 style="margin-top:4px">Can a Skill modify files?</h4><p style="font-size:12px">It can <strong>provide instructions</strong> for modifying code. Actual edits need an environment with file access and editing tools — e.g. Claude Code with the necessary permissions.</p></div>
+        <div class="card" style="border-top:3px solid var(--coral);padding:13px"><div class="bignum" style="font-size:26px;color:var(--coral)">Q14</div><h4 style="margin-top:4px">Can it execute commands?</h4><p style="font-size:12px"><strong>Not merely because a command appears in SKILL.md.</strong> Execution depends on the environment, available tools, permissions and the model's decision to use them — e.g. <code class="inline">npm test</code>.</p></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:16px"><strong>Key idea:</strong> a Skill is guidance. Real-world effects require the right environment, tools and permissions.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">52 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 53 — FAQ Q15: SECURITY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQ · Q15</span><h2>Preventing confidential information exposure</h2><p class="subtitle">An important enterprise security concern.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <p class="mini-head reveal">RECOMMENDED PRACTICES</p>
+      <div class="grid g2 reveal" style="gap:8px">
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Never hardcode API keys or passwords in Skill files</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Use environment variables or approved secret managers</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Apply least-privilege access</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Restrict database permissions</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Review scripts before deployment</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Treat external documents and files as potentially untrusted</p></div>
+        <div class="card" style="padding:10px;grid-column:1/-1"><p style="font-size:12.5px">▸ Maintain Git access controls</p></div>
+      </div>
+      <div class="callout coral reveal" style="margin-top:14px"><strong>A Skill is not a security boundary.</strong> Its instructions cannot replace technical access controls.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">53 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 54 — FAQ Q16: TESTING A SKILL
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQ · Q16</span><h2>How do we know a Skill is working?</h2><p class="subtitle">You test it — for example, with 10 test requests for a React Code Review Skill.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <table class="tbl reveal">
+        <tr><th>Test</th><th>Expected result</th></tr>
+        <tr><td>Review a React component</td><td>Identifies code issues</td></tr>
+        <tr><td>Check React Hooks</td><td>Identifies incorrect Hook usage</td></tr>
+        <tr><td>Optimize component rendering</td><td>Suggests justified optimizations</td></tr>
+        <tr><td>Check exposed API keys</td><td>Identifies potential secrets</td></tr>
+        <tr><td>Review unrelated Python code</td><td>Does not incorrectly apply React-specific rules</td></tr>
+      </table>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>Also test triggering:</strong> verify the Skill activates when expected <em>and</em> avoids triggering for unrelated tasks.</div>
+      <div class="scribble reveal" style="margin-top:10px;font-size:22px">Test both: does it trigger? does it perform?</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">54 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 55 — FAQ Q17: OUTDATED SKILLS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> FAQ · Q17</span><h2>Can a Skill become outdated?</h2><p class="subtitle">Yes — and that is normal.</p></div>
+        <span class="num">08 · FAQ</span>
+      </div>
+      <div class="card reveal" style="background:var(--amber-l);padding:14px"><p style="font-size:13px"><strong>Example:</strong> a React Skill written for React 16 may contain outdated practices when the organization moves to newer React versions.</p></div>
+      <p class="mini-head reveal" style="margin-top:16px">REVIEW SKILLS WHENEVER</p>
+      <div class="grid g2 reveal" style="gap:8px">
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Framework versions change</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Company coding standards change</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Security requirements change</p></div>
+        <div class="card" style="padding:10px"><p style="font-size:12.5px">▸ Business processes change</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>That is exactly why lifecycle management and versioning exist</strong> — so Skills stay accurate as the organization evolves.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">55 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 56 — KNOWLEDGE QUIZ 1
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Knowledge quiz · 1 of 2</span><h2>Check your understanding — basics</h2><p class="subtitle">Click an answer to get instant feedback.</p></div>
+        <span class="num">09 · QUIZ</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="quiz-q"><div class="q">1. What is a Claude Skill?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — a Skill does not retrain or replace the model.">A. A new AI model trained for one task.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! A Skill is a reusable package of instructions and resources that guides an existing model.">B. A reusable package of instructions and resources for relevant tasks.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — a Skill is more than a single prompt.">C. A single prompt you type once.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q">2. Which analogy matches a Skill's description?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — the recipe is the instructions.">A. The recipe.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! The description is the signboard — it explains what the Skill offers.">B. The restaurant signboard.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — that is the trigger/relevance.">C. Your hunger.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q">3. What does a trigger determine?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — that is the description's job.">A. What the Skill is called.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Triggers describe when a Skill becomes relevant to a request.">B. When the Skill is relevant.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — that is the output format in the instructions.">C. How the output is formatted.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q">4. Which Skill is best for personal coding preferences across projects?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — that suits team/project standards.">A. Project-scoped.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! User-scoped Skills travel with an individual across accessible projects.">B. User-scoped.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — that is not a Skill scope.">C. Model-scoped.</div>
+        </div><div class="expl"></div></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">56 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 57 — KNOWLEDGE QUIZ 2
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Knowledge quiz · 2 of 2</span><h2>Check your understanding — runtime &amp; descriptions</h2><p class="subtitle">Click an answer to get instant feedback.</p></div>
+        <span class="num">09 · QUIZ</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="quiz-q"><div class="q">1. What is Progressive Disclosure?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — that relates to scope, not loading.">A. Hiding Skills from users.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Claude loads information in stages — metadata, then SKILL.md, then supporting files as needed.">B. Loading information in stages as it is required.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — that is a different concept.">C. Removing old Skills automatically.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q">2. Which field is loaded initially for Skill discovery?</div><div class="opts">
+          <div class="opt" data-correct="true" data-exp="Correct! Name and description (metadata) are available initially.">A. Name and description.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — SKILL.md is Level 2, loaded on selection.">B. The full SKILL.md body.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — scripts are supporting files (Level 3).">C. Supporting scripts.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q">3. Which description is strongest?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Too vague — no technology or task keywords.">A. "Helps with coding."</div>
+          <div class="opt" data-correct="true" data-exp="Correct! It names the task, technologies and outcome.">B. "Reviews React and TypeScript code for quality, security and performance."</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — this is too vague to trigger reliably.">C. "This Skill helps developers."</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q">4. What does MAJOR.MINOR.PATCH mean in SemVer?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — those are not the SemVer meanings.">A. Three unrelated version numbers.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Significant changes, backward-compatible features, and small fixes respectively.">B. Significant changes, new features, and small fixes.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — that is not the convention.">C. The number of files in the Skill.</div>
+        </div><div class="expl"></div></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">57 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 58 — SCENARIO QUESTIONS 1
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scenario questions · 1 of 2</span><h2>Real-world scenarios</h2><p class="subtitle">Read the situation, then choose the best response.</p></div>
+        <span class="num">10 · SCENARIOS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="quiz-q"><div class="q"><strong>Scenario 1:</strong> A company wants banking API rules to apply only in the banking project. What should they use?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — that would follow the developer across projects.">A. A user-scoped Skill.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! A project-scoped Skill keeps project-specific rules inside the relevant workspace.">B. A project-scoped Skill.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — a prompt is not reusable guidance.">C. A one-off prompt.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q"><strong>Scenario 2:</strong> Two Skills both trigger for "Why is my query slow?" What is the best fix?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — use clearer boundaries, not wholesale deletion.">A. Delete both Skills.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Define clear responsibilities, technologies and task boundaries, then test with real prompts.">B. Define clear responsibilities and boundaries, then test with real prompts.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — overlap should be reduced.">C. Make both descriptions identical.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q"><strong>Scenario 3:</strong> A Skill includes <code class="inline">validate.py</code> but nothing runs. Why?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — including a script does not execute it.">A. Skills can never include scripts.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Execution needs an execution-capable environment, tool access and permissions.">B. Execution needs an environment with the right tools and permissions.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — the script is still valid.">C. The script must be renamed.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q"><strong>Scenario 4:</strong> A Skill explains SQL but cannot read live data. What is missing?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — no retraining is involved.">A. More training of the model.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Actual connectivity comes from a tool such as an MCP server, connector or API.">B. A connectivity tool such as an MCP server or database connector.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — the Skill already has instructions.">C. A longer description.</div>
+        </div><div class="expl"></div></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">58 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 59 — SCENARIO QUESTIONS 2
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scenario questions · 2 of 2</span><h2>Scenarios — security, lifecycle &amp; testing</h2><p class="subtitle">Choose the answer that treats Skills as maintainable assets.</p></div>
+        <span class="num">10 · SCENARIOS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="quiz-q"><div class="q"><strong>Scenario 5:</strong> A developer hardcodes an API key inside a Skill file. What should they do?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — that would expose the secret.">A. Keep it — Skills are private by design.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Use environment variables or approved secret managers — a Skill is not a security boundary.">B. Replace it with environment variables or an approved secret manager.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — the secret must be removed.">C. Shorten the key.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q"><strong>Scenario 6:</strong> The team moves to a newer React version. What is the right response?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — the Skill needs review and updating.">A. Leave the Skill unchanged forever.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Review and update the Skill as part of its lifecycle — possibly as a new version.">B. Review and update the Skill as part of its lifecycle.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — deleting loses valuable guidance.">C. Delete every outdated Skill immediately.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q"><strong>Scenario 7:</strong> How should a team manage changes to shared Skills professionally?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — that is not a maintainable process.">A. Edit files locally with no review.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Use a Git repository, branches, commits and pull requests before merging.">B. Use a Git repo with branches, commits and pull requests.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — versioning is a convention teams can adopt.">C. Avoid all version numbers.</div>
+        </div><div class="expl"></div></div>
+        <div class="quiz-q"><div class="q"><strong>Scenario 8:</strong> How do you verify a Skill triggers correctly?</div><div class="opts">
+          <div class="opt" data-correct="false" data-exp="Incorrect — you should test with real requests.">A. Assume a good description always works.</div>
+          <div class="opt" data-correct="true" data-exp="Correct! Create test requests covering expected triggers and non-trigger cases.">B. Test with real requests, including trigger and non-trigger cases.</div>
+          <div class="opt" data-correct="false" data-exp="Incorrect — triggering must be verified.">C. Check only that the folder exists.</div>
+        </div><div class="expl"></div></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">59 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 60 — APPLY IT
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Apply it</span><h2>Your turn: write a Skill description</h2><p class="subtitle">Draft your answer first, then open the sample to compare.</p></div>
+        <span class="num">11 · APPLY</span>
+      </div>
+      <div class="card reveal" style="border-top:3px solid var(--teal);padding:14px">
+        <h3>Brief</h3>
+        <p style="font-size:12.5px">Create the <code class="inline">description</code> field for a Skill that reviews Python unit tests for coverage and test quality. The team uses <strong>pytest</strong> and wants clear severity ratings.</p>
+        <p style="font-size:12px;color:var(--ink-soft)"><strong>Your checklist:</strong> purpose · situations · task keywords · technologies · no vague wording.</p>
+        <details class="note teal"><summary>Show sample description</summary><div class="body">description: &gt;<br>Reviews Python unit tests for coverage gaps, assertion quality and maintainability using pytest. Use when users ask to review tests, improve test cases, assess coverage, or rate test issues by severity in Python projects.</div></details>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:14px;gap:10px">
+        <div class="card" style="border-top:3px solid var(--amber);padding:12px"><h4>Then plan the folder</h4><p style="font-size:12.5px">Which supporting folders would you add, and why? <em>references/ for pytest standards, assets/ for a report template.</em></p></div>
+        <div class="card" style="border-top:3px solid var(--coral);padding:12px"><h4>Then plan the tests</h4><p style="font-size:12.5px">Write 3 trigger cases and 2 non-trigger cases to verify selection.</p></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:14px"><strong>Self-check:</strong> would Claude know <strong>when</strong> to use this Skill, <strong>what</strong> it does, and <strong>which</strong> technologies it targets?</div>
+      <div class="scribble reveal" style="margin-top:10px;font-size:22px">Clear description → correct selection → consistent result.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">60 / 61</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 61 — FINAL CLOSING
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">✓</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Module complete</span></div>
+      <div class="reveal"><h2>You're ready to design<br>Claude Skills as<br>real organizational assets.</h2></div>
+      <div class="reveal"><p class="subtitle">From anatomy and scope to runtime selection, descriptions, versioning and FAQs.</p></div>
+      <div class="reveal" style="margin-top:8px">
+        <div class="flow" style="justify-content:flex-start;gap:8px">
+          <div class="fnode"><span class="n">DEFINE</span><span class="s">description &amp; instructions</span></div><span class="farr">→</span>
+          <div class="fnode alt"><span class="n">SCOPE</span><span class="s">project or user</span></div><span class="farr">→</span>
+          <div class="fnode alt2"><span class="n">TEST</span><span class="s">trigger &amp; output</span></div><span class="farr">→</span>
+          <div class="fnode"><span class="n">MAINTAIN</span><span class="s">version &amp; lifecycle</span></div>
+        </div>
+      </div>
+      <div class="reveal"><p class="scribble" style="font-size:26px;margin-top:18px">Write once → select correctly → apply consistently.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 03 · INTRODUCTION TO CLAUDE SKILLS</span><span class="page-num">61 / 61</span></div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- NAVIGATION DOCK -->
+<div class="dock">
+  <button class="nav-btn" id="prev" title="Previous (←)">‹</button>
+  <div class="dots" id="dots"></div>
+  <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+  <span class="dock-count" id="count">01 / 61</span>
+  <button class="nav-btn" id="next" title="Next (→)">›</button>
+  <span class="hint-key"><span class="kbd">←</span> <span class="kbd">→</span> navigate</span>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  const countEl = document.getElementById('count');
+  const fill = document.getElementById('progress');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const dotsWrap = document.getElementById('dots');
+
+  slides.forEach((_,k)=>{
+    const b=document.createElement('button');
+    b.className='dot-btn';b.title='Slide '+(k+1);
+    b.addEventListener('click',()=>go(k));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function go(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,k)=>s.classList.toggle('active', k===i));
+    dots.forEach((d,k)=>d.classList.toggle('active', k===i));
+    countEl.textContent = String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    fill.style.width = ((i+1)/slides.length*100)+'%';
+    prev.disabled = i===0; next.disabled = i===slides.length-1;
+    const inner = slides[i].querySelector('.sheet-inner');
+    if(inner) inner.scrollTop = 0;
+  }
+  prev.addEventListener('click',()=>go(i-1));
+  next.addEventListener('click',()=>go(i+1));
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){go(0);}
+    else if(e.key==='End'){go(slides.length-1);}
+  });
+
+  document.querySelectorAll('[data-goto]').forEach(el=>{
+    el.addEventListener('click',()=>go(parseInt(el.dataset.goto,10)));
+  });
+
+  document.querySelectorAll('.quiz-q .opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      const q=opt.closest('.quiz-q');
+      q.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong'));
+      if(opt.dataset.correct==='true') opt.classList.add('correct');
+      else opt.classList.add('wrong');
+      const exp=q.querySelector('.expl');
+      exp.textContent=opt.dataset.exp||'';
+      exp.classList.add('show');
+    });
+  });
+
+  window.copyCode=function(btn){
+    const pre=btn.closest('.code-wrap').querySelector('pre');
+    if(!pre)return;
+    navigator.clipboard.writeText(pre.innerText).then(()=>{
+      const old=btn.textContent;btn.textContent='Copied!';
+      setTimeout(()=>btn.textContent=old,1400);
+    }).catch(()=>{btn.textContent='Select text';});
+  };
+
+  go(0);
+})();
+</script>
+</body>
+</html>
+

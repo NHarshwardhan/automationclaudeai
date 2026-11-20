@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Module 4: Model Context Protocol (MCP) Essentials | Claude Code Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root{
+  --ink:#2c353b;
+  --ink-soft:#566169;
+  --paper:#fafbfc;
+  --paper-2:#eef2f5;
+  --surface:#ffffff;
+  --stage:#222b32;
+  --stage-2:#2f3b44;
+  --teal:#0694d1;
+  --teal-d:#0574a4;
+  --teal-l:#e6f4fb;
+  --coral:#e08a3c;
+  --coral-l:#fdf0e2;
+  --amber:#e0a32e;
+  --amber-l:#fcf3dc;
+  --green:#2f8b62;
+  --green-l:#e0f1e8;
+  --red:#c0473f;
+  --red-l:#f8e3e1;
+  --blue:#3c6bb0;
+  --blue-l:#e6eefb;
+  --line:#dfe5e9;
+  --muted:#7b8791;
+  --shadow:0 24px 60px rgba(0,0,0,.45),0 4px 14px rgba(0,0,0,.18);
+  --radius:18px;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-head:'Space Grotesk',var(--font-body);
+  --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --font-hand:'Caveat',cursive;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font-body);
+  background:var(--stage);
+  background-image:radial-gradient(1200px 600px at 50% -10%,#243241 0%,transparent 60%);
+  color:var(--ink);
+  overflow:hidden;
+  height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+
+#deck{position:relative;height:100vh;width:100vw;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:26px 30px 74px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:slideIn .45s cubic-bezier(.2,.8,.25,1)}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+.sheet{
+  position:relative;width:min(1180px,100%);height:100%;
+  background:var(--paper);
+  background-image:linear-gradient(rgba(255,255,255,.55) 1px,transparent 1px),radial-gradient(circle at 12% 8%,rgba(6,148,209,.035),transparent 40%);
+  background-size:100% 28px,100% 100%;
+  border-radius:22px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.6);
+}
+.sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) 78%,var(--amber) 78%,var(--coral) 100%)}
+.sheet-inner{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:34px 46px 26px;scrollbar-width:thin;scrollbar-color:#cbd5dc transparent}
+.sheet-inner::-webkit-scrollbar{width:8px}
+.sheet-inner::-webkit-scrollbar-thumb{background:#cbd5dc;border-radius:8px}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);background:var(--teal-l);padding:6px 12px;border-radius:100px;margin-bottom:14px}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.15;margin:0}
+h1{font-size:clamp(34px,5vw,60px);letter-spacing:-.02em}
+h2{font-size:clamp(26px,3.2vw,38px);letter-spacing:-.015em}
+h3{font-size:19px}
+h4{font-size:15px}
+.subtitle{font-size:15px;color:var(--ink-soft);margin:10px 0 0;max-width:820px;line-height:1.55}
+.lead{font-size:16px;line-height:1.7;color:var(--ink-soft)}
+p{line-height:1.6}
+strong{color:var(--ink);font-weight:700}
+.hl{background:linear-gradient(transparent 62%,rgba(217,149,47,.32) 62%);font-weight:700}
+.hl-teal{background:linear-gradient(transparent 62%,rgba(6,148,209,.18) 62%);font-weight:700}
+code.inline{font-family:var(--font-mono);font-size:.88em;background:var(--paper-2);border:1px solid var(--line);padding:1px 6px;border-radius:6px;color:var(--teal-d)}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px;flex-wrap:wrap}
+.head-row .num{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 12px;background:var(--surface)}
+
+.sheet-foot{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-top:1px solid var(--line);background:rgba(250,247,241,.9);backdrop-filter:blur(4px);font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+.sheet-foot .brand{display:flex;align-items:center;gap:9px}
+.brand-logo{height:19px;width:auto;display:block;background:#fff;border-radius:4px;padding:2px 5px;box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.hero-logo{display:inline-block;background:#fff;border-radius:14px;padding:14px 22px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.hero-logo img{display:block;width:205px;height:auto}
+.divider-logo{position:absolute;left:46px;top:30px;background:#fff;border-radius:10px;padding:8px 14px;box-shadow:0 8px 22px rgba(0,0,0,.3);z-index:3}
+.divider-logo img{display:block;width:150px;height:auto}
+.page-num{font-variant-numeric:tabular-nums}
+
+.dock{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:50;background:rgba(20,27,36,.86);border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:100px;backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:17px;display:grid;place-items:center;transition:.2s}
+.nav-btn:hover{background:var(--teal);border-color:var(--teal);transform:translateY(-1px)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.progress-track{width:min(36vw,300px);height:5px;background:rgba(255,255,255,.15);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#8ad4f0);border-radius:100px;transition:width .35s ease}
+.dock-count{color:#cfd8e0;font-size:12px;font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:600}
+.hint-key{color:#7d8b98;font-size:11px;padding:0 4px;white-space:nowrap}
+.dots{display:flex;gap:5px;align-items:center;max-width:min(30vw,260px);overflow:hidden}
+.dot-btn{width:7px;height:7px;border-radius:50%;border:none;background:rgba(255,255,255,.25);padding:0;transition:.2s;flex:0 0 auto}
+.dot-btn:hover{background:#fff;transform:scale(1.3)}
+.dot-btn.active{background:var(--amber);width:20px;border-radius:100px}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.25,1)}
+.slide.active .reveal{opacity:1;transform:none}
+.slide.active .reveal:nth-child(1){transition-delay:.05s}
+.slide.active .reveal:nth-child(2){transition-delay:.12s}
+.slide.active .reveal:nth-child(3){transition-delay:.19s}
+.slide.active .reveal:nth-child(4){transition-delay:.26s}
+.slide.active .reveal:nth-child(5){transition-delay:.33s}
+.slide.active .reveal:nth-child(6){transition-delay:.40s}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;box-shadow:0 2px 0 rgba(24,36,48,.03);transition:transform .2s,box-shadow .2s,border-color .2s}
+.card.hoverable{cursor:pointer}
+.card.hoverable:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(24,36,48,.1);border-color:#c9d8d5}
+.card .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;margin-bottom:12px;background:var(--teal-l);color:var(--teal-d)}
+.card h3{margin-bottom:6px}
+.card p{font-size:13.5px;color:var(--ink-soft);margin:0;line-height:1.55}
+
+.word{position:relative;cursor:pointer;user-select:none;text-align:center;background:var(--surface);border:2px dashed var(--line);border-radius:16px;padding:20px 16px;transition:.25s}
+.word:hover{border-color:var(--teal);transform:translateY(-3px)}
+.word .big{font-family:var(--font-head);font-size:30px;font-weight:700;color:var(--teal-d);letter-spacing:-.02em}
+.word .def{display:none;margin-top:10px;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.word.revealed{border-style:solid;background:var(--teal-l)}
+.word.revealed .def{display:block;animation:fade .3s}
+.word .tap{display:block;font-size:11px;color:var(--muted);margin-top:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.vs{display:grid;grid-template-columns:1fr 40px 1fr;gap:10px;align-items:stretch}
+@media(max-width:780px){.vs{grid-template-columns:1fr}}
+.vs .arrow-mid{display:grid;place-items:center;font-size:22px;color:var(--muted)}
+.panel{border-radius:14px;padding:16px 18px;border:1px solid;transition:.25s}
+.panel.bad{background:var(--red-l);border-color:#f0c4c0}
+.panel.good{background:var(--green-l);border-color:#bfe0cf}
+.panel:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(24,36,48,.08)}
+.panel .tag{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;display:inline-flex;gap:6px;align-items:center;margin-bottom:9px}
+.panel.bad .tag{color:var(--red)}
+.panel.good .tag{color:var(--green)}
+.panel .tag .x,.panel .tag .v{font-size:13px}
+.panel .txt{font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:var(--ink)}
+.panel.bad .txt{opacity:.72;text-decoration:line-through;text-decoration-color:rgba(192,71,63,.4)}
+.panel .note{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5}
+
+.flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:6px 0}
+.fnode{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:11px;padding:10px 13px;text-align:center;min-width:96px;box-shadow:0 3px 8px rgba(24,36,48,.05)}
+.fnode .n{display:block;font-family:var(--font-head);font-size:13px;font-weight:700}
+.fnode .s{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.farr{color:var(--coral);font-weight:800;font-size:18px}
+.fnode.alt{border-top-color:var(--amber)}
+.fnode.alt2{border-top-color:var(--blue)}
+
+.code-wrap{position:relative;margin:12px 0 0}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--stage-2);color:#a9b6c2;padding:7px 12px;border-radius:10px 10px 0 0;font-size:11px;font-family:var(--font-mono)}
+.code-head .file{color:#79cdf5}
+.copy-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#cfd8e0;border-radius:6px;padding:3px 9px;font-size:10.5px;transition:.2s}
+.copy-btn:hover{background:var(--teal);color:#fff}
+pre{margin:0;background:#0f1620;color:#dbe4ec;border-radius:0 0 10px 10px;padding:14px 16px;overflow-x:auto;font-family:var(--font-mono);font-size:12px;line-height:1.65;scrollbar-width:thin}
+pre .k{color:#c792ea}pre .s{color:#c3e88d}pre .c{color:#5f7183;font-style:italic}pre .f{color:#82aaff}pre .n{color:#f78c6c}pre .hl2{background:rgba(6,148,209,.22);display:inline-block;width:100%}
+
+details.note{margin-top:12px;border:1px solid var(--line);border-radius:11px;background:var(--amber-l);overflow:hidden}
+details.note summary{cursor:pointer;padding:10px 14px;font-size:12.5px;font-weight:700;color:#8a5e12;list-style:none;display:flex;align-items:center;gap:9px}
+details.note summary::-webkit-details-marker{display:none}
+details.note summary::before{content:"▸";transition:.2s;display:inline-block;font-size:12px}
+details.note[open] summary::before{transform:rotate(90deg)}
+details.note .body{padding:0 14px 13px;font-size:12.5px;color:#6d521f;line-height:1.6;border-top:1px dashed #e6cd96;padding-top:10px;margin:0 14px;padding-left:0;padding-right:0}
+details.note.teal{background:var(--teal-l)}
+details.note.teal summary{color:var(--teal-d)}
+details.note.teal .body{color:#1c5f80;border-top-color:#bcdfe9}
+
+.scribble{font-family:var(--font-hand);color:var(--coral);font-size:21px;line-height:1.2;transform:rotate(-2deg);display:inline-block}
+.sticky{background:#fff6cf;border:1px solid #ecdc9a;border-radius:4px;box-shadow:2px 4px 10px rgba(120,90,20,.14);padding:12px 14px;font-family:var(--font-hand);font-size:19px;color:#6b5410;transform:rotate(-1.5deg);position:relative}
+.sticky::before{content:"";position:absolute;top:-8px;left:42%;width:52px;height:16px;background:rgba(230,210,140,.6);transform:rotate(2deg)}
+
+.term{border-bottom:2px dotted var(--teal);cursor:help;position:relative;color:var(--teal-d);font-weight:600}
+.term .tip{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%) translateY(6px);background:var(--ink);color:#fff;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:400;width:230px;text-align:left;line-height:1.5;opacity:0;pointer-events:none;transition:.2s;z-index:20;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.term:hover .tip,.term:focus .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.term .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--paper-2);border:1px solid var(--line);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink-soft)}
+.chip.teal{background:var(--teal-l);border-color:#bcdfe9;color:var(--teal-d)}
+.chip.coral{background:var(--coral-l);border-color:#f0c9bd;color:#9b4327}
+.chip.amber{background:var(--amber-l);border-color:#ecd39a;color:#8a5e12}
+.chip.red{background:var(--red-l);border-color:#f0c4c0;color:var(--red)}
+.bignum{font-family:var(--font-head);font-size:46px;font-weight:700;color:var(--teal);line-height:1}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+table.tbl th{background:var(--ink);color:#fff;text-align:left;padding:9px 12px;font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+table.tbl td{border-bottom:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.45}
+table.tbl tr:nth-child(even) td{background:rgba(242,237,227,.5)}
+table.tbl td:first-child{font-weight:600;color:var(--ink)}
+table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)}
+
+.tree{font-family:var(--font-mono);font-size:12.5px;line-height:1.9;background:var(--stage-2);color:#c9d4de;border-radius:10px;padding:14px 18px;overflow-x:auto}
+.tree .folder{color:#82aaff}.tree .file{color:#c3e88d}.tree .mark{color:#f78c6c;font-weight:700}
+.tree .indent{padding-left:20px}
+
+.anatomy{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start}
+@media(max-width:820px){.anatomy{grid-template-columns:1fr}}
+.prompt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(24,36,48,.06);position:relative}
+.seg{display:block;border-radius:8px;padding:8px 11px;margin:5px 0;font-family:var(--font-mono);font-size:11.5px;line-height:1.5;transition:.25s;cursor:default;border-left:4px solid}
+.seg:hover,.seg.lit{transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,.09)}
+.seg.action{background:var(--teal-l);border-color:var(--teal)}
+.seg.what{background:var(--blue-l);border-color:var(--blue)}
+.seg.where{background:var(--amber-l);border-color:var(--amber)}
+.seg.constraints{background:var(--coral-l);border-color:var(--coral)}
+.legend{display:flex;flex-direction:column;gap:8px}
+.leg{display:flex;gap:11px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer;transition:.2s}
+.leg:hover,.leg.lit{transform:translateX(4px);border-color:var(--teal);box-shadow:0 6px 16px rgba(24,36,48,.08)}
+.leg .b{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-family:var(--font-head);font-weight:700;color:#fff;font-size:14px;flex:0 0 auto}
+.leg.a .b{background:var(--teal)}.leg.w .b{background:var(--blue)}.leg.h .b{background:var(--amber)}.leg.c .b{background:var(--coral)}
+.leg .t{font-size:12.5px;line-height:1.4}
+.leg .t b{display:block;font-size:13px}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:700;transition:.2s}
+.tab:hover{border-color:var(--teal)}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tab-body{display:none;animation:fade .3s}
+.tab-body.active{display:block}
+
+.quiz-q{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-bottom:12px}
+.quiz-q .q{font-size:13.5px;font-weight:700;margin-bottom:10px}
+.opts{display:grid;gap:7px}
+.opt{border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:12.5px;cursor:pointer;transition:.18s;background:var(--paper)}
+.opt:hover{border-color:var(--teal);background:var(--teal-l)}
+.opt.correct{background:var(--green-l);border-color:var(--green);color:var(--green);font-weight:700}
+.opt.wrong{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.expl{display:none;margin-top:9px;font-size:12px;color:var(--ink-soft);border-left:3px solid var(--amber);padding-left:10px;line-height:1.5}
+.expl.show{display:block;animation:fade .3s}
+
+.slide.divider .sheet{background:var(--ink);border-color:#2a3947}
+.slide.divider .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0)}
+.slide.divider .sheet-inner{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;background-image:radial-gradient(600px 400px at 85% 40%,rgba(6,148,209,.28),transparent 70%)}
+.slide.divider h2{color:#fff;font-size:clamp(38px,6vw,72px);letter-spacing:-.03em;max-width:820px}
+.slide.divider .kicker{background:rgba(255,255,255,.1);color:#8fd4f5}
+.slide.divider .subtitle{color:#9fb0bd;font-size:17px}
+.slide.divider .big-index{position:absolute;right:46px;top:60px;font-family:var(--font-head);font-size:180px;font-weight:700;color:rgba(255,255,255,.05);line-height:1;pointer-events:none}
+.slide.divider .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+
+.slide.title .sheet{background:var(--ink)}
+.slide.title .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0,var(--amber))}
+.slide.title .sheet-inner{display:flex;flex-direction:column;justify-content:center;background-image:radial-gradient(700px 500px at 80% 30%,rgba(6,148,209,.3),transparent 70%),radial-gradient(500px 400px at 10% 90%,rgba(224,138,60,.18),transparent 70%)}
+.slide.title .badge{display:inline-flex;gap:10px;align-items:center;color:#8fd4f5;font-weight:700;letter-spacing:.18em;font-size:12px;text-transform:uppercase;margin-bottom:18px}
+.slide.title .badge .ln{width:34px;height:2px;background:var(--amber)}
+.slide.title h1{color:#fff;max-width:900px}
+.slide.title h1 .em{color:#69c6f2}
+.slide.title .sub{color:#b7c4cf;font-size:18px;margin-top:18px;max-width:680px;line-height:1.6}
+.slide.title .meta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.slide.title .meta .m{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:8px 15px;color:#d6e0e7;font-size:12.5px;font-weight:600}
+.slide.title .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+.slide.title .orbit{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:250px;height:250px;opacity:.5}
+@media(max-width:900px){.slide.title .orbit{display:none}}
+
+.bullets{list-style:none;padding:0;margin:10px 0;display:grid;gap:9px}
+.bullets li{position:relative;padding-left:26px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.bullets li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;background:var(--teal);transform:rotate(45deg)}
+.bullets.coral li::before{background:var(--coral)}
+.bullets.amber li::before{background:var(--amber)}
+.callout{border-left:4px solid var(--teal);background:var(--teal-l);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13px;color:#185d7d;line-height:1.55}
+.callout.coral{border-color:var(--coral);background:var(--coral-l);color:#8c4129}
+.callout.amber{border-color:var(--amber);background:var(--amber-l);color:#7a5616}
+.mini-head{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.spacer{height:14px}
+.center{text-align:center}
+.kbd{font-family:var(--font-mono);font-size:10px;border:1px solid rgba(255,255,255,.25);border-bottom-width:2px;border-radius:4px;padding:1px 5px;color:#cfd8e0}
+@media print{
+  body{overflow:visible;background:#fff;height:auto}
+  #deck{height:auto}
+  .slide{display:flex!important;position:relative;page-break-after:always;height:100vh;padding:0}
+  .dock{display:none}
+  .sheet{box-shadow:none;border-radius:0}
+}
+/* ============================================================
+   IMAGE ILLUSTRATIONS (external reference screenshots)
+   ============================================================ */
+.illus{display:block;max-width:100%;max-height:290px;margin:8px auto;border:1px solid var(--line);border-radius:12px;background:#fff;object-fit:contain;cursor:zoom-in;transition:transform .2s,box-shadow .2s}
+.illus:hover{transform:scale(1.015);box-shadow:0 12px 26px rgba(24,36,48,.16)}
+.illus-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.illus-row .illus{flex:1 1 220px;max-height:190px}
+.illus-cap{font-size:10.5px;color:var(--muted);text-align:center;margin-top:4px;line-height:1.4}
+.illus-frame{background:var(--paper-2);border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
+.illus-frame .illus{margin:0 auto}
+</style>
+</head>
+<body>
+<div id="deck">
+<!-- =========================================================
+     SLIDE 1 — TITLE
+     ========================================================= -->
+<section class="slide title active">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <svg class="orbit" viewBox="0 0 250 250" fill="none" stroke="#69c6f2" stroke-width="1.2">
+        <circle cx="125" cy="125" r="100" opacity=".3"/><circle cx="125" cy="125" r="66" opacity=".45"/>
+        <circle cx="125" cy="125" r="30" opacity=".6"/>
+        <circle cx="125" cy="25" r="7" fill="#69c6f2" stroke="none"/>
+        <circle cx="191" cy="75" r="5" fill="#69c6f2" stroke="none"/>
+        <circle cx="59" cy="185" r="5" fill="#e08a3c" stroke="none"/>
+        <path d="M125 25 A100 100 0 0 1 191 75" stroke="#69c6f2" stroke-width="2"/>
+        <path d="M191 75 A100 100 0 0 1 59 185" stroke="#69c6f2" stroke-width="2"/>
+      </svg>
+      <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
+      <div class="reveal"><div class="badge"><span class="ln"></span> Claude Code Training · Module 04</div></div>
+      <div class="reveal"><h1>Model Context Protocol<br><span class="em">(MCP) Essentials</span></h1></div>
+      <div class="reveal"><p class="sub">A standard way for AI applications to communicate with external tools and data sources — from architecture and OAuth to tool selection, call traces and graceful degradation.</p></div>
+      <div class="reveal">
+        <div class="meta">
+          <span class="m">◈ Why MCP</span><span class="m">◈ What is MCP?</span>
+          <span class="m">◈ Host · Client · Server</span><span class="m">◈ Tools · Resources · Prompts</span>
+          <span class="m">◈ Connectors</span><span class="m">◈ OAuth</span>
+          <span class="m">◈ Tool Selection</span><span class="m">◈ Inspection &amp; Multi-Tool</span>
+          <span class="m">◈ Graceful Degradation</span>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot">
+      <span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> KOENIG SOLUTIONS · CLAUDE CODE TRAINING</span>
+      <span>Use ← → keys or the controls below to navigate</span>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 2 — AGENDA
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Roadmap</span><h2>What we'll cover</h2><p class="subtitle">Ten connected ideas. Click any card to jump to that section.</p></div>
+        <span class="num">AGENDA</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card hoverable" data-goto="3"><div class="ico" style="background:var(--teal-l);color:var(--teal)">01</div><h3>Why do we need MCP?</h3><p>Real situation, manual work, and the standard connection.</p></div>
+        <div class="card hoverable" data-goto="14"><div class="ico" style="background:var(--blue-l);color:var(--blue)">02</div><h3>What is MCP?</h3><p>Open standard, common language, and why it was introduced.</p></div>
+        <div class="card hoverable" data-goto="19"><div class="ico" style="background:var(--amber-l);color:var(--amber)">03</div><h3>MCP Architecture</h3><p>Host, Client and Server — with the office analogy.</p></div>
+        <div class="card hoverable" data-goto="30"><div class="ico" style="background:var(--coral-l);color:var(--coral)">04</div><h3>Server Capabilities</h3><p>Tools, Resources and Prompts — do, read, follow.</p></div>
+        <div class="card hoverable" data-goto="38"><div class="ico" style="background:var(--green-l);color:var(--green)">05</div><h3>Connecting to Claude</h3><p>Connectors, setup steps and behind-the-scenes flow.</p></div>
+        <div class="card hoverable" data-goto="44"><div class="ico" style="background:var(--teal-l);color:var(--teal)">06</div><h3>OAuth &amp; Scoping</h3><p>Authorization without sharing passwords, and least privilege.</p></div>
+        <div class="card hoverable" data-goto="51"><div class="ico" style="background:var(--blue-l);color:var(--blue)">07</div><h3>Tool Selection</h3><p>How Claude chooses the right tool from normal language.</p></div>
+        <div class="card hoverable" data-goto="60"><div class="ico" style="background:var(--amber-l);color:var(--amber)">08</div><h3>Inspecting Tool Calls</h3><p>Tool name, input parameters, output and debugging.</p></div>
+        <div class="card hoverable" data-goto="66"><div class="ico" style="background:var(--coral-l);color:var(--coral)">09</div><h3>Multi-Tool Chains</h3><p>GitHub + Jira, call traces and combined answers.</p></div>
+        <div class="card hoverable" data-goto="76"><div class="ico" style="background:var(--green-l);color:var(--green)">10</div><h3>Graceful Degradation</h3><p>Handle failures while keeping useful functionality.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:14px"><span class="scribble">Big idea:</span> MCP is the <strong>communication standard</strong> that lets an AI app use external capabilities.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">02 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 3 — DIVIDER: WHY DO WE NEED MCP?
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">01</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part One</span></div>
+      <div class="reveal"><h2>Why do we need MCP?</h2></div>
+      <div class="reveal"><p class="subtitle">Start with a real developer situation — and see exactly where the connection problem appears.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">03 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 4 — START WITH A REAL SITUATION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.1 · Real situation</span><h2>Start with a real situation</h2><p class="subtitle">Imagine you are a developer working in a software company.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="grid g2 reveal" style="align-items:stretch">
+        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">👩‍💻</div><h3>Your role</h3><p>You are developing a <strong>Task Management application</strong> — with code, bugs, tasks, data and documents spread across different tools.</p></div>
+        <div class="card" style="border-top:4px solid var(--amber)"><div class="ico">🧩</div><h3>The reality</h3><p>No single application contains everything. The information Claude needs lives in several systems you already use every day.</p></div>
+      </div>
+      <div class="flow reveal" style="margin-top:18px">
+        <div class="fnode"><span class="n">DEVELOP</span><span class="s">Task Management app</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">SWITCH</span><span class="s">between many tools</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">ASK</span><span class="s">Claude for help</span></div>
+      </div>
+      <div class="callout coral reveal" style="margin-top:14px"><strong>The question is not</strong> “Can Claude understand my request?” It is <strong>“Can Claude reach the systems that hold the answer?”</strong></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">04 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 5 — COMPANY APPLICATIONS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.1 · Real situation</span><h2>Your company uses different applications</h2><p class="subtitle">Each one owns a different piece of the project.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="grid g4 reveal">
+        <div class="card" style="border-top:3px solid var(--teal)"><div class="ico">⌘</div><h3>GitHub</h3><p>Stores source code and manages bugs.</p></div>
+        <div class="card" style="border-top:3px solid var(--blue)"><div class="ico">▣</div><h3>Jira</h3><p>Manages development tasks and tickets.</p></div>
+        <div class="card" style="border-top:3px solid var(--coral)"><div class="ico">▤</div><h3>PostgreSQL</h3><p>Stores application data.</p></div>
+        <div class="card" style="border-top:3px solid var(--green)"><div class="ico">◫</div><h3>Google Drive</h3><p>Stores project documents.</p></div>
+      </div>
+      <p class="mini-head reveal" style="margin-top:20px">NOW ADD CLAUDE AS YOUR AI ASSISTANT</p>
+      <div class="callout reveal"><span class="scribble">Notice:</span> Claude may be excellent at reasoning, but the facts are still inside <strong>those four separate systems</strong>.</div>
+      <div class="chips reveal" style="margin-top:12px"><span class="chip teal">Code</span><span class="chip teal">Bugs</span><span class="chip teal">Tickets</span><span class="chip teal">Data</span><span class="chip teal">Documents</span></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">05 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 6 — YOU ASK CLAUDE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.1 · Real situation</span><h2>Now imagine you ask Claude</h2><p class="subtitle">One ordinary English sentence — with a very real-world job behind it.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--teal);font-size:17px;line-height:1.6">
+        “Find all open bugs in my GitHub repository, check whether they are already recorded in Jira, and prepare a summary.”
+      </div>
+      <div class="grid g3 reveal" style="margin-top:18px">
+        <div class="card"><h3>① GitHub</h3><p>Find the open bugs.</p></div>
+        <div class="card"><h3>② Jira</h3><p>Check for matching tickets.</p></div>
+        <div class="card"><h3>③ Summary</h3><p>Compare and report.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:16px;font-size:23px">A simple request… but three separate systems to touch.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">06 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 7 — UNDERSTANDS BUT CANNOT ACCESS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.1 · The gap</span><h2>Claude understands — but there is a problem</h2><p class="subtitle">Language understanding and application access are two different capabilities.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel good"><span class="tag"><span class="v">✓</span> Claude can</span><div class="txt">Understand the English request<br>Reason about the steps<br>Explain what needs to be done</div></div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel bad"><span class="tag"><span class="x">✕</span> Claude cannot automatically</span><div class="txt">Log in to your GitHub account<br>Open your Jira workspace<br>Read your private documents</div></div>
+      </div>
+      <div class="callout coral reveal" style="margin-top:16px"><strong>Key question:</strong> How will Claude access your <strong>actual</strong> GitHub and Jira accounts?</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">07 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 8 — THE MISSING CONNECTION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.1 · The gap</span><h2>The missing piece is a connection</h2><p class="subtitle">Claude cannot automatically access every external application just because you ask a question.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="flow reveal" style="margin-top:12px">
+        <div class="fnode"><span class="n">YOU</span><span class="s">ask in plain English</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">CLAUDE</span><span class="s">understands &amp; reasons</span></div><span class="farr">→</span>
+        <div class="fnode" style="border-top-color:var(--red)"><span class="n">❓</span><span class="s">connection missing</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">GITHUB / JIRA</span><span class="s">real data lives here</span></div>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:20px">
+        <div class="card"><h3>Without a connection</h3><p>The answer depends on information you manually copy into the conversation.</p></div>
+        <div class="card" style="border-color:var(--teal);background:var(--teal-l)"><h3>With a standard connection</h3><p>Claude can reach the systems directly — with permission — through a defined protocol.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:14px"><strong>This is the problem MCP helps solve.</strong></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">08 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 9 — WITHOUT MCP: MANUAL WORKFLOW 1-4
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.2 · Without MCP</span><h2>What happens without MCP? (1 of 2)</h2><p class="subtitle">Without a suitable integration, the first half is all manual navigation.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">1</div><h3>Open GitHub manually</h3><p>Go to the repository in your browser.</p></div>
+        <div class="card"><div class="ico">2</div><h3>Find the open bugs</h3><p>Filter the issue list by status and labels.</p></div>
+        <div class="card"><div class="ico">3</div><h3>Copy the bug details</h3><p>Titles, numbers and descriptions — by hand.</p></div>
+        <div class="card"><div class="ico">4</div><h3>Open Jira</h3><p>Switch to a different application and workspace.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:14px;font-size:22px">Four steps gone… and we have not even compared anything yet.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">09 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 10 — WITHOUT MCP: MANUAL WORKFLOW 5-8
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.2 · Without MCP</span><h2>What happens without MCP? (2 of 2)</h2><p class="subtitle">The second half is search, compare and paste.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">5</div><h3>Search for matching tickets</h3><p>Look for each bug in Jira.</p></div>
+        <div class="card"><div class="ico">6</div><h3>Compare the results</h3><p>Decide which bugs already have tickets.</p></div>
+        <div class="card"><div class="ico">7</div><h3>Copy everything into Claude</h3><p>Paste the collected information as context.</p></div>
+        <div class="card"><div class="ico">8</div><h3>Ask Claude to prepare a summary</h3><p>Finally, the AI can help with the write-up.</p></div>
+      </div>
+      <div class="callout coral reveal" style="margin-top:14px"><strong>Problem:</strong> too much manual work, switching between applications, and copying information.</div>
+      <p class="mini-head reveal" style="margin-top:10px">Reference concept illustrated by medium.com</p>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">10 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 11 — WITH MCP: SIX STEPS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.3 · With MCP</span><h2>What happens with MCP?</h2><p class="subtitle">With suitable MCP connections, Claude does the system-to-system work.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card"><div class="ico">1</div><p>You ask Claude the same question.</p></div>
+        <div class="card"><div class="ico">2</div><p>Claude identifies that GitHub and Jira information is required.</p></div>
+        <div class="card"><div class="ico">3</div><p>It communicates with the GitHub and Jira MCP servers.</p></div>
+        <div class="card"><div class="ico">4</div><p>The servers retrieve the relevant information.</p></div>
+        <div class="card"><div class="ico">5</div><p>Claude compares the results.</p></div>
+        <div class="card" style="background:var(--green-l);border-color:#bfe0cf"><div class="ico">6</div><p>Claude prepares the final summary.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:14px"><strong>Claude can still help without MCP</strong> — but you must manually provide the external information. With MCP, the information arrives through a standard connection.</div>
+      <p class="mini-head reveal" style="margin-top:8px">Reference concept illustrated by medium.com</p>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">11 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 12 — PURPOSE OF MCP
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 1.3 · Purpose</span><h2>Why do we need this?</h2><p class="subtitle">We want AI to do more than answer questions.</p></div>
+        <span class="num">01 · WHY MCP</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">ONLY ANSWERING</span><div class="txt">“Here is how you could find the bugs…”</div><div class="note">Useful advice — but no live data.</div></div>
+        <div class="arrow-mid">→</div>
+        <div class="panel good"><span class="tag">WORKING WITH SYSTEMS</span><div class="txt">“I found 3 open bugs; 2 already have Jira tickets.”</div><div class="note">Real information from real external systems.</div></div>
+      </div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:760px;text-align:center;font-size:22px">Purpose of MCP: Provide a standard way for AI applications to communicate with external tools and data sources.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">12 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 13 — DIVIDER: WHAT IS MCP?
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">02</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Two</span></div>
+      <div class="reveal"><h2>What is MCP?</h2></div>
+      <div class="reveal"><p class="subtitle">Now that we understand the problem, let's understand the solution.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">13 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 14 — MCP STANDS FOR...
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> The name</span><h2>MCP = Model Context Protocol</h2><p class="subtitle">A name that describes exactly what it does.</p></div>
+        <span class="num">02 · WHAT IS MCP</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card"><div class="ico">M</div><h3>Model</h3><p>The AI application or model that needs context and capabilities.</p></div>
+        <div class="card"><div class="ico">C</div><h3>Context</h3><p>Information and operations from systems outside the model.</p></div>
+        <div class="card"><div class="ico">P</div><h3>Protocol</h3><p>A shared set of rules for how the two sides communicate.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>MCP is an open standard</strong> that defines how AI applications communicate with external systems through MCP servers.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">14 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 15 — COMMON LANGUAGE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Simple idea</span><h2>Think of MCP as a common language</h2><p class="subtitle">A shared communication standard between AI applications and external services.</p></div>
+        <span class="num">02 · WHAT IS MCP</span>
+      </div>
+      <div class="flow reveal" style="margin-top:10px">
+        <div class="fnode"><span class="n">AI APP</span><span class="s">speaks MCP</span></div><span class="farr">⇄</span>
+        <div class="fnode alt"><span class="n">MCP</span><span class="s">common language</span></div><span class="farr">⇄</span>
+        <div class="fnode alt2"><span class="n">SERVICE</span><span class="s">speaks MCP</span></div>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:20px">
+        <div class="card"><h3>Without a common language</h3><p>Every AI tool needs a custom, one-off integration for every service.</p></div>
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><h3>With a common language</h3><p>Any compatible AI app can talk to any compatible MCP server.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:12px;font-size:22px">One protocol → many possible connections.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">15 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 16 — REAL-LIFE ANALOGY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Analogy</span><h2>Real-life analogy: different languages</h2><p class="subtitle">Imagine people in a company who speak different languages.</p></div>
+        <span class="num">02 · WHAT IS MCP</span>
+      </div>
+      <div class="chips reveal" style="justify-content:center"><span class="chip coral">Hindi</span><span class="chip teal">English</span><span class="chip amber">Tamil</span></div>
+      <div class="grid g2 reveal" style="margin-top:16px">
+        <div class="card"><h3>Before an agreed protocol</h3><p>They cannot exchange information easily — each pair needs its own translator.</p></div>
+        <div class="card" style="border-color:var(--teal);background:var(--teal-l)"><h3>With a common communication language</h3><p>Everyone follows the same rules, so information flows smoothly.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>MCP plays this role</strong> for compatible AI applications and external services.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">16 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 17 — WHY WAS MCP INTRODUCED?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Background</span><h2>Why was MCP introduced?</h2><p class="subtitle">The challenge was not model intelligence.</p></div>
+        <span class="num">02 · WHAT IS MCP</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">NOT THE PROBLEM</span><div class="txt">AI models could not understand questions.</div></div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good"><span class="tag">THE REAL PROBLEM</span><div class="txt">Connecting models to external information and functionality in a consistent way.</div></div>
+      </div>
+      <div class="callout reveal" style="margin-top:16px"><strong>MCP standardizes that connection</strong> — so the same communication pattern works across many tools and services.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">17 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 18 — OBSERVE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Observe</span><h2>Four things to observe</h2><p class="subtitle">Keep these distinctions clear — they prevent common misunderstandings.</p></div>
+        <span class="num">02 · WHAT IS MCP</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">1</div><p>AI intelligence and external application access are <strong>two different things</strong>.</p></div>
+        <div class="card"><div class="ico">2</div><p>MCP provides the <strong>communication standard</strong>.</p></div>
+        <div class="card"><div class="ico">3</div><p>MCP does <strong>not</strong> replace GitHub, databases or AI models.</p></div>
+        <div class="card"><div class="ico">4</div><p>It connects AI applications with <strong>external capabilities</strong>.</p></div>
+      </div>
+      <div class="sticky reveal" style="margin:16px auto 0;max-width:800px;text-align:center;font-size:20px">MCP is the bridge — not the destination, not the model, and not the external system itself.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">18 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 19 — DIVIDER: ARCHITECTURE
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">03</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Three</span></div>
+      <div class="reveal"><h2>Understand MCP Architecture</h2></div>
+      <div class="reveal"><p class="subtitle">How does Claude actually communicate with GitHub? Meet the Host, the Client and the Server.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">19 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 20 — THREE MAIN COMPONENTS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Architecture</span><h2>Three main components</h2><p class="subtitle">The communication path always involves these three roles.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">1</div><h3>MCP Host</h3><p>The application where the AI assistant runs.</p></div>
+        <div class="card" style="border-top:4px solid var(--blue)"><div class="ico">2</div><h3>MCP Client</h3><p>The communicator inside the Host.</p></div>
+        <div class="card" style="border-top:4px solid var(--coral)"><div class="ico">3</div><h3>MCP Server</h3><p>The provider of external capabilities.</p></div>
+      </div>
+      <div class="flow reveal" style="margin-top:20px">
+        <div class="fnode"><span class="n">HOST</span><span class="s">Claude Desktop</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">CLIENT</span><span class="s">communication</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">SERVER</span><span class="s">GitHub capability</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">GITHUB</span><span class="s">external system</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">20 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 21 — 3.1 MCP HOST
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.1 · Host</span><h2>MCP Host — where we use AI</h2><p class="subtitle">The Host is the application in which the AI assistant runs.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card"><div class="ico">▣</div><h3>Claude Desktop</h3><p>A common Host example.</p></div>
+        <div class="card"><div class="ico">⌘</div><h3>Claude Code</h3><p>Another MCP-compatible Host.</p></div>
+        <div class="card"><div class="ico">＋</div><h3>Other apps</h3><p>Any MCP-compatible application.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:16px"><strong>In our example, Claude Desktop is the Host.</strong> Think of it as your <strong>office</strong> — the place where you interact with your AI assistant.</div>
+      <div class="scribble reveal" style="margin-top:10px;font-size:22px">Host = the environment you work in.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">21 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 22 — 3.2 MCP CLIENT
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.2 · Client</span><h2>MCP Client — the communicator</h2><p class="subtitle">A component inside the Host that communicates with MCP servers.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--blue);font-size:16px">You ask Claude: <strong>“Find all open bugs in GitHub.”</strong></div>
+      <div class="grid g2 reveal" style="margin-top:14px">
+        <div class="card"><h3>Claude understands the request</h3><p>But it needs a way to send that request to the GitHub MCP Server.</p></div>
+        <div class="card" style="background:var(--blue-l);border-color:#bcd0ef"><h3>The MCP Client handles it</h3><p>It is the communication layer between Host and Server.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>Think of the Client as your office assistant.</strong> You give an instruction; the assistant contacts the relevant department.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">22 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 23 — CLIENT RESPONSIBILITIES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.2 · Client</span><h2>What the Client does</h2><p class="subtitle">Five responsibilities that keep communication organized.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">1</div><p><strong>Connects</strong> to MCP servers.</p></div>
+        <div class="card"><div class="ico">2</div><p><strong>Discovers</strong> available capabilities.</p></div>
+        <div class="card"><div class="ico">3</div><p><strong>Sends</strong> requests to the server.</p></div>
+        <div class="card"><div class="ico">4</div><p><strong>Receives</strong> responses from the server.</p></div>
+        <div class="card" style="grid-column:1/-1"><div class="ico">5</div><p><strong>Manages</strong> the ongoing communication with the server.</p></div>
+      </div>
+      <div class="flow reveal" style="margin-top:14px">
+        <div class="fnode"><span class="n">CONNECT</span><span class="s">establish link</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">DISCOVER</span><span class="s">list tools</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">SEND</span><span class="s">call tool</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">RECEIVE</span><span class="s">return result</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">23 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 24 — NO CLIENT?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.2 · Client</span><h2>What if the Client does not exist?</h2><p class="subtitle">Understanding is not the same as communication.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="callout coral reveal"><strong>Claude cannot communicate with MCP servers through MCP.</strong> It may understand the request, but there is no MCP communication component to send it to the server.</div>
+      <div class="flow reveal" style="margin-top:16px">
+        <div class="fnode"><span class="n">REQUEST</span><span class="s">understood</span></div><span class="farr">→</span>
+        <div class="fnode" style="border-top-color:var(--red)"><span class="n">NO CLIENT</span><span class="s">no sender</span></div><span class="farr">✕</span>
+        <div class="fnode alt2"><span class="n">SERVER</span><span class="s">never reached</span></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:16px;font-size:22px">The assistant is essential — it carries the message.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">24 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 25 — 3.3 MCP SERVER
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.3 · Server</span><h2>MCP Server — the service provider</h2><p class="subtitle">The Server provides access to external application capabilities.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><h3>GitHub MCP Server</h3><p>Provides GitHub-related tools and resources.</p></div>
+        <div class="card"><h3>Jira MCP Server</h3><p>Provides ticket search and issue-management capabilities.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:16px"><strong>When Claude wants GitHub issues,</strong> the Server handles the request and communicates with GitHub using the necessary integration.</div>
+      <div class="scribble reveal" style="margin-top:10px;font-size:22px">Server = the department that actually provides the service.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">25 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 26 — SERVER CAPABILITIES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.3 · Server</span><h2>Suppose the GitHub Server exposes…</h2><p class="subtitle">Each capability becomes something Claude can request through MCP.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">github-mcp-server · capabilities</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>search_repositories()
+list_issues()
+create_issue()
+get_pull_request()</pre>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:14px">
+        <div class="card"><h3>Read-oriented</h3><p><code class="inline">search_repositories()</code> and <code class="inline">list_issues()</code> retrieve information.</p></div>
+        <div class="card"><h3>Action-oriented</h3><p><code class="inline">create_issue()</code> performs an operation; <code class="inline">get_pull_request()</code> fetches a PR.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">26 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 27 — NO SERVER?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.3 · Server</span><h2>What if the Server does not exist?</h2><p class="subtitle">The Client needs an endpoint that provides the capability.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="callout coral reveal"><strong>The Client has no MCP endpoint</strong> providing the required GitHub capabilities. Therefore, Claude cannot access GitHub through that MCP connection.</div>
+      <div class="grid g3 reveal" style="margin-top:16px">
+        <div class="card"><h3>Host</h3><p>Still running.</p></div>
+        <div class="card"><h3>Client</h3><p>Ready — but has nobody to call.</p></div>
+        <div class="card" style="background:var(--red-l);border-color:#f0c4c0"><h3>Server</h3><p>Missing → no capabilities.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:14px">No department → the assistant cannot get the service done.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">27 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 28 — CLIENT + SERVER TOGETHER
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 3.4 · Together</span><h2>How Client and Server work together</h2><p class="subtitle">The standard communication path in one picture.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="illus-frame reveal">
+        <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/Tm8VKj6ibcysuN3IDP7tC3oI2CHiUloV56ahGP7267N676567l9SHuLUxfxoMWT9XjXoYp2Ot3snnGI0wjhTSGDo88suHEeTzd-OvswXkb-uoUnXDKCC2Y26zQ6Eju66nuG_Pdzz4KQoCtYnxl7kc0hmpREkA0HbSCohyrY6evzN9bZETnPdoUDuXVVuhtKB?purpose=fullsize" alt="MCP Client and Server communication">
+        <div class="illus-cap">Click the image to open it in a new tab.</div>
+      </div>
+      <div class="flow reveal" style="margin-top:10px">
+        <div class="fnode"><span class="n">HOST</span><span class="s">user + AI</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">CLIENT</span><span class="s">MCP messages</span></div><span class="farr">⇄</span>
+        <div class="fnode alt2"><span class="n">SERVER</span><span class="s">capabilities</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">GITHUB</span><span class="s">external system</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">28 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 29 — REMEMBER THIS ANALOGY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Memory hook</span><h2>Remember this analogy</h2><p class="subtitle">One office, one assistant, one department, one external system.</p></div>
+        <span class="num">03 · ARCHITECTURE</span>
+      </div>
+      <div class="grid g4 reveal">
+        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">🏢</div><h3>Host = Office</h3><p>Where you and the AI work.</p></div>
+        <div class="card" style="border-top:4px solid var(--blue)"><div class="ico">🧑‍💼</div><h3>Client = Assistant</h3><p>Carries your instruction.</p></div>
+        <div class="card" style="border-top:4px solid var(--coral)"><div class="ico">🏬</div><h3>Server = Department</h3><p>Provides the service.</p></div>
+        <div class="card" style="border-top:4px solid var(--green)"><div class="ico">📚</div><h3>GitHub = External system</h3><p>Holds the information.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:18px;font-size:24px">Office → Assistant → Department → Information.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">29 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 30 — DIVIDER: SERVER CAPABILITIES
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">04</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Four</span></div>
+      <div class="reveal"><h2>What does an<br>MCP Server provide?</h2></div>
+      <div class="reveal"><p class="subtitle">Tools, Resources and Prompts — through our Task Management application.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">30 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 31 — THREE IMPORTANT THINGS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Capabilities</span><h2>An MCP Server can expose three things</h2><p class="subtitle">Let's understand each through the Task Management application.</p></div>
+        <span class="num">04 · SERVER CAPABILITIES</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">⚙</div><h3>1. Tools</h3><p>Actions Claude can perform.</p></div>
+        <div class="card" style="border-top:4px solid var(--blue)"><div class="ico">📄</div><h3>2. Resources</h3><p>Information Claude can access.</p></div>
+        <div class="card" style="border-top:4px solid var(--amber)"><div class="ico">📋</div><h3>3. Prompts</h3><p>Reusable instructions.</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px">A Server is not just “an API wrapper” — it can offer <strong>operations, readable context and repeatable guidance</strong>.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">31 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 32 — 4.1 TOOLS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 4.1 · Tools</span><h2>Tools — actions Claude can perform</h2><p class="subtitle">Suppose you ask for a new GitHub issue.</p></div>
+        <span class="num">04 · SERVER CAPABILITIES</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">“Create a new GitHub issue for the login API failure.”</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">github-mcp-server · tool</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>create_issue()</pre>
+      </div>
+      <div class="callout reveal" style="margin-top:14px"><strong>Simple meaning:</strong> Tools allow Claude to perform operations in external applications.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">32 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 33 — TOOL EXAMPLES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 4.1 · Tools</span><h2>Other possible tools</h2><p class="subtitle">A Server can expose many operations.</p></div>
+        <span class="num">04 · SERVER CAPABILITIES</span>
+      </div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">github-mcp-server · more tools</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>search_repositories()
+list_issues()
+get_pull_request()</pre>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:14px">
+        <div class="card"><h3>Real examples</h3><p>Create a GitHub issue; search Jira tickets; send a Slack message.</p></div>
+        <div class="card"><h3>Approved operations</h3><p>Execute an approved database operation — with the right permissions.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:12px">Tools change something in the outside world.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">33 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 34 — 4.2 RESOURCES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 4.2 · Resources</span><h2>Resources — information Claude can access</h2><p class="subtitle">Suppose you ask about a document in an external system.</p></div>
+        <span class="num">04 · SERVER CAPABILITIES</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--blue)">“Read the project architecture document and explain how authentication works.”</div>
+      <div class="callout reveal" style="margin-top:14px"><strong>The MCP Server may expose that document as a resource.</strong> Claude can then read it without you copying the text into the chat.</div>
+      <div class="sticky reveal" style="margin:16px auto 0;max-width:720px;text-align:center;font-size:21px">Simple meaning: Resources provide information that Claude can read.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">34 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 35 — RESOURCE EXAMPLES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 4.2 · Resources</span><h2>Examples of resources</h2><p class="subtitle">Readable context from systems around the project.</p></div>
+        <span class="num">04 · SERVER CAPABILITIES</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">▤</div><h3>Database schema</h3><p>Understand tables and relationships.</p></div>
+        <div class="card"><div class="ico">📚</div><h3>Project documentation</h3><p>Architecture notes and design decisions.</p></div>
+        <div class="card"><div class="ico">📜</div><h3>Company policies</h3><p>Rules the assistant should follow.</p></div>
+        <div class="card"><div class="ico">⚙</div><h3>Configuration information</h3><p>Current settings and environment details.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:14px">Resources answer “What can I read?” — not “What can I change?”</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">35 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 36 — 4.3 PROMPTS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 4.3 · Prompts</span><h2>Prompts — reusable instructions</h2><p class="subtitle">Suppose your company has a standard code review process.</p></div>
+        <span class="num">04 · SERVER CAPABILITIES</span>
+      </div>
+      <p class="mini-head reveal">EVERY CODE REVIEW MUST CHECK:</p>
+      <div class="grid g4 reveal">
+        <div class="chip teal">Coding standards</div><div class="chip teal">Security</div>
+        <div class="chip teal">Performance</div><div class="chip teal">Error handling</div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:16px"><strong>You can use a predefined prompt template</strong> exposed by an MCP server — so the same review checklist is applied consistently.</div>
+      <div class="sticky reveal" style="margin:16px auto 0;max-width:720px;text-align:center;font-size:21px">Simple meaning: Prompts provide reusable instructions for common tasks.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">36 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 37 — DIFFERENCE BETWEEN ALL THREE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Comparison</span><h2>Difference between all three</h2><p class="subtitle">Do something · Read something · Follow instructions.</p></div>
+        <span class="num">04 · SERVER CAPABILITIES</span>
+      </div>
+      <table class="tbl reveal">
+        <thead><tr><th>Capability</th><th>Simple meaning</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Tools</td><td>Do something</td><td>Create a GitHub issue.</td></tr>
+          <tr><td>Resources</td><td>Read something</td><td>Read project documentation.</td></tr>
+          <tr><td>Prompts</td><td>Follow instructions</td><td>Follow the company's code review checklist.</td></tr>
+        </tbody>
+      </table>
+      <div class="flow reveal" style="margin-top:18px">
+        <div class="fnode"><span class="n">TOOL</span><span class="s">change</span></div><span class="farr">·</span>
+        <div class="fnode alt"><span class="n">RESOURCE</span><span class="s">context</span></div><span class="farr">·</span>
+        <div class="fnode alt2"><span class="n">PROMPT</span><span class="s">recipe</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">37 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 38 — DIVIDER: CONNECTING TO CLAUDE
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">05</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Five</span></div>
+      <div class="reveal"><h2>Connecting an MCP<br>Server to Claude</h2></div>
+      <div class="reveal"><p class="subtitle">We know the roles. Now let's establish the connection.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">38 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 39 — CONNECTOR INTERFACE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Connectors</span><h2>Claude.ai provides a connector interface</h2><p class="subtitle">Suppose you want Claude to access your GitHub account.</p></div>
+        <span class="num">05 · CONNECTING CLAUDE</span>
+      </div>
+      <div class="illus-frame reveal">
+        <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/riexvBIM6vofClUvR2Xh597CEZp8WJ8nSdgAEd9CqoqkEqAafnt9z_oGA3swtviBzWqwCG6VSDTZE3atneik8SDf1LysuIq4IzmYpFBPAY0iRtca9DzCbR1kGR57udRoo-COwTC10-BRZWtUK2jHL0BeToieMbNVAsXmdbeO_mBPPEsP3THDoJQpcgwXhrF3?purpose=fullsize" alt="Claude.ai connector interface">
+        <div class="illus-cap">Supported services can be connected from Claude.ai.</div>
+      </div>
+      <div class="callout reveal" style="margin-top:10px"><strong>A connector makes setup easier</strong> — you do not manually build the entire integration.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">39 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 40 — CONNECTION STEPS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Steps</span><h2>Connect GitHub to Claude</h2><p class="subtitle">Seven user-facing steps.</p></div>
+        <span class="num">05 · CONNECTING CLAUDE</span>
+      </div>
+      <div class="anatomy reveal">
+        <div>
+          <ol class="bullets" style="counter-reset:step">
+            <li>Open Claude.ai.</li><li>Navigate to <strong>Customize</strong>.</li>
+            <li>Select <strong>Connectors</strong>.</li><li>Find <strong>GitHub</strong>.</li>
+            <li>Select <strong>Connect</strong>.</li><li>Follow the authorization instructions.</li>
+            <li>Grant the necessary permissions.</li>
+          </ol>
+        </div>
+        <div class="illus-frame">
+          <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/6-MRhKrwwPPmxQbW7easKBKZ4Ja_fLysB1sQ98II6AgJsMIxCrWg3UgJSeBsnp71SgQLYZdz9-pco5X4KKIIoUHEklqsU04KCKjHyI9x5ysnXa9U6gUxdBzcQ29GUJlkHCJ2T5zKpfOa9H7_RhUkIOvpAAYROKtAf7L5-dDhFOc0o1DB4PW3DqaKg0DKBLk?purpose=fullsize" alt="GitHub connector setup screen">
+          <div class="illus-cap">Connector setup screen.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">40 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 41 — BEHIND THE SCENES
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Behind the scenes</span><h2>What happens after you connect?</h2><p class="subtitle">The same Host–Client–Server pattern we learned earlier.</p></div>
+        <span class="num">05 · CONNECTING CLAUDE</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">1</div><p>Claude's <strong>Host</strong> establishes an MCP connection using its <strong>Client</strong>.</p></div>
+        <div class="card"><div class="ico">2</div><p>The <strong>Client</strong> communicates with the configured <strong>MCP Server</strong>.</p></div>
+        <div class="card"><div class="ico">3</div><p>The Server exposes its available capabilities.</p></div>
+        <div class="card"><div class="ico">4</div><p>Claude can use those capabilities when required.</p></div>
+      </div>
+      <div class="flow reveal" style="margin-top:14px">
+        <div class="fnode"><span class="n">CONNECT</span><span class="s">user action</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">HOST + CLIENT</span><span class="s">MCP link</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">SERVER</span><span class="s">capabilities</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">CLAUDE</span><span class="s">uses them</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">41 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 42 — WHY CONNECTORS?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Value</span><h2>Why do we need connectors?</h2><p class="subtitle">Configuration should be a guided experience, not a coding project.</p></div>
+        <span class="num">05 · CONNECTING CLAUDE</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">WITHOUT A CONNECTOR</span><div class="txt">Manually build the entire integration.</div><div class="note">More setup, more error handling, more maintenance.</div></div>
+        <div class="arrow-mid">→</div>
+        <div class="panel good"><span class="tag">WITH A CONNECTOR</span><div class="txt">Configure access to a supported external service.</div><div class="note">The product handles the integration details.</div></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Result:</strong> users can connect supported services without manually building the integration.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">42 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 43 — NOTE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Note</span><h2>Keep this note in mind</h2><p class="subtitle">Product interfaces change — the protocol idea stays the same.</p></div>
+        <span class="num">05 · CONNECTING CLAUDE</span>
+      </div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:820px;text-align:center;font-size:21px">Note: Connector availability and the exact UI can vary by Claude product and account.</div>
+      <div class="grid g2 reveal" style="margin-top:20px">
+        <div class="card"><h3>What may vary</h3><p>Menu labels, available connectors, and authorization screens.</p></div>
+        <div class="card"><h3>What stays constant</h3><p>Host, Client, Server and the capabilities they expose.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">43 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 44 — DIVIDER: OAUTH
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">06</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Six</span></div>
+      <div class="reveal"><h2>Authentication —<br>how does Claude<br>get permission?</h2></div>
+      <div class="reveal"><p class="subtitle">Connection is configured — but GitHub still decides what access is granted.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">44 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 45 — CAN CLAUDE ACCESS EVERYTHING?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Permission first</span><h2>Can Claude immediately access everything?</h2><p class="subtitle">The GitHub connection has been configured. What now?</p></div>
+        <span class="num">06 · OAUTH</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">ASSUMPTION</span><div class="txt">“Connected = full access.”</div></div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good"><span class="tag">REALITY</span><div class="txt">“No. GitHub must authorize the access.”</div></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:16px"><strong>This is where OAuth comes in</strong> — it provides a controlled authorization step instead of sharing your password.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">45 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 46 — 6.1 WHAT IS OAUTH?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 6.1 · OAuth</span><h2>What is OAuth?</h2><p class="subtitle">An authorization mechanism for permitted access.</p></div>
+        <span class="num">06 · OAUTH</span>
+      </div>
+      <div class="callout teal reveal"><strong>OAuth</strong> allows one application to access permitted information or operations in another application <strong>without requiring the user to share their password directly</strong>.</div>
+      <div class="grid g3 reveal" style="margin-top:16px">
+        <div class="card"><div class="ico">🔑</div><h3>No password sharing</h3><p>The connected app never sees your GitHub password.</p></div>
+        <div class="card"><div class="ico">🎯</div><h3>Permitted access only</h3><p>Access is limited to what you approve.</p></div>
+        <div class="card"><div class="ico">🧾</div><h3>Token-based</h3><p>The connector uses an access token for operations.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">46 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 47 — VISITOR ANALOGY
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Real-life situation</span><h2>Visitor at the company office</h2><p class="subtitle">A related authorization role, in everyday terms.</p></div>
+        <span class="num">06 · OAUTH</span>
+      </div>
+      <div class="anatomy reveal">
+        <div>
+          <p class="mini-head">THE SECURITY GUARD CHECKS:</p>
+          <ul class="bullets">
+            <li>Who is requesting access?</li>
+            <li>Which department can they visit?</li>
+            <li>What access are they allowed?</li>
+          </ul>
+          <div class="callout amber" style="margin-top:10px"><strong>OAuth performs a related role</strong> for connected applications.</div>
+        </div>
+        <div class="illus-frame">
+          <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/zyByOJ_0FoC1HG4jGbXRCOTUPLkBCXp8OMrs9j-wGxeU90N1kfLsz5mOg3xpV_7jMmjTz2UZiYviUnQZ3icDmohK9anr_HPrCPetQ-5GQdggFhy4UnaDhExx1biJF1bLe_TdquIRMuWxhLZIGaX7JaQz5AzaK0zzNGzhv8_v1vKFYO7xZKYGbUQCY0D7rUha?purpose=fullsize" alt="OAuth authorization illustration">
+          <div class="illus-cap">Authorization decides who, what and how much.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">47 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 48 — HOW OAUTH WORKS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Flow</span><h2>How OAuth works</h2><p class="subtitle">From “Connect GitHub” to permitted operations.</p></div>
+        <span class="num">06 · OAUTH</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">1</div><p>You select <strong>Connect GitHub</strong>.</p></div>
+        <div class="card"><div class="ico">2</div><p>Claude redirects you to GitHub's authorization page.</p></div>
+        <div class="card"><div class="ico">3</div><p>GitHub displays the requested permissions.</p></div>
+        <div class="card"><div class="ico">4</div><p>You approve the requested access.</p></div>
+        <div class="card"><div class="ico">5</div><p>The authorization process provides the connector with the necessary <strong>access token</strong>.</p></div>
+        <div class="card"><div class="ico">6</div><p>The connector uses that token for permitted operations.</p></div>
+      </div>
+      <div class="illus-row reveal" style="margin-top:10px">
+        <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/zyByOJ_0FoC1HG4jGbXRCOTUPLkBCXp8OMrs9j-wGxeU90N1kfLsz5mOg3xpV_7jMmjTz2UZiYviUnQZ3icDmohK9anr_HPrCPetQ-5GQdggFhy4UnaDhExx1biJF1bLe_TdquIRMuWxhLZIGaX7JaQz5AzaK0zzNGzhv8_v1vKFYO7xZKYGbUQCY0D7rUha?purpose=fullsize" alt="OAuth flow reference">
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">48 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 49 — PERMISSION SCOPING
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 6.2 · Scoping</span><h2>What is permission scoping?</h2><p class="subtitle">Controlling what the connected application can access.</p></div>
+        <span class="num">06 · OAUTH</span>
+      </div>
+      <table class="tbl reveal">
+        <thead><tr><th>Permission</th><th>Access</th></tr></thead>
+        <tbody>
+          <tr><td>Read issues</td><td>View issues</td></tr>
+          <tr><td>Write issues</td><td>Create or modify issues</td></tr>
+          <tr><td>Read repositories</td><td>View repository information</td></tr>
+          <tr><td>Write repository contents</td><td>Modify files</td></tr>
+        </tbody>
+      </table>
+      <div class="callout reveal" style="margin-top:14px"><strong>Example:</strong> if Claude only needs to read GitHub issues, it should not automatically receive unnecessary write permissions.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">49 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 50 — WHY SCOPING MATTERS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> 6.2 · Scoping</span><h2>Why is permission scoping important?</h2><p class="subtitle">Less privilege means less risk.</p></div>
+        <span class="num">06 · OAUTH</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">EXCESSIVE PERMISSIONS</span><div class="txt">Unnecessary write access to repositories and issues.</div><div class="note">Creates unnecessary security risks.</div></div>
+        <div class="arrow-mid">→</div>
+        <div class="panel good"><span class="tag">SCOPED PERMISSIONS</span><div class="txt">Only what the task actually requires.</div><div class="note">Purpose: controlled access to external applications.</div></div>
+      </div>
+      <div class="sticky reveal" style="margin:16px auto 0;max-width:760px;text-align:center;font-size:21px">Grant what is needed — not everything that is available.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">50 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 51 — DIVIDER: TOOL SELECTION
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">07</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Seven</span></div>
+      <div class="reveal"><h2>How Claude selects<br>the correct MCP Tool</h2></div>
+      <div class="reveal"><p class="subtitle">Everything is connected — now, which tool does Claude use?</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">51 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 52 — AVAILABLE TOOLS TABLE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Tool catalog</span><h2>Suppose GitHub provides these tools</h2><p class="subtitle">Claude sees purposes, not just names.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <table class="tbl reveal">
+        <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>search_repositories</code></td><td>Search repositories</td></tr>
+          <tr><td><code>list_issues</code></td><td>Retrieve issues</td></tr>
+          <tr><td><code>create_issue</code></td><td>Create an issue</td></tr>
+          <tr><td><code>get_pull_request</code></td><td>Retrieve pull requests</td></tr>
+        </tbody>
+      </table>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Good descriptions matter.</strong> They tell Claude which tool fits which user request.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">52 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 53 — USER REQUEST
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Natural language</span><h2>You ask in ordinary English</h2><p class="subtitle">No technical tool name required.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--teal);font-size:17px">“Find all open bugs in my task-management repository.”</div>
+      <div class="grid g2 reveal" style="margin-top:16px">
+        <div class="card"><h3>User thinks</h3><p>“open bugs in task-management”.</p></div>
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><h3>Claude maps to</h3><p><code class="inline">list_issues</code> with repository parameters.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:14px">Claude examines your request and the available tool descriptions — then identifies that <strong>list_issues</strong> is suitable.</div>
+      <p class="mini-head reveal" style="margin-top:8px">Reference concept illustrated by truefoundry.com</p>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">53 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 54 — INTERNAL STEPS 1-4
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Internals · 1 of 2</span><h2>What happens internally?</h2><p class="subtitle">From your words to a candidate tool.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">1</div><p>Claude understands the user's request.</p></div>
+        <div class="card"><div class="ico">2</div><p>It identifies the task: <strong>retrieve open issues</strong>.</p></div>
+        <div class="card"><div class="ico">3</div><p>It checks the available tools.</p></div>
+        <div class="card"><div class="ico">4</div><p>It selects a suitable tool: <code class="inline">list_issues</code>.</p></div>
+      </div>
+      <div class="flow reveal" style="margin-top:16px">
+        <div class="fnode"><span class="n">REQUEST</span><span class="s">plain English</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">TASK</span><span class="s">retrieve issues</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">TOOL</span><span class="s">list_issues</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">54 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 55 — INTERNAL STEPS 5-8
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Internals · 2 of 2</span><h2>What happens internally?</h2><p class="subtitle">From parameters to the final answer.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">5</div><p>It prepares the input parameters.</p></div>
+        <div class="card"><div class="ico">6</div><p>The <strong>Client</strong> sends the request to the <strong>Server</strong>.</p></div>
+        <div class="card"><div class="ico">7</div><p>The Server returns the result.</p></div>
+        <div class="card"><div class="ico">8</div><p>Claude prepares the response for you.</p></div>
+      </div>
+      <div class="flow reveal" style="margin-top:16px">
+        <div class="fnode"><span class="n">PARAMS</span><span class="s">JSON input</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">CLIENT</span><span class="s">sends</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">SERVER</span><span class="s">responds</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">ANSWER</span><span class="s">summary</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">55 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 56 — EXAMPLE TOOL INPUT
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Tool call</span><h2>Example tool input</h2><p class="subtitle">Structured parameters Claude prepares for <code class="inline">list_issues</code>.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">list_issues · input</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "owner": "company",
+  "repo": "task-management",
+  "state": "open"
+}</pre>
+      </div>
+      <div class="grid g3 reveal" style="margin-top:14px">
+        <div class="card"><h3>owner</h3><p>The GitHub account or organization.</p></div>
+        <div class="card"><h3>repo</h3><p>The specific repository.</p></div>
+        <div class="card"><h3>state</h3><p>Filter: only open issues.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">56 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 57 — WITHOUT VS WITH SUITABLE TOOLS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Comparison</span><h2>Without vs With suitable tools</h2><p class="subtitle">Availability of the right tool changes what Claude can actually do.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">WITHOUT A SUITABLE TOOL</span><div class="txt">Claude can explain how to find issues manually.</div><div class="note">It cannot retrieve them through that MCP connection.</div></div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good"><span class="tag">WITH A SUITABLE TOOL</span><div class="txt">Claude can retrieve the actual issues.</div><div class="note">Subject to authorization and tool availability.</div></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>The capability must exist on the Server</strong> before Claude can use it — a good description alone is not enough.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">57 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 58 — AUTOMATIC SELECTION & OBSERVE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Why useful</span><h2>Why is automatic selection useful?</h2><p class="subtitle">Users should not need to remember the names of dozens of tools.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <div class="callout reveal">They can simply describe the task in <strong>normal language</strong> — Claude matches the request to an available capability.</div>
+      <p class="mini-head reveal" style="margin-top:16px">WHAT STUDENTS SHOULD OBSERVE — TRY:</p>
+      <div class="grid g3 reveal">
+        <div class="card"><p>“Find my GitHub repositories.”</p></div>
+        <div class="card"><p>“Show open issues.”</p></div>
+        <div class="card"><p>“Show recent pull requests.”</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:12px">Different requests → different tools.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">58 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 59 — SELECTION NOT GUARANTEED
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Remember</span><h2>Selection is not guaranteed to be perfect</h2><p class="subtitle">Good inputs make good tool choices more likely.</p></div>
+        <span class="num">07 · TOOL SELECTION</span>
+      </div>
+      <div class="sticky reveal" style="margin:16px auto 0;max-width:840px;text-align:center;font-size:21px">Claude depends on the tool descriptions, input schemas and conversation context.</div>
+      <div class="grid g3 reveal" style="margin-top:20px">
+        <div class="card"><div class="ico">📝</div><h3>Descriptions</h3><p>Say clearly what each tool does.</p></div>
+        <div class="card"><div class="ico">🧱</div><h3>Input schemas</h3><p>Define the parameters precisely.</p></div>
+        <div class="card"><div class="ico">💬</div><h3>Context</h3><p>Keep the request unambiguous.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">59 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 60 — DIVIDER: INSPECTING TOOL CALLS
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">08</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Eight</span></div>
+      <div class="reveal"><h2>Inspecting<br>MCP Tool Calls</h2></div>
+      <div class="reveal"><p class="subtitle">Move from using MCP to understanding how it works internally.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">60 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 61 — THREE THINGS TO INSPECT
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Inspection</span><h2>Three things to inspect</h2><p class="subtitle">When Claude returns two open issues, understand how it got them.</p></div>
+        <span class="num">08 · TOOL CALLS</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">1</div><h3>Tool name</h3><p>Which capability was called?</p></div>
+        <div class="card" style="border-top:4px solid var(--blue)"><div class="ico">2</div><h3>Input parameters</h3><p>What was sent to the tool?</p></div>
+        <div class="card" style="border-top:4px solid var(--coral)"><div class="ico">3</div><h3>Output response</h3><p>What came back from the server?</p></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px">As a developer, inspect these three parts — the final answer alone does not tell you exactly what happened.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">61 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 62 — TOOL NAME + INPUT
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Example</span><h2>Tool name and input parameters</h2><p class="subtitle">The first two parts of the call.</p></div>
+        <span class="num">08 · TOOL CALLS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><h3>Tool name</h3><p><code class="inline">list_issues</code></p></div>
+        <div class="card"><h3>Input parameters</h3><p>owner, repo and state.</p></div>
+      </div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">list_issues · input</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "owner": "company",
+  "repo": "task-management",
+  "state": "open"
+}</pre>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">62 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 63 — OUTPUT RESPONSE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Example</span><h2>Output from the server</h2><p class="subtitle">The data Claude uses to build the final response.</p></div>
+        <span class="num">08 · TOOL CALLS</span>
+      </div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">list_issues · response</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "issues": [
+    {
+      "number": 101,
+      "title": "Login API error",
+      "state": "open"
+    },
+    {
+      "number": 102,
+      "title": "Task validation failure",
+      "state": "open"
+    }
+  ]
+}</pre>
+      </div>
+      <div class="callout reveal" style="margin-top:12px"><strong>Claude uses the returned information</strong> to prepare its final response — it does not invent the issue list.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">63 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 64 — REAL DEBUGGING SITUATION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Debugging</span><h2>Real debugging situation</h2><p class="subtitle">Suppose Claude retrieves issues from the wrong repository.</p></div>
+        <span class="num">08 · TOOL CALLS</span>
+      </div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">list_issues · wrong input</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "owner": "company",
+  "repo": "old-task-management",
+  "state": "open"
+}</pre>
+      </div>
+      <div class="callout coral reveal" style="margin-top:14px"><strong>Now you know why the wrong information was returned.</strong> The problem may be the input supplied to the tool, not GitHub itself.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">64 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 65 — WHY INSPECT?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Diagnosis</span><h2>Why inspect tool calls?</h2><p class="subtitle">Because the final answer alone does not tell you exactly what happened.</p></div>
+        <span class="num">08 · TOOL CALLS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">1</div><p>Incorrect tool selection.</p></div>
+        <div class="card"><div class="ico">2</div><p>Incorrect parameters.</p></div>
+        <div class="card"><div class="ico">3</div><p>Missing permissions.</p></div>
+        <div class="card"><div class="ico">4</div><p>Server-side errors.</p></div>
+        <div class="card" style="grid-column:1/-1"><div class="ico">5</div><p>Unexpected returned data.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:12px">Inspect the call, not just the conclusion.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">65 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 66 — DIVIDER: MULTI-TOOL
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">09</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Nine</span></div>
+      <div class="reveal"><h2>Chained Multi-Tool<br>Conversations</h2></div>
+      <div class="reveal"><p class="subtitle">One request, several systems, one combined answer.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">66 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 67 — REAL INDUSTRY SITUATION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scenario</span><h2>Real industry situation</h2><p class="subtitle">The project manager asks for a cross-system check.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--coral);font-size:17px">“Find all open bugs in GitHub and check whether the same bugs are already recorded in Jira.”</div>
+      <div class="flow reveal" style="margin-top:18px">
+        <div class="fnode"><span class="n">REQUEST</span><span class="s">one question</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">GITHUB</span><span class="s">system 1</span></div><span class="farr">+</span>
+        <div class="fnode alt2"><span class="n">JIRA</span><span class="s">system 2</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">COMPARE</span><span class="s">final report</span></div>
+      </div>
+      <div class="callout reveal" style="margin-top:14px"><strong>This requires two external systems.</strong> Claude chains multiple MCP tool calls in one conversation.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">67 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 68 — STEP 1 GITHUB
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Step 1</span><h2>Retrieve GitHub issues</h2><p class="subtitle">Claude selects <code class="inline">search_issues</code>.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <table class="tbl reveal">
+        <thead><tr><th>Issue</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>#101</td><td>Login API error</td></tr>
+          <tr><td>#102</td><td>Task validation failure</td></tr>
+        </tbody>
+      </table>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">github-mcp-server · search_issues</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>search_issues  →  #101 Login API error
+                 #102 Task validation failure</pre>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">68 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 69 — STEP 2 JIRA
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Step 2</span><h2>Search Jira</h2><p class="subtitle">Claude uses the retrieved information to search Jira.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <div class="callout teal reveal">It selects <code class="inline">search_jira_issues</code> — passing the GitHub issue descriptions as search terms.</div>
+      <table class="tbl reveal">
+        <thead><tr><th>Ticket</th><th>Description</th></tr></thead>
+        <tbody><tr><td>TASK-501</td><td>Login API error</td></tr></tbody>
+      </table>
+      <div class="scribble reveal" style="margin-top:12px">One match found — the second issue has no returned match.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">69 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 70 — STEP 3 COMPARE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Step 3</span><h2>Compare the results</h2><p class="subtitle">Claude identifies what matches and what does not.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card" style="background:var(--green-l);border-color:#bfe0cf"><div class="ico">✓</div><h3>Login API error</h3><p>Already exists in Jira as <strong>TASK-501</strong>.</p></div>
+        <div class="card" style="background:var(--amber-l);border-color:#ecd39a"><div class="ico">!</div><h3>Task validation failure</h3><p>No matching Jira ticket in the returned results.</p></div>
+      </div>
+      <div class="callout reveal" style="margin-top:16px"><strong>Important:</strong> “No match found” means no match in the returned results — not proof that no ticket exists anywhere.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">70 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 71 — STEP 4 FINAL ANSWER
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Step 4</span><h2>Prepare the final answer</h2><p class="subtitle">The comparison becomes a clear report.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <table class="tbl reveal">
+        <thead><tr><th>GitHub issue</th><th>Jira status</th></tr></thead>
+        <tbody>
+          <tr><td>#101 Login API error</td><td>TASK-501 exists</td></tr>
+          <tr><td>#102 Task validation failure</td><td>No match found</td></tr>
+        </tbody>
+      </table>
+      <div class="flow reveal" style="margin-top:18px">
+        <div class="fnode"><span class="n">GITHUB</span><span class="s">issues</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">JIRA</span><span class="s">tickets</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">CLAUDE</span><span class="s">compare</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">REPORT</span><span class="s">final answer</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">71 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 72 — WITHOUT VS WITH MULTIPLE TOOLS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Comparison</span><h2>Without vs With multiple MCP tools</h2><p class="subtitle">Two systems, two very different workflows.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">WITHOUT MCP</span><div class="txt">Manually search GitHub, open Jira, compare results and prepare a report.</div></div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good"><span class="tag">WITH MCP</span><div class="txt">Claude retrieves information from both systems and prepares the comparison.</div></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:16px;font-size:23px">Chaining turns two separate tasks into one request.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">72 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 73 — WHAT IS A CALL TRACE?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Trace</span><h2>What is a call trace?</h2><p class="subtitle">A record of the tool operations performed during the request.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:800px;text-align:center;font-size:21px">A call trace answers: “Which tools were called, in what order, and with what outcome?”</div>
+      <div class="grid g3 reveal" style="margin-top:20px">
+        <div class="card"><div class="ico">1</div><h3>Tool</h3><p>Name and system.</p></div>
+        <div class="card"><div class="ico">2</div><h3>Status</h3><p>Success or failure.</p></div>
+        <div class="card"><div class="ico">3</div><h3>Result</h3><p>What was returned.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">73 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 74 — EXAMPLE CALL TRACE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Trace</span><h2>Example call trace</h2><p class="subtitle">The full multi-tool operation in three entries.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span class="file">request · call trace</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>1. GitHub – search_issues
+   Success
+   Retrieved two issues.
+
+2. Jira – search_jira_issues
+   Success
+   Found one matching ticket.
+
+3. Claude – Compare results
+   Prepared the final summary.</pre>
+      </div>
+      <div class="callout teal reveal" style="margin-top:12px"><strong>Tip:</strong> traces make debugging and review possible — you can see exactly where a result came from.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">74 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 75 — WHY IS THIS USEFUL?
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Value</span><h2>Why is this useful?</h2><p class="subtitle">It shows how Claude combines information across applications.</p></div>
+        <span class="num">09 · MULTI-TOOL</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><h3>Transparency</h3><p>You can inspect which systems contributed to the answer.</p></div>
+        <div class="card"><h3>Debugging</h3><p>You can pinpoint the failed or incomplete step.</p></div>
+        <div class="card"><h3>Trust</h3><p>The final summary can be traced back to real tool results.</p></div>
+        <div class="card"><h3>Improvement</h3><p>Better tool descriptions and inputs lead to better chains.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:14px">A business task completed by combining capabilities.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">75 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 76 — DIVIDER: GRACEFUL DEGRADATION
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">10</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Part Ten</span></div>
+      <div class="reveal"><h2>Graceful Degradation —<br>what if something fails?</h2></div>
+      <div class="reveal"><p class="subtitle">Real systems do not always work perfectly.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04</span><span class="page-num">76 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 77 — DEFINITION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Definition</span><h2>What if something fails?</h2><p class="subtitle">Ask the hard questions before they happen.</p></div>
+        <span class="num">10 · GRACEFUL DEGRADATION</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card"><p>What if <strong>GitHub</strong> is unavailable?</p></div>
+        <div class="card"><p>What if <strong>Jira authentication</strong> expires?</p></div>
+        <div class="card"><p>What if a server <strong>takes too long</strong> to respond?</p></div>
+      </div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:860px;text-align:center;font-size:21px">Graceful degradation means handling a failure in a controlled way while keeping the remaining functionality useful.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">77 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 78 — REAL SITUATION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scenario</span><h2>Real industry situation</h2><p class="subtitle">You ask Claude for a combined GitHub + Jira check.</p></div>
+        <span class="num">10 · GRACEFUL DEGRADATION</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--coral)">“Find open GitHub bugs and check whether they exist in Jira.”</div>
+      <div class="grid g2 reveal" style="margin-top:14px">
+        <div class="card" style="background:var(--green-l);border-color:#bfe0cf"><div class="ico">✓</div><h3>GitHub</h3><p>Working.</p></div>
+        <div class="card" style="background:var(--red-l);border-color:#f0c4c0"><div class="ico">✕</div><h3>Jira</h3><p>Unavailable.</p></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:14px">One system fails — does the whole answer disappear?</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">78 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 79 — WITHOUT GRACEFUL DEGRADATION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Poor handling</span><h2>Without graceful degradation</h2><p class="subtitle">A single failure blocks the entire task.</p></div>
+        <span class="num">10 · GRACEFUL DEGRADATION</span>
+      </div>
+      <div class="callout coral reveal"><strong>Claude may stop the complete task</strong> and return no useful result — even though GitHub data was available.</div>
+      <div class="flow reveal" style="margin-top:16px">
+        <div class="fnode"><span class="n">GITHUB</span><span class="s">success</span></div><span class="farr">+</span>
+        <div class="fnode" style="border-top-color:var(--red)"><span class="n">JIRA</span><span class="s">fails</span></div><span class="farr">→</span>
+        <div class="fnode" style="border-top-color:var(--red)"><span class="n">RESULT</span><span class="s">nothing useful</span></div>
+      </div>
+      <div class="scribble reveal" style="margin-top:16px">All-or-nothing is a poor user experience.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">79 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 80 — WITH GRACEFUL DEGRADATION
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Good handling</span><h2>With graceful degradation</h2><p class="subtitle">Return what works, explain what does not.</p></div>
+        <span class="num">10 · GRACEFUL DEGRADATION</span>
+      </div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--green);font-size:15.5px">“I retrieved the open GitHub issues successfully. However, Jira is unavailable, so I cannot confirm whether matching tickets exist. Here are the GitHub issues I could retrieve.”</div>
+      <div class="grid g3 reveal" style="margin-top:16px">
+        <div class="card"><div class="ico">✓</div><h3>Keep</h3><p>The GitHub results.</p></div>
+        <div class="card"><div class="ico">!</div><h3>Explain</h3><p>Jira's unavailability.</p></div>
+        <div class="card"><div class="ico">→</div><h3>Continue</h3><p>Provide the partial answer.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">80 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 81 — FAILURE SCENARIOS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Reference table</span><h2>Common failure scenarios</h2><p class="subtitle">Match each problem to a controlled response.</p></div>
+        <span class="num">10 · GRACEFUL DEGRADATION</span>
+      </div>
+      <table class="tbl reveal">
+        <thead><tr><th>Problem</th><th>Expected handling</th></tr></thead>
+        <tbody>
+          <tr><td>MCP server unavailable</td><td>Explain that the service cannot be reached.</td></tr>
+          <tr><td>Authentication expired</td><td>Ask the user to reconnect.</td></tr>
+          <tr><td>Permission denied</td><td>Explain that required permission is missing.</td></tr>
+          <tr><td>Request timeout</td><td>Explain the timeout and allow retry.</td></tr>
+          <tr><td>Invalid input</td><td>Explain the error and correct it if possible.</td></tr>
+          <tr><td>Partial response</td><td>Show available data and identify missing information.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">81 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 82 — WHY IMPORTANT
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Business value</span><h2>Why is graceful degradation important?</h2><p class="subtitle">Companies depend on multiple external services.</p></div>
+        <span class="num">10 · GRACEFUL DEGRADATION</span>
+      </div>
+      <div class="vs reveal">
+        <div class="panel bad"><span class="tag">FRAGILE</span><div class="txt">One unavailable service stops every part of the application.</div></div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good"><span class="tag">RESILIENT</span><div class="txt">One unavailable service does not prevent every other part from working.</div></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:16px"><strong>Design for partial success.</strong> Users still get value even when one integration is down.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">82 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 83 — ONE SENTENCE TO REMEMBER
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Takeaway</span><h2>The one sentence students should remember</h2><p class="subtitle">Keep this as your mental model of MCP.</p></div>
+        <span class="num">SUMMARY</span>
+      </div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:940px;text-align:center;font-size:22px;line-height:1.5">MCP gives Claude a standardized way to communicate with external systems; the Client handles communication, the Server provides capabilities, and Claude uses those capabilities to complete real-world tasks.</div>
+      <div class="flow reveal" style="margin-top:22px">
+        <div class="fnode"><span class="n">STANDARD</span><span class="s">MCP</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">CLIENT</span><span class="s">communication</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">SERVER</span><span class="s">capabilities</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">CLAUDE</span><span class="s">real-world tasks</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">83 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 84 — QUICK KNOWLEDGE CHECK
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Check yourself</span><h2>Quick knowledge check</h2><p class="subtitle">Click an answer to reveal the explanation.</p></div>
+        <span class="num">QUIZ</span>
+      </div>
+      <div class="quiz-q reveal">
+        <div class="q">1. Which component communicates with MCP servers inside the Host?</div>
+        <div class="opts">
+          <div class="opt" data-correct="false" data-exp="The Host is the application, not the communicator.">Host</div>
+          <div class="opt" data-correct="true" data-exp="Correct — the Client connects, discovers, sends and receives MCP messages.">Client</div>
+          <div class="opt" data-correct="false" data-exp="The Server provides capabilities; it is not inside the Host.">Server</div>
+        </div><div class="expl"></div>
+      </div>
+      <div class="quiz-q reveal">
+        <div class="q">2. Which capability is best described as “read something”?</div>
+        <div class="opts">
+          <div class="opt" data-correct="false" data-exp="Tools perform actions.">Tool</div>
+          <div class="opt" data-correct="true" data-exp="Correct — Resources provide information Claude can read.">Resource</div>
+          <div class="opt" data-correct="false" data-exp="Prompts provide reusable instructions.">Prompt</div>
+        </div><div class="expl"></div>
+      </div>
+      <div class="quiz-q reveal">
+        <div class="q">3. Why is permission scoping important?</div>
+        <div class="opts">
+          <div class="opt" data-correct="false" data-exp="Scoping restricts access; it does not make tokens unnecessary.">It removes the need for tokens</div>
+          <div class="opt" data-correct="true" data-exp="Correct — excessive permissions create unnecessary security risks.">It limits unnecessary security risk</div>
+          <div class="opt" data-correct="false" data-exp="It controls access; it does not change model intelligence.">It improves model reasoning</div>
+        </div><div class="expl"></div>
+      </div>
+      <div class="quiz-q reveal">
+        <div class="q">4. Jira is unavailable but GitHub works. What is graceful degradation?</div>
+        <div class="opts">
+          <div class="opt" data-correct="false" data-exp="That is all-or-nothing behavior.">Return no result at all</div>
+          <div class="opt" data-correct="true" data-exp="Correct — keep the useful GitHub results and clearly explain the missing Jira data.">Share GitHub results and explain Jira is unavailable</div>
+          <div class="opt" data-correct="false" data-exp="Inventing data is never acceptable.">Make up the missing Jira results</div>
+        </div><div class="expl"></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">84 / 85</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 85 — FINAL CLOSING
+     ========================================================= -->
+<section class="slide divider">
+  <div class="sheet">
+    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
+    <div class="big-index">✓</div>
+    <div class="sheet-inner">
+      <div class="reveal"><span class="kicker">Module complete</span></div>
+      <div class="reveal"><h2>You're ready to connect Claude<br>to the real world<br>with MCP.</h2></div>
+      <div class="reveal"><p class="subtitle">From the connection problem to architecture, OAuth, tool calls, traces and resilient design.</p></div>
+      <div class="reveal" style="margin-top:8px">
+        <div class="flow" style="justify-content:flex-start;gap:8px">
+          <div class="fnode"><span class="n">WHY</span><span class="s">connection problem</span></div><span class="farr">→</span>
+          <div class="fnode alt"><span class="n">ARCHITECTURE</span><span class="s">host · client · server</span></div><span class="farr">→</span>
+          <div class="fnode alt2"><span class="n">CAPABILITIES</span><span class="s">tools · resources · prompts</span></div><span class="farr">→</span>
+          <div class="fnode"><span class="n">OPERATE</span><span class="s">select · inspect · degrade</span></div>
+        </div>
+      </div>
+      <div class="reveal"><p class="scribble" style="font-size:26px;margin-top:18px">One standard → many external capabilities → real-world tasks.</p></div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 04 · MODEL CONTEXT PROTOCOL (MCP) ESSENTIALS</span><span class="page-num">85 / 85</span></div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- NAVIGATION DOCK -->
+<div class="dock">
+  <button class="nav-btn" id="prev" title="Previous (←)">←</button>
+  <div class="dots" id="dots"></div>
+  <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+  <span class="dock-count" id="count">01 / 85</span>
+  <button class="nav-btn" id="next" title="Next (→)">→</button>
+  <span class="hint-key"><span class="kbd">←</span> <span class="kbd">→</span> navigate</span>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  const countEl = document.getElementById('count');
+  const fill = document.getElementById('progress');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const dotsWrap = document.getElementById('dots');
+
+  slides.forEach((_,k)=>{
+    const b=document.createElement('button');
+    b.className='dot-btn';b.title='Slide '+(k+1);
+    b.addEventListener('click',()=>go(k));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function go(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,k)=>s.classList.toggle('active', k===i));
+    dots.forEach((d,k)=>d.classList.toggle('active', k===i));
+    countEl.textContent = String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    fill.style.width = ((i+1)/slides.length*100)+'%';
+    prev.disabled = i===0; next.disabled = i===slides.length-1;
+    const inner = slides[i].querySelector('.sheet-inner');
+    if(inner) inner.scrollTop = 0;
+  }
+  prev.addEventListener('click',()=>go(i-1));
+  next.addEventListener('click',()=>go(i+1));
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){go(0);}
+    else if(e.key==='End'){go(slides.length-1);}
+  });
+
+  document.querySelectorAll('[data-goto]').forEach(el=>{
+    el.addEventListener('click',()=>go(parseInt(el.dataset.goto,10)));
+  });
+
+  document.querySelectorAll('.quiz-q .opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      const q=opt.closest('.quiz-q');
+      q.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong'));
+      if(opt.dataset.correct==='true') opt.classList.add('correct');
+      else opt.classList.add('wrong');
+      const exp=q.querySelector('.expl');
+      exp.textContent=opt.dataset.exp||'';
+      exp.classList.add('show');
+    });
+  });
+
+  document.querySelectorAll('.illus').forEach(img=>{
+    img.addEventListener('click',()=>window.open(img.src,'_blank'));
+  });
+
+  window.copyCode=function(btn){
+    const pre=btn.closest('.code-wrap').querySelector('pre');
+    if(!pre)return;
+    navigator.clipboard.writeText(pre.innerText).then(()=>{
+      const old=btn.textContent;btn.textContent='Copied!';
+      setTimeout(()=>btn.textContent=old,1400);
+    }).catch(()=>{btn.textContent='Select text';});
+  };
+
+  go(0);
+})();
+</script>
+</body>
+</html>
+
