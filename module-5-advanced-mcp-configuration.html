@@ -258,6 +258,7 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
 .slide.title .badge .ln{width:34px;height:2px;background:var(--amber)}
 .slide.title h1{color:#fff;max-width:900px}
 .slide.title h1 .em{color:#69c6f2}
+.slide.title h2{color:#fff;max-width:900px}
 .slide.title .sub{color:#b7c4cf;font-size:18px;margin-top:18px;max-width:680px;line-height:1.6}
 .slide.title .meta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
 .slide.title .meta .m{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:8px 15px;color:#d6e0e7;font-size:12.5px;font-weight:600}
@@ -315,13 +316,13 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
       </svg>
       <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
       <div class="reveal"><div class="badge"><span class="ln"></span> Claude Code Training · Module 05</div></div>
-      <div class="reveal"><h1>Advanced MCP<br><span class="em">Configuration</span></h1></div>
-      <div class="reveal"><p class="sub">Configure, manage, control and troubleshoot multiple MCP servers in a real project — with the same Task Management application we have been using.</p></div>
+      <div class="reveal"><h1>Advanced<br><span class="em">MCP Configuration</span></h1></div>
+      <div class="reveal"><p class="sub">Server parameters, multiple servers, tool filtering, error handling, debugging with logs and traces, and testing with MCP Inspector.</p></div>
       <div class="reveal">
         <div class="meta">
-          <span class="m">◈ Real-World Situation</span><span class="m">◈ Server Parameters</span>
-          <span class="m">◈ Multiple Servers</span><span class="m">◈ Tool Filtering</span>
-          <span class="m">◈ Errors &amp; Timeouts</span><span class="m">◈ Debugging</span>
+          <span class="m">◈ Server Parameters</span><span class="m">◈ Multiple Servers</span>
+          <span class="m">◈ Tool Filtering</span><span class="m">◈ Errors &amp; Timeouts</span>
+          <span class="m">◈ Logs &amp; Traces</span><span class="m">◈ MCP Inspector</span>
         </div>
       </div>
     </div>
@@ -343,21 +344,21 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
         <span class="num">AGENDA</span>
       </div>
       <div class="grid g2 reveal">
-        <div class="card hoverable" data-goto="3"><div class="ico" style="background:var(--teal-l);color:var(--teal)">01</div><h3>Why advanced configuration?</h3><p>A real project with four external systems and six hard questions.</p></div>
-        <div class="card hoverable" data-goto="11"><div class="ico" style="background:var(--blue-l);color:var(--blue)">02</div><h3>Server Parameters</h3><p>URL, headers and authentication tokens.</p></div>
-        <div class="card hoverable" data-goto="27"><div class="ico" style="background:var(--amber-l);color:var(--amber)">03</div><h3>Multiple MCP Servers</h3><p>One project, several servers, coordinated results.</p></div>
-        <div class="card hoverable" data-goto="34"><div class="ico" style="background:var(--coral-l);color:var(--coral)">04</div><h3>Tool Filtering</h3><p>Expose only the tools relevant to the task.</p></div>
-        <div class="card hoverable" data-goto="45"><div class="ico" style="background:var(--green-l);color:var(--green)">05</div><h3>Errors &amp; Timeouts</h3><p>Handle failures without losing useful results.</p></div>
-        <div class="card hoverable" data-goto="56"><div class="ico" style="background:var(--teal-l);color:var(--teal)">06</div><h3>Debugging</h3><p>Network logs and Claude's tool-use traces.</p></div>
+        <div class="card hoverable" data-goto="3"><div class="ico" style="background:var(--teal-l);color:var(--teal)">01</div><h3>Server Parameters</h3><p>URL, headers, authentication tokens and transport.</p></div>
+        <div class="card hoverable" data-goto="8"><div class="ico" style="background:var(--blue-l);color:var(--blue)">02</div><h3>Multiple MCP Servers</h3><p>Combining specialized servers in one project.</p></div>
+        <div class="card hoverable" data-goto="11"><div class="ico" style="background:var(--amber-l);color:var(--amber)">03</div><h3>Tool Filtering</h3><p>Exposing only the tools that are relevant.</p></div>
+        <div class="card hoverable" data-goto="14"><div class="ico" style="background:var(--coral-l);color:var(--coral)">04</div><h3>Errors &amp; Timeouts</h3><p>Connection, auth, validation and timeout failures.</p></div>
+        <div class="card hoverable" data-goto="18"><div class="ico" style="background:var(--green-l);color:var(--green)">05</div><h3>Logs &amp; Traces</h3><p>Debug with connection status, traces and network logs.</p></div>
+        <div class="card hoverable" data-goto="22"><div class="ico" style="background:var(--teal-l);color:var(--teal)">06</div><h3>MCP Inspector</h3><p>Test servers, tools, resources and prompts directly.</p></div>
       </div>
-      <div class="callout reveal" style="margin-top:16px"><span class="scribble">Big idea:</span> Advanced configuration is about <strong>control, clarity and resilience</strong> when several MCP servers work together.</div>
+      <div class="callout reveal" style="margin-top:14px"><span class="scribble">Big idea:</span> Advanced configuration is about <strong>telling Claude where to go, how to authenticate, what to expose, and how to recover when something fails</strong>.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">02 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">02 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 3 — DIVIDER: REAL-WORLD SITUATION
+     SLIDE 3 — DIVIDER: SERVER PARAMETERS
      ========================================================= -->
 <section class="slide divider">
   <div class="sheet">
@@ -365,177 +366,109 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
     <div class="big-index">01</div>
     <div class="sheet-inner">
       <div class="reveal"><span class="kicker">Part One</span></div>
-      <div class="reveal"><h2>Start with a real-world situation</h2></div>
-      <div class="reveal"><p class="subtitle">Why do we need advanced MCP configuration?</p></div>
+      <div class="reveal"><h2>Configuring MCP Server Parameters:<br>URL, Headers and<br>Authentication Tokens</h2></div>
+      <div class="reveal"><p class="subtitle">First, understand the problem.</p></div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">03 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">03 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 4 — RECAP
+     SLIDE 4 — THE CONFIGURATION PROBLEM
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Recap</span><h2>In the previous module, we learned…</h2><p class="subtitle">The foundation is in place. Now we go one step further.</p></div>
-        <span class="num">01 · WHY ADVANCED</span>
+        <div><span class="kicker"><span class="dot"></span> The problem</span><h2>Communicating with departments</h2><p class="subtitle">Imagine working in a company with different departments.</p></div>
+        <span class="num">01 · SERVER PARAMETERS</span>
       </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>What MCP is and why it is needed.</p></div>
-        <div class="card"><div class="ico">2</div><p>The responsibilities of MCP Host, Client and Server.</p></div>
-        <div class="card"><div class="ico">3</div><p>How Claude connects to external applications.</p></div>
-        <div class="card"><div class="ico">4</div><p>How Claude selects and uses MCP tools.</p></div>
-        <div class="card"><div class="ico">5</div><p>How multiple tools work together.</p></div>
-        <div class="card"><div class="ico">6</div><p>How to handle failures.</p></div>
+      <div class="grid g3 reveal">
+        <div class="card"><div class="ico">⌘</div><h3>GitHub department</h3><p>Manages source code and issues.</p></div>
+        <div class="card"><div class="ico">📦</div><h3>Product department</h3><p>Manages product information.</p></div>
+        <div class="card"><div class="ico">📁</div><h3>Filesystem department</h3><p>Provides access to project files.</p></div>
       </div>
-      <div class="scribble reveal" style="margin-top:14px;font-size:23px">Now let's move one step further → configuration.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">04 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 5 — ONE STEP FURTHER
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Focus</span><h2>Now let's move one step further</h2><p class="subtitle">From using MCP to running it as part of a real project.</p></div>
-        <span class="num">01 · WHY ADVANCED</span>
-      </div>
-      <div class="grid g4 reveal">
-        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">⚙</div><h3>Configure</h3><p>Set up the right server details.</p></div>
-        <div class="card" style="border-top:4px solid var(--blue)"><div class="ico">🗂</div><h3>Manage</h3><p>Handle several servers in one project.</p></div>
-        <div class="card" style="border-top:4px solid var(--amber)"><div class="ico">🎛</div><h3>Control</h3><p>Limit which tools are exposed.</p></div>
-        <div class="card" style="border-top:4px solid var(--coral)"><div class="ico">🔍</div><h3>Troubleshoot</h3><p>Find why a tool call failed.</p></div>
-      </div>
-      <div class="sticky reveal" style="margin:18px auto 0;max-width:840px;text-align:center;font-size:21px">This module is developer-oriented: it is about running MCP reliably, not just calling a tool.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">05 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 6 — SAME APPLICATION
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Continuity</span><h2>We continue with the same application</h2><p class="subtitle">The Task Management application from the previous module.</p></div>
-        <span class="num">01 · WHY ADVANCED</span>
-      </div>
-      <div class="flow reveal" style="margin-top:12px">
-        <div class="fnode"><span class="n">MODULE 4</span><span class="s">MCP essentials</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">MODULE 5</span><span class="s">advanced config</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">SAME APP</span><span class="s">Task Management</span></div>
-      </div>
-      <div class="callout reveal" style="margin-top:18px"><strong>Why keep the same example?</strong> Because the complexity comes from <strong>configuration and coordination</strong>, not from learning a new domain.</div>
-      <div class="scribble reveal" style="margin-top:12px">Same project, deeper control.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">06 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 7 — COMPANY APPLICATIONS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Real situation</span><h2>Your company uses four systems</h2><p class="subtitle">Each one owns a different part of the project.</p></div>
-        <span class="num">01 · WHY ADVANCED</span>
-      </div>
-      <div class="grid g4 reveal">
-        <div class="card" style="border-top:3px solid var(--teal)"><div class="ico">⌘</div><h3>GitHub</h3><p>Source code and bug tracking.</p></div>
-        <div class="card" style="border-top:3px solid var(--blue)"><div class="ico">▣</div><h3>Jira</h3><p>Project tasks and tickets.</p></div>
-        <div class="card" style="border-top:3px solid var(--coral)"><div class="ico">▤</div><h3>PostgreSQL</h3><p>Application database.</p></div>
-        <div class="card" style="border-top:3px solid var(--green)"><div class="ico">◫</div><h3>Google Drive</h3><p>Project documentation.</p></div>
-      </div>
-      <div class="chips reveal" style="margin-top:18px;justify-content:center"><span class="chip teal">Code</span><span class="chip teal">Bugs</span><span class="chip teal">Tickets</span><span class="chip teal">Data</span><span class="chip teal">Docs</span></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">07 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 8 — CLAUDE HELP ACTIVITIES
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Goal</span><h2>You want Claude to help with development</h2><p class="subtitle">Four everyday activities across those systems.</p></div>
-        <span class="num">01 · WHY ADVANCED</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p><strong>Find bugs</strong> in GitHub.</p></div>
-        <div class="card"><div class="ico">2</div><p><strong>Check corresponding Jira tickets.</strong></p></div>
-        <div class="card"><div class="ico">3</div><p><strong>Retrieve task information</strong> from PostgreSQL.</p></div>
-        <div class="card"><div class="ico">4</div><p><strong>Read project documentation</strong> from Google Drive.</p></div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:16px">Each activity needs a different MCP connection — and together they need a <strong>configuration strategy</strong>.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">08 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 9 — SIX QUESTIONS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Questions</span><h2>Now a few questions arise</h2><p class="subtitle">These are the configuration problems advanced MCP setup must answer.</p></div>
-        <span class="num">01 · WHY ADVANCED</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>How does Claude know <strong>where each MCP server is running?</strong></p></div>
-        <div class="card"><div class="ico">2</div><p>How does it <strong>authenticate</strong> with each server?</p></div>
-        <div class="card"><div class="ico">3</div><p>Can we connect <strong>multiple MCP servers</strong> to one project?</p></div>
-        <div class="card"><div class="ico">4</div><p>Should Claude see <strong>every available tool?</strong></p></div>
-        <div class="card"><div class="ico">5</div><p>What happens if a server is <strong>unavailable?</strong></p></div>
-        <div class="card"><div class="ico">6</div><p>How do developers identify <strong>why a tool call failed?</strong></p></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">09 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 10 — PROBLEMS ADDRESSED
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Answer</span><h2>These are the problems addressed here</h2><p class="subtitle">Each question maps to a topic in this module.</p></div>
-        <span class="num">01 · WHY ADVANCED</span>
-      </div>
-      <table class="tbl reveal">
-        <thead><tr><th>Question</th><th>Topic in this module</th></tr></thead>
+      <div class="callout reveal" style="margin-top:12px">To communicate with each department, you need three things: <strong>Where is it located?</strong> <strong>What information should you provide?</strong> <strong>Are you authorized?</strong> MCP server configuration works in a similar way.</div>
+      <table class="tbl reveal" style="margin-top:12px">
+        <thead><tr><th>Parameter</th><th>Meaning</th><th>Example</th></tr></thead>
         <tbody>
-          <tr><td>Where is the server?</td><td>URL configuration</td></tr>
-          <tr><td>How does it authenticate?</td><td>Headers and tokens</td></tr>
-          <tr><td>Can we connect several servers?</td><td>Multiple MCP servers</td></tr>
-          <tr><td>Should every tool be visible?</td><td>Tool filtering</td></tr>
-          <tr><td>What if a server is down?</td><td>Errors and timeouts</td></tr>
-          <tr><td>Why did a call fail?</td><td>Logs and traces</td></tr>
+          <tr><td>URL</td><td>Address of the remote MCP server.</td><td><code>https://api.githubcopilot.com/mcp/</code></td></tr>
+          <tr><td>Headers</td><td>Additional information sent with a request.</td><td><code>Authorization: Bearer ...</code></td></tr>
+          <tr><td>Authentication token</td><td>Credential used to authorize access.</td><td>GitHub PAT</td></tr>
+          <tr><td>Transport</td><td>Communication method.</td><td>HTTP or STDIO</td></tr>
         </tbody>
       </table>
-      <div class="scribble reveal" style="margin-top:14px">Configuration turns questions into controlled settings.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">10 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">04 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 11 — DIVIDER: SERVER PARAMETERS
+     SLIDE 5 — URL
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> A · URL</span><h2>Where is the server?</h2><p class="subtitle">A URL tells Claude Code where the MCP Server is located.</p></div>
+        <span class="num">01 · SERVER PARAMETERS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><div class="ico">🏢</div><h3>Office analogy</h3><p>To visit the HR department, you need to know its location first. Similarly, Claude needs the MCP Server address.</p></div>
+        <div class="card"><div class="ico">🔗</div><h3>Lab example</h3><div class="code-wrap"><div class="code-head"><span class="file">GitHub MCP endpoint</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>https://api.githubcopilot.com/mcp/</pre></div><p class="mini-head" style="margin-top:8px">This is the GitHub MCP Server endpoint used in our lab.</p></div>
+      </div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:820px;text-align:center;font-size:21px">No URL → Claude does not know where to send the request.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">05 / 26</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 6 — HEADERS
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> B · Headers</span><h2>What information is sent?</h2><p class="subtitle">Headers are additional pieces of information sent with a request.</p></div>
+        <span class="num">01 · SERVER PARAMETERS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card" style="background:var(--amber-l);border-color:#e8d6ae"><div class="ico">🪪</div><h3>Office analogy</h3><p>You enter an office and provide your employee ID and access card. Security uses that information to verify your access. HTTP headers can carry authentication information in the same way.</p></div>
+        <div class="card"><div class="ico">📨</div><h3>Example</h3><div class="code-wrap"><div class="code-head"><span class="file">authorization header</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>Authorization: Bearer YOUR_GITHUB_PAT</pre></div>
+          <div class="chips" style="margin-top:10px"><span class="chip teal">Authorization = header name</span><span class="chip teal">Bearer = auth scheme</span><span class="chip teal">YOUR_GITHUB_PAT = token</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">06 / 26</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 7 — AUTH TOKENS + IMAGE
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> C · Authentication tokens</span><h2>Are you authorized?</h2><p class="subtitle">A credential that proves permission to access a service.</p></div>
+        <span class="num">01 · SERVER PARAMETERS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">🔐</div><h3>GitHub Personal Access Token</h3><p>In our lab we use a <strong>GitHub PAT</strong>. GitHub requires authorization before Claude can perform operations such as:</p><div class="chips" style="margin-top:8px"><span class="chip teal">Read repository information</span><span class="chip teal">List issues</span><span class="chip teal">Create issues</span><span class="chip teal">Create pull requests</span></div></div>
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><div class="ico">🧩</div><h3>How the three work together</h3><p><strong>URL</strong> = where to go. <strong>Headers</strong> = what information to send. <strong>Token</strong> = proof of permission. Transport (HTTP or STDIO) carries the communication.</p></div>
+      </div>
+      <div class="illus-frame reveal" style="margin-top:12px">
+        <img class="illus" loading="lazy" src="https://i.ibb.co/8DT7w0Hx/image.png" alt="MCP server parameters: URL, headers and authentication token">
+        <div class="illus-cap">How URL, headers and authentication tokens work together. Click the image to open it in a new tab.</div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">07 / 26</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 8 — DIVIDER: MULTIPLE SERVERS
      ========================================================= -->
 <section class="slide divider">
   <div class="sheet">
@@ -543,349 +476,78 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
     <div class="big-index">02</div>
     <div class="sheet-inner">
       <div class="reveal"><span class="kicker">Part Two</span></div>
-      <div class="reveal"><h2>Configuring MCP<br>Server Parameters</h2></div>
-      <div class="reveal"><p class="subtitle">URL, headers and authentication tokens.</p></div>
+      <div class="reveal"><h2>Combining Multiple<br>MCP Servers Within<br>a Single Project</h2></div>
+      <div class="reveal"><p class="subtitle">Different jobs, different specialized servers.</p></div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">11 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">08 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 12 — PHONE ANALOGY
+     SLIDE 9 — MULTIPLE SERVERS TABLE
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Analogy</span><h2>Think about calling a person</h2><p class="subtitle">Before Claude can communicate with an MCP server, it needs connection information.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
+        <div><span class="kicker"><span class="dot"></span> The problem</span><h2>One project, many tasks</h2><p class="subtitle">Imagine developing an e-commerce application.</p></div>
+        <span class="num">02 · MULTIPLE SERVERS</span>
       </div>
       <div class="grid g3 reveal">
-        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">📞</div><h3>Phone number</h3><p>Where to reach the person.</p></div>
-        <div class="card" style="border-top:4px solid var(--blue)"><div class="ico">🪪</div><h3>Identification</h3><p>Any required access or proof.</p></div>
-        <div class="card" style="border-top:4px solid var(--coral)"><div class="ico">💬</div><h3>Communication</h3><p>A way to exchange the message.</p></div>
+        <div class="card"><div class="ico">📄</div><p>Read project files.</p></div>
+        <div class="card"><div class="ico">⌘</div><p>Check GitHub issues.</p></div>
+        <div class="card"><div class="ico">📦</div><p>Create products.</p></div>
+        <div class="card"><div class="ico">✅</div><p>Run automated tests.</p></div>
+        <div class="card"><div class="ico">📚</div><p>Read product documentation.</p></div>
       </div>
-      <div class="callout teal reveal" style="margin-top:16px"><strong>Similarly, an MCP Client needs the correct server connection details</strong> before any tool call can happen.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">12 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 13 — THREE CONFIG ITEMS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Essentials</span><h2>Three important configuration items</h2><p class="subtitle">Every remote connection needs these basics.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="grid g3 reveal">
-        <div class="card"><div class="ico">1</div><h3>URL</h3><p>Where the MCP server can be reached.</p></div>
-        <div class="card"><div class="ico">2</div><h3>Headers</h3><p>Additional information sent with a request.</p></div>
-        <div class="card"><div class="ico">3</div><h3>Authentication tokens</h3><p>Proof that access is authorized.</p></div>
-      </div>
-      <div class="flow reveal" style="margin-top:18px">
-        <div class="fnode"><span class="n">URL</span><span class="s">locate</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">HEADERS</span><span class="s">describe</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">TOKEN</span><span class="s">authorize</span></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">13 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 14 — 2.1 URL
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.1 · URL</span><h2>Where is the MCP Server located?</h2><p class="subtitle">Suppose you want Claude to connect to your company's GitHub-related MCP server.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">remote MCP server address</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>https://mcp.company.com/github</pre>
-      </div>
-      <div class="callout reveal" style="margin-top:14px"><strong>This address tells the MCP Client where the remote MCP server can be reached.</strong></div>
-      <div class="scribble reveal" style="margin-top:10px">The URL answers “Where do I send the request?”</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">14 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 15 — URL REAL SCENARIO
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.1 · URL</span><h2>Real-world scenario</h2><p class="subtitle">Your company deployed an MCP server on its infrastructure.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><h3>Administrator provides</h3><p><code class="inline">https://mcp.company.com/github</code></p></div>
-        <div class="card"><h3>You configure</h3><p>The connection using that address.</p></div>
-      </div>
-      <div class="flow reveal" style="margin-top:18px">
-        <div class="fnode"><span class="n">ADMIN</span><span class="s">gives address</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">CONFIG</span><span class="s">set URL</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">CLIENT</span><span class="s">knows endpoint</span></div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:14px">Now the MCP Client knows where to establish communication.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">15 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 16 — WITHOUT URL + NOTE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.1 · URL</span><h2>What happens without the URL?</h2><p class="subtitle">The Client does not know which remote endpoint to contact.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="callout coral reveal"><strong>The Client cannot establish that remote connection.</strong> The URL identifies the location of the MCP server.</div>
-      <details class="note teal reveal"><summary>Note: local servers and transports</summary><div class="body">Local MCP servers may use a command and arguments instead of a remote URL. Remote servers commonly use supported network transports such as Streamable HTTP.</div></details>
-      <div class="scribble reveal" style="margin-top:14px">Remote = URL. Local = command + arguments.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">16 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 17 — 2.2 HEADERS ANALOGY
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.2 · Headers</span><h2>Entering a company building</h2><p class="subtitle">HTTP headers carry additional information with a request.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="grid g3 reveal">
-        <div class="card"><div class="ico">🪪</div><h3>Employee ID</h3><p>Who is making the request?</p></div>
-        <div class="card"><div class="ico">🏬</div><h3>Department</h3><p>Which area is relevant?</p></div>
-        <div class="card"><div class="ico">📋</div><h3>Access information</h3><p>What is permitted?</p></div>
-      </div>
-      <div class="callout reveal" style="margin-top:16px"><strong>HTTP headers serve a related technical purpose:</strong> they carry extra details the server needs to process the request.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">17 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 18 — HEADER EXAMPLES
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.2 · Headers</span><h2>Example headers</h2><p class="subtitle">Two common headers in an HTTP request.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">request headers</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>Content-Type: application/json
-Authorization: Bearer YOUR_ACCESS_TOKEN</pre>
-      </div>
-      <div class="grid g2 reveal" style="margin-top:14px">
-        <div class="card"><h3>Content-Type</h3><p>Tells the server what kind of content is being sent.</p></div>
-        <div class="card"><h3>Authorization</h3><p>Carries authentication credentials in this example.</p></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">18 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 19 — HEADERS REAL SCENARIO
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.2 · Headers</span><h2>Real-world scenario</h2><p class="subtitle">Your company has an internal MCP server.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="callout reveal">The server requires an <strong>authorization header</strong> before accepting requests.</div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">incoming request</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>Authorization: Bearer YOUR_ACCESS_TOKEN</pre>
-      </div>
-      <div class="flow reveal" style="margin-top:14px">
-        <div class="fnode"><span class="n">REQUEST</span><span class="s">with header</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">SERVER</span><span class="s">checks credential</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">DECISION</span><span class="s">valid + permitted?</span></div>
-      </div>
-      <div class="scribble reveal" style="margin-top:12px">The server checks both identity and permission.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">19 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 20 — WITHOUT REQUIRED HEADERS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.2 · Headers</span><h2>What happens without required headers?</h2><p class="subtitle">The server may reject the request.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card" style="border-top:4px solid var(--red)"><h3>401 Unauthorized</h3><p>Authentication is missing or invalid.</p></div>
-        <div class="card" style="border-top:4px solid var(--amber)"><h3>403 Forbidden</h3><p>The request is understood but not permitted.</p></div>
-      </div>
-      <div class="callout coral reveal" style="margin-top:16px"><strong>Why are headers needed?</strong> They let the client and server exchange additional information required by the connection.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">20 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 21 — OBSERVE HEADERS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.2 · Headers</span><h2>What students should observe</h2><p class="subtitle">Four checks when a header-based connection fails.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>Which headers are configured?</p></div>
-        <div class="card"><div class="ico">2</div><p>Is an authorization header required?</p></div>
-        <div class="card"><div class="ico">3</div><p>Does the server accept or reject the request?</p></div>
-        <div class="card"><div class="ico">4</div><p>Is the content type correct?</p></div>
-      </div>
-      <div class="scribble reveal" style="margin-top:14px">Check the request before changing the prompt.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">21 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 22 — AUTH TOKENS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.3 · Tokens</span><h2>Authentication tokens</h2><p class="subtitle">Proving that access is authorized.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="callout teal reveal"><strong>Suppose you connect Claude to a private company system.</strong> The server needs to know whether the connection is authorized.</div>
-      <div class="sticky reveal" style="margin:16px auto 0;max-width:780px;text-align:center;font-size:21px">An authentication token acts like a temporary or controlled access pass.</div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">token example</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>YOUR_ACCESS_TOKEN</pre>
-      </div>
-      <div class="callout reveal" style="margin-top:12px">The Client or connector supplies the token according to the server's authentication requirements. The server validates it before allowing access.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">22 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 23 — TOKEN IMAGE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.3 · Tokens</span><h2>Authentication in the connection</h2><p class="subtitle">The token is presented, validated, then access is decided.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="illus-frame reveal">
-        <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/ANhN-khpg9eIWFPENxf0kMdyCv9fVJSCWr3WjtXIEiRj9HQkptJhrfJLe3GQ0kmahAtu3gBoYuP1w7EZQvpBehgcX3eTgNqjZPRzDlVeALJLBgGCNTIdgAF8_kZiSdjWX7riIl177Qu4HLGwODtmABTTmfr06-RhmKQQhrCCIfs2oMgVe1TMlRk0Ko4TVYQS?purpose=fullsize" alt="Authentication token illustration">
-        <div class="illus-cap">Click the image to open it in a new tab.</div>
-      </div>
-      <div class="flow reveal" style="margin-top:10px">
-        <div class="fnode"><span class="n">CLIENT</span><span class="s">supplies token</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">SERVER</span><span class="s">validates token</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">ACCESS</span><span class="s">allowed / denied</span></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">23 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 24 — TOKEN REAL SCENARIO
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.3 · Tokens</span><h2>Real scenario: GitHub server</h2><p class="subtitle">The server allows only authorized users.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card" style="border-color:var(--red);background:var(--red-l)"><div class="ico">✕</div><h3>No valid token</h3><p>Claude tries to retrieve repository information — the server rejects the request.</p></div>
-        <div class="card" style="border-color:var(--green);background:var(--green-l)"><div class="ico">✓</div><h3>After authentication</h3><p>The request can succeed <strong>if the user also has the necessary permissions</strong>.</p></div>
-      </div>
-      <div class="callout amber reveal" style="margin-top:16px"><strong>Authentication answers “Who are you?”</strong> Permissions still answer “What are you allowed to do?”</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">24 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 25 — WITHOUT VS WITH TOKEN
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 2.3 · Tokens</span><h2>Without vs With a valid token</h2><p class="subtitle">The difference a valid credential makes.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
-      </div>
-      <table class="tbl reveal">
-        <thead><tr><th>Without valid authentication</th><th>With valid authentication</th></tr></thead>
+      <div class="callout reveal" style="margin-top:12px">Can one MCP Server perform all these operations? <strong>It can, if designed to expose all these capabilities.</strong> However, we can also connect multiple specialized MCP servers.</div>
+      <table class="tbl reveal" style="margin-top:12px">
+        <thead><tr><th>MCP Server</th><th>Responsibility</th></tr></thead>
         <tbody>
-          <tr><td>Server may reject the request.</td><td>Server can verify identity or authorization.</td></tr>
-          <tr><td>Private information cannot be accessed.</td><td>Permitted information can be accessed.</td></tr>
-          <tr><td>An authentication error may occur.</td><td>Requests can proceed if permissions allow.</td></tr>
+          <tr><td>GitHub MCP Server</td><td>Issues, pull requests and repository operations.</td></tr>
+          <tr><td>Filesystem MCP Server</td><td>Read and search project files.</td></tr>
+          <tr><td>Product MCP Server</td><td>Product-related operations.</td></tr>
+          <tr><td>Database MCP Server</td><td>Database operations, if configured.</td></tr>
         </tbody>
       </table>
-      <div class="scribble reveal" style="margin-top:14px">Valid token ≠ unlimited access. Permissions still apply.</div>
+      <div class="scribble reveal" style="margin-top:10px">Each server provides its own set of capabilities.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">25 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">09 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 26 — SECURITY POINT
+     SLIDE 10 — WHY MULTIPLE + IMAGE
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Security</span><h2>Important security point</h2><p class="subtitle">Treat tokens like passwords.</p></div>
-        <span class="num">02 · SERVER PARAMETERS</span>
+        <div><span class="kicker"><span class="dot"></span> Why multiple servers?</span><h2>Specialized responsibility</h2><p class="subtitle">Suppose you ask Claude:</p></div>
+        <span class="num">02 · MULTIPLE SERVERS</span>
       </div>
-      <div class="callout coral reveal"><strong>Never hardcode real tokens in source code or share them in screenshots.</strong> Use secure credential storage or environment variables where appropriate.</div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">environment variable · illustrative</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>GITHUB_MCP_TOKEN=your_secret_token</pre>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">“Check the latest GitHub issues, inspect the related product code and identify whether the reported problem is already fixed.”</div>
+      <div class="grid g3 reveal" style="margin-top:12px">
+        <div class="card"><div class="ico">1</div><h3>GitHub MCP Server</h3><p>Retrieve issues.</p></div>
+        <div class="card"><div class="ico">2</div><h3>Filesystem MCP Server</h3><p>Inspect the source code.</p></div>
+        <div class="card"><div class="ico">3</div><h3>Claude</h3><p>Analyze the information and prepare a response.</p></div>
       </div>
-      <details class="note reveal"><summary>Important note</summary><div class="body">This is an illustrative configuration. The actual authentication mechanism depends on the MCP server and connector.</div></details>
+      <div class="flow reveal" style="margin-top:12px">
+        <div class="fnode"><span class="n">REQUEST</span><span class="s">one user question</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">GITHUB</span><span class="s">issues</span></div><span class="farr">+</span>
+        <div class="fnode alt"><span class="n">FILESYSTEM</span><span class="s">code</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">RESPONSE</span><span class="s">combined answer</span></div>
+      </div>
+      <div class="illus-frame reveal" style="margin-top:12px">
+        <img class="illus" loading="lazy" src="https://i.ibb.co/p69bL194/image.png" alt="Multiple MCP servers connected in one project">
+        <div class="illus-cap">How multiple MCP servers work together inside a single project. Click to open in a new tab.</div>
+      </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">26 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">10 / 26</span></div>
   </div>
 </section>
-
 <!-- =========================================================
-     SLIDE 27 — DIVIDER: MULTIPLE SERVERS
+     SLIDE 11 — DIVIDER: TOOL FILTERING
      ========================================================= -->
 <section class="slide divider">
   <div class="sheet">
@@ -893,156 +555,68 @@ Authorization: Bearer YOUR_ACCESS_TOKEN</pre>
     <div class="big-index">03</div>
     <div class="sheet-inner">
       <div class="reveal"><span class="kicker">Part Three</span></div>
-      <div class="reveal"><h2>Combining Multiple<br>MCP Servers Within<br>a Single Project</h2></div>
-      <div class="reveal"><p class="subtitle">Real projects rarely depend on only one external system.</p></div>
+      <div class="reveal"><h2>Tool Filtering:<br>Exposing Only Relevant<br>Tools to Claude</h2></div>
+      <div class="reveal"><p class="subtitle">Less noise, clearer choices, controlled access.</p></div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">27 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">11 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 28 — BEYOND ONE SERVER
+     SLIDE 12 — WHAT IS TOOL FILTERING
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Scale</span><h2>We configured one server. Now what?</h2><p class="subtitle">Real projects depend on several external systems.</p></div>
-        <span class="num">03 · MULTIPLE SERVERS</span>
-      </div>
-      <div class="grid g4 reveal">
-        <div class="card"><div class="ico">⌘</div><h3>GitHub</h3><p>Bugs and code.</p></div>
-        <div class="card"><div class="ico">▣</div><h3>Jira</h3><p>Tasks and tickets.</p></div>
-        <div class="card"><div class="ico">▤</div><h3>PostgreSQL</h3><p>Application data.</p></div>
-        <div class="card"><div class="ico">◫</div><h3>Google Drive</h3><p>Documentation.</p></div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:16px"><strong>Each system provides different capabilities.</strong> Can Claude use multiple MCP servers in the same project?</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">28 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 29 — YES, MULTIPLE SERVERS + IMAGE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Answer</span><h2>Yes — an MCP host can use several servers</h2><p class="subtitle">One project can configure multiple MCP server connections.</p></div>
-        <span class="num">03 · MULTIPLE SERVERS</span>
-      </div>
-      <div class="illus-frame reveal">
-        <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/yvAV_FaJb3kXqnVSPAkitYW8LavtFBPR53QHs0eynmNz5J5OwXVJfj9XyOroKQOuVlVlEoJAcgtod-vJNCAYD6HyoXaF4TBW3fvBZfqXDrt4L3lEFoxHmlNevlf56y56RY3mYjqI09ZC3M2VIaaHUtb5eSrsL41gULqskQDzw0SJKisvjWKvrf-OCMVUgHNX?purpose=fullsize" alt="Multiple MCP servers in one project">
-        <div class="illus-cap">One Host, several configured MCP connections.</div>
-      </div>
-      <div class="flow reveal" style="margin-top:10px">
-        <div class="fnode"><span class="n">HOST</span><span class="s">Claude</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">GITHUB</span><span class="s">server</span></div><span class="farr">·</span>
-        <div class="fnode alt2"><span class="n">JIRA</span><span class="s">server</span></div><span class="farr">·</span>
-        <div class="fnode"><span class="n">POSTGRES</span><span class="s">server</span></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">29 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 30 — WHY MULTIPLE SERVERS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Need</span><h2>Why do we need multiple MCP servers?</h2><p class="subtitle">One request can span three different systems.</p></div>
-        <span class="num">03 · MULTIPLE SERVERS</span>
-      </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--teal);font-size:15.5px">“Find the open bugs in GitHub, check whether Jira tickets exist, and read our project documentation before suggesting a fix.”</div>
-      <table class="tbl reveal" style="margin-top:14px">
-        <thead><tr><th>MCP Server</th><th>Responsibility</th></tr></thead>
-        <tbody>
-          <tr><td>GitHub MCP Server</td><td>Retrieve bugs and repository information.</td></tr>
-          <tr><td>Jira MCP Server</td><td>Retrieve project tickets.</td></tr>
-          <tr><td>Google Drive MCP Server</td><td>Read project documentation.</td></tr>
-        </tbody>
-      </table>
-      <div class="callout reveal" style="margin-top:12px">Each server provides its own tools and resources. Claude uses the relevant connections to complete the task.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">30 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 31 — WORKFLOW
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 3.2 · Workflow</span><h2>How does the workflow happen?</h2><p class="subtitle">Suppose you ask about the login API bug, its Jira ticket and the documentation.</p></div>
-        <span class="num">03 · MULTIPLE SERVERS</span>
-      </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--blue)">“Find the login API bug and check the related Jira ticket and project documentation.”</div>
-      <div class="flow reveal" style="margin-top:18px">
-        <div class="fnode"><span class="n">CLAUDE</span><span class="s">understands request</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">GITHUB</span><span class="s">find bug</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">JIRA</span><span class="s">find ticket</span></div><span class="farr">→</span>
-        <div class="fnode"><span class="n">DRIVE</span><span class="s">read docs</span></div>
-      </div>
-      <div class="flow reveal" style="margin-top:8px">
-        <div class="fnode" style="grid-column:1/-1"><span class="n">CLAUDE</span><span class="s">prepares the combined response</span></div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:14px"><strong>The exact execution order depends on dependencies.</strong> Independent requests can run in parallel.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">31 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 32 — WITHOUT MULTIPLE SERVERS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 3.3 · Without</span><h2>What happens without multiple MCP servers?</h2><p class="subtitle">The manual work returns.</p></div>
-        <span class="num">03 · MULTIPLE SERVERS</span>
+        <div><span class="kicker"><span class="dot"></span> The problem + definition</span><h2>What is tool filtering?</h2><p class="subtitle">An employee has access to 50 office operations — but your job is product management.</p></div>
+        <span class="num">03 · TOOL FILTERING</span>
       </div>
       <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>You may need to search GitHub manually.</p></div>
-        <div class="card"><div class="ico">2</div><p>You may need to open Jira separately.</p></div>
-        <div class="card"><div class="ico">3</div><p>You may need to find documentation yourself.</p></div>
-        <div class="card"><div class="ico">4</div><p>You must provide the collected information to Claude.</p></div>
+        <div class="card"><div class="ico">🚫</div><h3>You do not need</h3><div class="chips"><span class="chip coral">Payroll operations</span><span class="chip coral">Employee salary information</span><span class="chip coral">Recruitment operations</span><span class="chip coral">Financial approvals</span></div><p style="margin-top:8px">Giving access to everything creates unnecessary complexity and potential security risks.</p></div>
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><div class="ico">✅</div><h3>You only need</h3><p>Product-related operations. <strong>Tool filtering</strong> means controlling which MCP tools are made available to Claude for a particular task or workflow.</p></div>
       </div>
-      <div class="callout reveal" style="margin-top:16px"><strong>With multiple MCP servers,</strong> Claude can access the relevant systems through their configured capabilities.</div>
+      <table class="tbl reveal" style="margin-top:14px">
+        <thead><tr><th>Product MCP Server tool</th><th>Purpose</th><th>Needed to inspect products?</th></tr></thead>
+        <tbody>
+          <tr><td><code>list_products</code></td><td>Retrieve products.</td><td>Yes</td></tr>
+          <tr><td><code>create_product</code></td><td>Create products.</td><td>No</td></tr>
+          <tr><td><code>update_product</code></td><td>Update products.</td><td>No</td></tr>
+          <tr><td><code>delete_product</code></td><td>Delete products.</td><td>No</td></tr>
+          <tr><td><code>run_tests</code></td><td>Run automated tests.</td><td>No</td></tr>
+        </tbody>
+      </table>
+      <div class="scribble reveal" style="margin-top:10px">A developer who only needs to inspect products needs <code class="inline">list_products</code> — not the rest.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">32 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">12 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 33 — NO DATA SHARING
+     SLIDE 13 — WHY FILTERING MATTERS
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Important</span><h2>Connected does not mean shared</h2><p class="subtitle">A key clarification about multiple servers.</p></div>
-        <span class="num">03 · MULTIPLE SERVERS</span>
+        <div><span class="kicker"><span class="dot"></span> Importance</span><h2>Why is tool filtering important?</h2><p class="subtitle">Five practical benefits.</p></div>
+        <span class="num">03 · TOOL FILTERING</span>
       </div>
-      <div class="sticky reveal" style="margin:16px auto 0;max-width:880px;text-align:center;font-size:21px">Connecting multiple servers does not mean every server shares its data with every other server.</div>
-      <div class="grid g2 reveal" style="margin-top:20px">
-        <div class="card"><h3>Claude coordinates</h3><p>It sends requests to the relevant servers and collects their responses.</p></div>
-        <div class="card"><h3>Claude combines</h3><p>It merges the results available to it into one answer.</p></div>
+      <div class="grid g3 reveal">
+        <div class="card"><div class="ico">1</div><h3>Reduces availability</h3><p>Fewer unnecessary tools are exposed.</p></div>
+        <div class="card"><div class="ico">2</div><h3>Clearer selection</h3><p>Tool choice is easier to understand.</p></div>
+        <div class="card"><div class="ico">3</div><h3>Fewer accidents</h3><p>Helps reduce accidental operations.</p></div>
+        <div class="card"><div class="ico">4</div><h3>Controlled access</h3><p>Supports controlled capability access.</p></div>
+        <div class="card"><div class="ico">5</div><h3>Focused workflow</h3><p>Keeps work on relevant operations.</p></div>
       </div>
-      <div class="scribble reveal" style="margin-top:14px">Servers stay separate; the assistant orchestrates.</div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:840px;text-align:center;font-size:21px">Expose what the task needs — not everything the server can do.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">33 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">13 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 34 — DIVIDER: TOOL FILTERING
+     SLIDE 14 — DIVIDER: ERRORS
      ========================================================= -->
 <section class="slide divider">
   <div class="sheet">
@@ -1050,235 +624,76 @@ Authorization: Bearer YOUR_ACCESS_TOKEN</pre>
     <div class="big-index">04</div>
     <div class="sheet-inner">
       <div class="reveal"><span class="kicker">Part Four</span></div>
-      <div class="reveal"><h2>Tool Filtering —<br>Exposing Only<br>Relevant Tools</h2></div>
-      <div class="reveal"><p class="subtitle">Claude may have access to many tools. Should it see all of them?</p></div>
+      <div class="reveal"><h2>Handling MCP Tool Errors<br>and Timeouts Gracefully</h2></div>
+      <div class="reveal"><p class="subtitle">Fail clearly, explain honestly, never mislead.</p></div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">34 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">14 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 35 — FOUR SERVERS MANY TOOLS
+     SLIDE 15 — CONNECTION + AUTH ERRORS
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> The scale</span><h2>Four servers, many tools</h2><p class="subtitle">Imagine you have connected four MCP servers.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
+        <div><span class="kicker"><span class="dot"></span> The problem</span><h2>When a request goes wrong</h2><p class="subtitle">Ask an employee to retrieve a product report — the database is unavailable, the product is missing, information is wrong, or the system is too slow.</p></div>
+        <span class="num">04 · ERRORS</span>
       </div>
-      <table class="tbl reveal">
-        <thead><tr><th>Server</th><th>Available tools</th></tr></thead>
-        <tbody>
-          <tr><td>GitHub</td><td>Search repositories, list issues, create issues, delete branches.</td></tr>
-          <tr><td>Jira</td><td>Search tickets, create tickets, update tickets, delete tickets.</td></tr>
-          <tr><td>PostgreSQL</td><td>Read schema, execute query, update records.</td></tr>
-          <tr><td>Google Drive</td><td>Search documents, read files, upload files.</td></tr>
-        </tbody>
-      </table>
-      <div class="scribble reveal" style="margin-top:14px">That is a lot of choices for one task.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">35 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 36 — DO YOU NEED ALL TOOLS?
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Question</span><h2>Does Claude need all of them for every task?</h2><p class="subtitle">No — and that is where tool filtering comes in.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
-      </div>
-      <div class="vs reveal">
-        <div class="panel bad"><span class="tag">ALL TOOLS</span><div class="txt">Every tool from every server is visible.</div><div class="note">More noise, more risk.</div></div>
-        <div class="arrow-mid">→</div>
-        <div class="panel good"><span class="tag">FILTERED TOOLS</span><div class="txt">Only the tools relevant to the setup or task.</div><div class="note">More focused and safer.</div></div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:16px"><strong>Tool filtering</strong> controls which tools are made available to Claude for a particular setup or task.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">36 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 37 — 4.1 WHAT IS TOOL FILTERING?
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 4.1 · Definition</span><h2>What is tool filtering?</h2><p class="subtitle">Think about a company employee.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">👤</div><h3>HR employee</h3><p>Does not need access to every operation in the finance department.</p></div>
-        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><div class="ico">🤖</div><h3>Claude</h3><p>Does not always need every tool from every MCP server.</p></div>
-      </div>
-      <div class="sticky reveal" style="margin:16px auto 0;max-width:820px;text-align:center;font-size:21px">Tool filtering means controlling which tools are made available to Claude for a particular setup or task.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">37 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 38 — REAL SCENARIO FILTERING
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 4.1 · Scenario</span><h2>Only the relevant tool is needed</h2><p class="subtitle">Suppose you ask Claude:</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
-      </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">“Find all open GitHub issues.”</div>
-      <div class="vs reveal" style="margin-top:14px">
-        <div class="panel good"><span class="tag">RELEVANT</span><div class="txt">list_issues()</div><div class="note">This is the tool for the task.</div></div>
-        <div class="arrow-mid">vs</div>
-        <div class="panel bad"><span class="tag">NOT NEEDED</span><div class="txt">delete_branch()<br>create_release()<br>update_repository_settings()</div><div class="note">Unrelated to the request.</div></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">38 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 39 — FILTERING IMAGE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Focused toolset</span><h2>A smaller toolset is easier to manage</h2><p class="subtitle">The right tools, exposed at the right time.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
-      </div>
-      <div class="illus-frame reveal">
-        <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/nsNKlsqRZ3rWqj7aZUL4LRsyO1pJAGFN_1yyxm4VpR-Oh-tLweHx3qU4yqldOkou0MoM1580LrnPd4DULt9s3-gXZrF3_cD4M79PaLIu-3cstvIH_AE8LmIdxIZenha5q3jPdslAJo3A_squuGVG8tpLEHcjh5OHLlAVEPs-iJx5Olr0u6WB7UjJZ3Ipk5-2?purpose=fullsize" alt="Tool filtering illustration">
-        <div class="illus-cap">Click the image to open it in a new tab.</div>
-      </div>
-      <div class="chips reveal" style="margin-top:10px;justify-content:center"><span class="chip teal">list_issues</span><span class="chip teal">search_repositories</span><span class="chip red">delete_branch</span><span class="chip red">create_release</span></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">39 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 40 — WHY FILTERING USEFUL
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Value</span><h2>Why is tool filtering useful?</h2><p class="subtitle">Consider a server exposing 100 tools — only 10 may be relevant.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>Increase the number of choices Claude must consider.</p></div>
-        <div class="card"><div class="ico">2</div><p>Make tool selection more difficult.</p></div>
-        <div class="card"><div class="ico">3</div><p>Expose unnecessary capabilities.</p></div>
-        <div class="card"><div class="ico">4</div><p>Increase the risk of unintended actions.</p></div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:14px"><strong>Filtering keeps the available toolset focused</strong> — less noise, fewer mistakes, smaller attack surface.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">40 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 41 — 4.3 EXAMPLE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 4.3 · Example</span><h2>Reviewing GitHub issues only</h2><p class="subtitle">A conceptual configuration for one focused task.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
-      </div>
-      <div class="vs reveal">
-        <div class="panel good"><span class="tag">AVAILABLE FOR THIS TASK</span><div class="txt">list_issues<br>search_repositories</div></div>
-        <div class="arrow-mid">vs</div>
-        <div class="panel bad"><span class="tag">NOT EXPOSED FOR THIS TASK</span><div class="txt">delete_branch<br>create_release<br>update_repository_settings</div></div>
-      </div>
-      <div class="callout reveal" style="margin-top:16px"><strong>Tools not exposed are unavailable to Claude</strong> through that configured toolset.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">41 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 42 — 4.4 HOW TO FILTER
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 4.4 · Implementation</span><h2>How can developers filter tools?</h2><p class="subtitle">The mechanism depends on the MCP host and integration.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>Selecting or enabling only required tools.</p></div>
-        <div class="card"><div class="ico">2</div><p>Server-side tool exposure.</p></div>
-        <div class="card"><div class="ico">3</div><p>Host or client configuration.</p></div>
-        <div class="card"><div class="ico">4</div><p>Permissions and access policies.</p></div>
-      </div>
+      <div class="callout reveal">A good application should not simply crash or return misleading information. It should <strong>handle the problem and explain what happened</strong>.</div>
       <div class="grid g2 reveal" style="margin-top:14px">
-        <div class="card" style="background:var(--green-l);border-color:#bfe0cf"><h3>Allowlist</h3><p>“Only make these approved tools available.”</p></div>
-        <div class="card" style="background:var(--amber-l);border-color:#ecd39a"><h3>Denylist</h3><p>“Make available tools accessible except for these blocked tools.”</p></div>
+        <div class="card"><div class="ico">🔌</div><h3>A · Connection errors</h3><p>The MCP Server is unavailable or disconnected.</p><div class="code-wrap"><div class="code-head"><span class="file">example</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>Error: Unable to connect to MCP server.</pre></div><p class="mini-head" style="margin-top:8px">Possible reasons</p><div class="chips"><span class="chip amber">Server not running</span><span class="chip amber">Incorrect URL</span><span class="chip amber">Network problem</span><span class="chip amber">Process terminated</span></div></div>
+        <div class="card"><div class="ico">🔐</div><h3>B · Authentication errors</h3><p>Credentials supplied to the server are invalid.</p><div class="code-wrap"><div class="code-head"><span class="file">example</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>401 Unauthorized</pre></div><p class="mini-head" style="margin-top:8px">Possible reasons</p><div class="chips"><span class="chip coral">Invalid GitHub PAT</span><span class="chip coral">Expired/revoked token</span><span class="chip coral">Missing permissions</span><span class="chip coral">Wrong header</span></div></div>
       </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">42 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">15 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 43 — WITHOUT VS WITH FILTERING
+     SLIDE 16 — VALIDATION + TIMEOUT ERRORS
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Comparison</span><h2>Without vs With tool filtering</h2><p class="subtitle">The same servers, very different toolsets.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
+        <div><span class="kicker"><span class="dot"></span> More error types</span><h2>Validation and timeout errors</h2><p class="subtitle">Invalid input and slow operations.</p></div>
+        <span class="num">04 · ERRORS</span>
       </div>
-      <table class="tbl reveal">
-        <thead><tr><th>Without filtering</th><th>With filtering</th></tr></thead>
-        <tbody>
-          <tr><td>Many unrelated tools may be available.</td><td>Only relevant tools are exposed.</td></tr>
-          <tr><td>More choices for Claude.</td><td>More focused tool selection.</td></tr>
-          <tr><td>Unnecessary actions may be exposed.</td><td>Unnecessary capabilities can be hidden.</td></tr>
-        </tbody>
-      </table>
-      <div class="scribble reveal" style="margin-top:14px">Control the menu, not just the model.</div>
+      <div class="grid g2 reveal">
+        <div class="card"><div class="ico">✅</div><h3>C · Validation errors</h3><p>Claude sends invalid input to an MCP tool. Suppose <code class="inline">create_product</code> requires:</p><div class="chips" style="margin-top:8px"><span class="chip teal">Product name</span><span class="chip teal">SKU</span><span class="chip teal">Category</span><span class="chip teal">Price</span><span class="chip teal">Stock</span></div><p style="margin-top:8px">But Claude sends a <strong>negative price</strong>. The server should reject it:</p><div class="code-wrap"><div class="code-head"><span class="file">server response</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>Error: Price must be a positive number.</pre></div></div>
+        <div class="card"><div class="ico">⏱</div><h3>D · Timeout errors</h3><p>A tool takes longer than the allowed execution time.</p><p style="margin-top:8px">For example, <code class="inline">run_tests</code> executes the Product Management API test suite. If test execution takes too long, the operation may <strong>time out</strong>.</p><div class="callout amber" style="margin-top:10px">A timeout is a controlled stop — not a silent failure.</div></div>
+      </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">43 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">16 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 44 — FILTERING ≠ AUTHORIZATION
+     SLIDE 17 — TIMEOUT + GRACEFUL HANDLING
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Security</span><h2>Hiding a tool is not authorization</h2><p class="subtitle">An important distinction for developers.</p></div>
-        <span class="num">04 · TOOL FILTERING</span>
+        <div><span class="kicker"><span class="dot"></span> Timeout</span><h2>What is a timeout?</h2><p class="subtitle">The maximum time an application allows an operation before stopping or reporting it took too long.</p></div>
+        <span class="num">04 · ERRORS</span>
       </div>
-      <div class="callout coral reveal"><strong>Important:</strong> hiding a tool is not a replacement for server-side authorization. Sensitive operations must still be protected by proper permissions on the server.</div>
-      <div class="grid g2 reveal" style="margin-top:16px">
-        <div class="card"><h3>Tool filtering</h3><p>Reduces visibility and choice in the client configuration.</p></div>
-        <div class="card" style="border-color:var(--green);background:var(--green-l)"><h3>Server permissions</h3><p>Enforce what the identity is actually allowed to do.</p></div>
+      <div class="callout reveal"><strong>Analogy:</strong> ask someone to prepare a report within one minute. If it is not ready after one minute, you stop waiting and investigate. That is the purpose of a timeout.</div>
+      <div class="vs reveal" style="margin-top:14px">
+        <div class="panel bad"><span class="tag">POOR HANDLING</span><div class="txt">Crash, hang indefinitely, or return misleading information.</div></div>
+        <div class="arrow-mid">vs</div>
+        <div class="panel good"><span class="tag">GRACEFUL HANDLING</span><div class="txt">Stop at the limit, report the problem, explain what happened.</div><div class="note">Connects back to graceful degradation.</div></div>
       </div>
-      <div class="scribble reveal" style="margin-top:14px">Defense in depth: hide less, enforce more.</div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:860px;text-align:center;font-size:21px">Handle the error honestly — do not pretend the operation succeeded.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">44 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">17 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 45 — DIVIDER: ERRORS & TIMEOUTS
+     SLIDE 18 — DIVIDER: DEBUGGING
      ========================================================= -->
 <section class="slide divider">
   <div class="sheet">
@@ -1286,232 +701,108 @@ Authorization: Bearer YOUR_ACCESS_TOKEN</pre>
     <div class="big-index">05</div>
     <div class="sheet-inner">
       <div class="reveal"><span class="kicker">Part Five</span></div>
-      <div class="reveal"><h2>Handling MCP Tool<br>Errors and Timeouts<br>Gracefully</h2></div>
-      <div class="reveal"><p class="subtitle">All servers are configured — but what happens when something goes wrong?</p></div>
+      <div class="reveal"><h2>Debugging MCP Interactions<br>Using Network Logs and<br>Claude's Tool-Use Traces</h2></div>
+      <div class="reveal"><p class="subtitle">Find out where the request actually went wrong.</p></div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">45 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">18 / 26</span></div>
   </div>
 </section>
-
 <!-- =========================================================
-     SLIDE 46 — WHAT GOES WRONG
+     SLIDE 19 — DEBUGGING + CONNECTION STATUS
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Reality</span><h2>What happens when something goes wrong?</h2><p class="subtitle">Real-world situations you must design for.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
+        <div><span class="kicker"><span class="dot"></span> Start with the problem</span><h2>Where did it go wrong?</h2><p class="subtitle">“Create a new product in the Product Management API.” But Claude does not return the expected result.</p></div>
+        <span class="num">05 · DEBUGGING</span>
       </div>
-      <div class="grid g2 reveal">
-        <div class="card" style="border-top:4px solid var(--red)"><div class="ico">✕</div><h3>GitHub becomes unavailable</h3><p>Claude is retrieving issues — suddenly the server cannot be reached.</p></div>
-        <div class="card" style="border-top:4px solid var(--amber)"><div class="ico">⏱</div><h3>Server takes 60 seconds</h3><p>The request exceeds a reasonable waiting period.</p></div>
+      <div class="grid g3 reveal">
+        <div class="card"><div class="ico">1</div><p>Claude selected the wrong tool.</p></div>
+        <div class="card"><div class="ico">2</div><p>Claude sent incorrect parameters.</p></div>
+        <div class="card"><div class="ico">3</div><p>The MCP Server received the request but failed to execute it.</p></div>
+        <div class="card"><div class="ico">4</div><p>The Product API returned an error.</p></div>
+        <div class="card"><div class="ico">5</div><p>The server returned an incorrect response.</p></div>
+        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><div class="ico">🔎</div><p><strong>MCP debugging</strong> investigates communication between Claude, Client, Server and the external application to identify and fix problems.</p></div>
       </div>
-      <div class="scribble reveal" style="margin-top:16px">Failures are normal; poor handling is optional.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">46 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 47 — 5.1 TOOL ERROR
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.1 · Errors</span><h2>What is a tool error?</h2><p class="subtitle">A requested operation cannot be completed successfully.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>Invalid input parameters.</p></div>
-        <div class="card"><div class="ico">2</div><p>Authentication failure.</p></div>
-        <div class="card"><div class="ico">3</div><p>Permission denied.</p></div>
-        <div class="card"><div class="ico">4</div><p>Database connection failure.</p></div>
-        <div class="card" style="grid-column:1/-1"><div class="ico">5</div><p>External application unavailable.</p></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">47 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 48 — 401 REAL SCENARIO
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.1 · Errors</span><h2>Real scenario: 401 Unauthorized</h2><p class="subtitle">You ask:</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
-      </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">“Find all open bugs in GitHub.”</div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">server response</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>Error: 401 Unauthorized</pre>
-      </div>
-      <div class="callout coral reveal" style="margin-top:14px"><strong>The request was not accepted</strong> because required authentication was missing or invalid. Claude should explain the problem rather than pretending it retrieved the issues.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">48 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 49 — 5.2 TIMEOUT
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.2 · Timeouts</span><h2>What is a timeout?</h2><p class="subtitle">You wait for a response — but it does not arrive in time.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
-      </div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">timeout example</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>Request sent:     10:00:00
-Timeout limit:    30 seconds
-No response by:   10:00:30</pre>
-      </div>
-      <div class="callout amber reveal" style="margin-top:14px">The client stops waiting for that request or treats it as timed out, depending on the implementation.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">49 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 50 — POSTGRES TIMEOUT
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.2 · Timeouts</span><h2>Real-world scenario</h2><p class="subtitle">Claude asks the PostgreSQL MCP Server for task records.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
-      </div>
-      <div class="flow reveal">
-        <div class="fnode"><span class="n">REQUEST</span><span class="s">task records</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">DATABASE</span><span class="s">overloaded</span></div><span class="farr">→</span>
-        <div class="fnode" style="border-top-color:var(--red)"><span class="n">TIMEOUT</span><span class="s">client reports it</span></div>
-      </div>
-      <div class="callout reveal" style="margin-top:16px"><strong>The database is overloaded</strong> and the server does not respond within the expected time. The client reports a timeout.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">50 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 51 — COMMON ERRORS TABLE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.3 · Reference</span><h2>Common errors</h2><p class="subtitle">Match the signal to the response.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
-      </div>
-      <table class="tbl reveal">
-        <thead><tr><th>Error</th><th>Meaning</th><th>Possible response</th></tr></thead>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>A · MCP Server connection status.</strong> Inside Claude Code, run <span class="kbd">/mcp</span> to inspect server name, transport type, connection status and available tools.</div>
+      <table class="tbl reveal" style="margin-top:10px">
+        <thead><tr><th>Server</th><th>Status</th></tr></thead>
         <tbody>
-          <tr><td>401 Unauthorized</td><td>Authentication missing or invalid</td><td>Reauthenticate</td></tr>
-          <tr><td>403 Forbidden</td><td>Permission not sufficient</td><td>Check access permissions</td></tr>
-          <tr><td>404 Not Found</td><td>Requested resource not found</td><td>Verify resource name</td></tr>
-          <tr><td>429 Too Many Requests</td><td>Too many requests</td><td>Wait and retry according to limits</td></tr>
-          <tr><td>500 Server Error</td><td>Server-side failure</td><td>Check server logs and retry safely</td></tr>
-          <tr><td>Timeout</td><td>Response took too long</td><td>Investigate and retry if appropriate</td></tr>
+          <tr><td>github</td><td>Connected</td></tr>
+          <tr><td>filesystem</td><td>Connected</td></tr>
+          <tr><td>product-api</td><td>Connected</td></tr>
         </tbody>
       </table>
+      <div class="callout coral reveal" style="margin-top:10px">If a server shows <strong>Failed</strong> or <strong>Pending</strong>, investigate its configuration and connection.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">51 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">19 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 52 — 5.4 GRACEFUL ERROR HANDLING
+     SLIDE 20 — TOOL-USE TRACES
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.4 · Graceful handling</span><h2>GitHub works, Jira times out</h2><p class="subtitle">Suppose you ask:</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
+        <div><span class="kicker"><span class="dot"></span> B · Tool-use traces</span><h2>Follow the sequence of a tool call</h2><p class="subtitle">A trace shows what happened when Claude called an MCP tool.</p></div>
+        <span class="num">05 · DEBUGGING</span>
       </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--coral)">“Find bugs in GitHub and compare them with Jira tickets.”</div>
-      <div class="vs reveal" style="margin-top:14px">
-        <div class="panel bad"><span class="tag">POOR IMPLEMENTATION</span><div class="txt">Stop everything.</div></div>
-        <div class="arrow-mid">vs</div>
-        <div class="panel good"><span class="tag">BETTER IMPLEMENTATION</span><div class="txt">Show partial results and explain the gap.</div></div>
+      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">Claude receives: “Create a new product named Wireless Mouse.”</div>
+      <div class="illus-frame reveal" style="margin-top:12px">
+        <img class="illus" loading="lazy" src="https://i.ibb.co/RKV73V2/image.png" alt="Tool-use trace sequence for creating a product">
+        <div class="illus-cap">Example sequence of a tool-use interaction. Click the image to open it in a new tab.</div>
       </div>
+      <div class="callout reveal" style="margin-top:12px"><strong>By inspecting the sequence,</strong> developers can identify where something went wrong — tool choice, parameters, server execution or returned data.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">52 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">20 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 53 — BETTER STEPS
+     SLIDE 21 — NETWORK LOGS
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.4 · Response pattern</span><h2>A better implementation can…</h2><p class="subtitle">Four steps that preserve usefulness.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
+        <div><span class="kicker"><span class="dot"></span> C · Network logs</span><h2>Investigate HTTP communication</h2><p class="subtitle">Network logs help developers inspect HTTP traffic between applications.</p></div>
+        <span class="num">05 · DEBUGGING</span>
       </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>Display the GitHub results.</p></div>
-        <div class="card"><div class="ico">2</div><p>Explain that Jira timed out.</p></div>
-        <div class="card"><div class="ico">3</div><p>Clearly mark the comparison as incomplete.</p></div>
-        <div class="card"><div class="ico">4</div><p>Allow a retry for Jira.</p></div>
+      <div class="callout reveal">In Lab 3 we create an HTTP MCP endpoint: <code class="inline">http://localhost:3000/mcp</code>. Claude Code communicates with this endpoint.</div>
+      <table class="tbl reveal" style="margin-top:12px">
+        <thead><tr><th>Information</th><th>What it tells us</th></tr></thead>
+        <tbody>
+          <tr><td>Request URL</td><td>Where the request was sent.</td></tr>
+          <tr><td>HTTP method</td><td>Which request method was used.</td></tr>
+          <tr><td>Request headers</td><td>Whether authentication information was included.</td></tr>
+          <tr><td>Request body</td><td>What data was sent.</td></tr>
+          <tr><td>Response status</td><td>Whether the request succeeded.</td></tr>
+          <tr><td>Response body</td><td>What information or error was returned.</td></tr>
+          <tr><td>Response time</td><td>How long the operation took.</td></tr>
+        </tbody>
+      </table>
+      <div class="code-wrap reveal" style="margin-top:12px">
+        <div class="code-head"><span class="file">example · authorization problem</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>POST /mcp
+
+HTTP Status: 401
+
+Response:
+{
+  "error": "Unauthorised"
+}</pre>
       </div>
-      <div class="scribble reveal" style="margin-top:14px">Partial truth is more useful than total silence.</div>
+      <div class="callout coral reveal" style="margin-top:10px">A 401 response indicates an <strong>authorization problem</strong>.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">53 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">21 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 54 — EXAMPLE RESPONSE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.4 · Example</span><h2>Example response from Claude</h2><p class="subtitle">Clear, honest and still useful.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card" style="background:var(--green-l);border-color:#bfe0cf"><div class="ico">✓</div><h3>GitHub successful</h3><p>Retrieved 5 open GitHub issues.</p></div>
-        <div class="card" style="background:var(--amber-l);border-color:#ecd39a"><div class="ico">⏱</div><h3>Jira timed out</h3><p>Unable to retrieve Jira tickets within the allowed time.</p></div>
-      </div>
-      <div class="callout reveal" style="margin-top:16px"><strong>Result:</strong> GitHub issues are available, but Jira matching could not be completed.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">54 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 55 — WHY IMPORTANT
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 5.5 · Importance</span><h2>Why is this important?</h2><p class="subtitle">Real applications depend on networks, databases and external services.</p></div>
-        <span class="num">05 · ERRORS &amp; TIMEOUTS</span>
-      </div>
-      <div class="sticky reveal" style="margin:16px auto 0;max-width:820px;text-align:center;font-size:21px">Any of them can fail. A good application should provide a useful response even when part of the workflow fails.</div>
-      <div class="flow reveal" style="margin-top:20px">
-        <div class="fnode"><span class="n">DETECT</span><span class="s">error or timeout</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">EXPLAIN</span><span class="s">what failed</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">PRESERVE</span><span class="s">partial results</span></div><span class="farr">→</span>
-        <div class="fnode"><span class="n">RETRY</span><span class="s">where sensible</span></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">55 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 56 — DIVIDER: DEBUGGING
+     SLIDE 22 — DIVIDER: MCP INSPECTOR
      ========================================================= -->
 <section class="slide divider">
   <div class="sheet">
@@ -1519,380 +810,130 @@ No response by:   10:00:30</pre>
     <div class="big-index">06</div>
     <div class="sheet-inner">
       <div class="reveal"><span class="kicker">Part Six</span></div>
-      <div class="reveal"><h2>Debugging MCP<br>Interactions</h2></div>
-      <div class="reveal"><p class="subtitle">Using network logs and Claude's tool-use traces.</p></div>
+      <div class="reveal"><h2>MCP Inspector:<br>Test a Server Independently<br>of Claude Code</h2></div>
+      <div class="reveal"><p class="subtitle">A browser-based debugging tool.</p></div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">56 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05</span><span class="page-num">22 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 57 — TWO PLACES TO INVESTIGATE
+     SLIDE 23 — INSPECTOR INTRO + STEP 1
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Final topic</span><h2>The final developer-oriented topic</h2><p class="subtitle">Suppose Claude is not returning the expected result. How do we find the actual problem?</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card" style="border-top:4px solid var(--teal)"><div class="ico">1</div><h3>Network/server logs</h3><p>What happened between Client and Server.</p></div>
-        <div class="card" style="border-top:4px solid var(--blue)"><div class="ico">2</div><h3>Claude's tool-use traces</h3><p>How Claude attempted the request.</p></div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:16px"><strong>We need both.</strong> One shows communication; the other shows AI-to-tool decisions.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">57 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 58 — 6.1 NETWORK LOGS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.1 · Network logs</span><h2>What are network logs?</h2><p class="subtitle">A record of communication-related events between Client and Server.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="sticky reveal" style="margin:16px auto 0;max-width:840px;text-align:center;font-size:21px">Think of them as a record of what happened during a communication process.</div>
-      <div class="grid g3 reveal" style="margin-top:20px">
-        <div class="card"><h3>Client side</h3><p>Requests sent and responses received.</p></div>
-        <div class="card"><h3>Network layer</h3><p>Endpoint, status and timing.</p></div>
-        <div class="card"><h3>Server side</h3><p>Authentication and processing events.</p></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">58 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 59 — WHAT LOGS SHOW
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.1 · Network logs</span><h2>What can logs help investigate?</h2><p class="subtitle">Six concrete questions logs can answer.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><p>When a request was sent.</p></div>
-        <div class="card"><div class="ico">2</div><p>Which endpoint was contacted.</p></div>
-        <div class="card"><div class="ico">3</div><p>Whether the request succeeded.</p></div>
-        <div class="card"><div class="ico">4</div><p>What HTTP status was returned.</p></div>
-        <div class="card"><div class="ico">5</div><p>How long the response took.</p></div>
-        <div class="card"><div class="ico">6</div><p>Whether a connection failed.</p></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">59 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 60 — REAL LOG SCENARIO
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.1 · Real scenario</span><h2>From symptom to cause</h2><p class="subtitle">You ask Claude for open bugs — but it displays an error.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">“Find all open bugs in my GitHub repository.”</div>
-      <div class="callout coral reveal" style="margin-top:10px"><strong>Claude displays:</strong> “Unable to retrieve GitHub issues.”</div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">server logs</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>10:00:01 - Request received
-10:00:02 - Authentication failed
-10:00:02 - HTTP 401 Unauthorized</pre>
-      </div>
-      <div class="callout teal reveal" style="margin-top:12px"><strong>Now you know:</strong> the problem is authentication. You do not need to randomly change your prompt.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">60 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 61 — WHY LOGS IMPORTANT
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.1 · Value</span><h2>Why are network logs important?</h2><p class="subtitle">They reveal what happened during communication between Client and Server.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><h3>Without logs</h3><p>You guess: change the prompt, retry, hope for the best.</p></div>
-        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><h3>With logs</h3><p>You see the endpoint, status and auth result — and fix the real cause.</p></div>
-      </div>
-      <div class="scribble reveal" style="margin-top:14px">Evidence beats guesswork.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">61 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 62 — 6.2 TOOL-USE TRACES
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.2 · Traces</span><h2>What are Claude's tool-use traces?</h2><p class="subtitle">A record of tool activity during a conversation.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="callout reveal"><strong>They help you understand how Claude attempted to complete the request</strong> — which tool it chose, what it sent, and what came back.</div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--blue);margin-top:14px">You ask: “Find open GitHub issues.”</div>
-      <div class="grid g3 reveal" style="margin-top:14px">
-        <div class="card"><h3>Tool selected</h3><p><code class="inline">list_issues</code></p></div>
-        <div class="card"><h3>Input</h3><p>owner, repo, state.</p></div>
-        <div class="card"><h3>Result</h3><p>Error or data.</p></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">62 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 63 — TRACE EXAMPLE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.2 · Trace example</span><h2>A tool-use trace in practice</h2><p class="subtitle">Tool name, arguments and returned error.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">Claude · tool-use trace</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>Tool selected: list_issues
-
-Input:
-{
-  "owner": "company",
-  "repo": "task-management",
-  "state": "open"
-}
-
-Result:
-Error: 401 Unauthorized</pre>
-      </div>
-      <div class="callout teal reveal" style="margin-top:12px"><strong>From this you can identify:</strong> which tool was selected, which parameters were supplied, and what result or error was returned.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">63 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 64 — TRACE NOTE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.2 · Note</span><h2>What you can identify — and a caveat</h2><p class="subtitle">Tool traces are powerful, but product-dependent.</p></div>
-        <span class="num">06 · DEBUGGING</span>
+        <div><span class="kicker"><span class="dot"></span> What is MCP Inspector?</span><h2>Inspect and test an MCP Server</h2><p class="subtitle">A browser-based debugging tool used independently of Claude Code.</p></div>
+        <span class="num">06 · INSPECTOR</span>
       </div>
       <div class="grid g3 reveal">
-        <div class="card"><div class="ico">1</div><p>Which tool Claude selected.</p></div>
-        <div class="card"><div class="ico">2</div><p>Which parameters it supplied.</p></div>
-        <div class="card"><div class="ico">3</div><p>What result or error was returned.</p></div>
+        <div class="card"><div class="ico">🧰</div><p>View registered tools and inspect descriptions.</p></div>
+        <div class="card"><div class="ico">📐</div><p>Examine input schemas.</p></div>
+        <div class="card"><div class="ico">▶</div><p>Execute tools manually.</p></div>
+        <div class="card"><div class="ico">📄</div><p>Fetch resources.</p></div>
+        <div class="card"><div class="ico">💬</div><p>Execute prompts.</p></div>
+        <div class="card"><div class="ico">⚠</div><p>Inspect responses and validation errors.</p></div>
       </div>
-      <details class="note reveal"><summary>Product note</summary><div class="body">The exact information available in the Claude UI depends on the product and connector.</div></details>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">64 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 65 — 6.3 DIFFERENCE TABLE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.3 · Comparison</span><h2>Network logs vs tool-use traces</h2><p class="subtitle">This distinction is important for developers.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <table class="tbl reveal">
-        <thead><tr><th>Network/server logs</th><th>Claude tool-use traces</th></tr></thead>
-        <tbody>
-          <tr><td>Show communication and server-side events.</td><td>Show Claude's tool activity.</td></tr>
-          <tr><td>Help identify connection problems.</td><td>Help identify tool selection and input problems.</td></tr>
-          <tr><td>Can show HTTP errors and response times.</td><td>Can show tool names, arguments and returned results.</td></tr>
-          <tr><td>Useful for server debugging.</td><td>Useful for understanding AI-to-tool interactions.</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">65 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 66 — WRONG REPOSITORY TRACE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.4 · Debugging example</span><h2>Wrong repository returned</h2><p class="subtitle">First: check Claude's tool-use trace.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
+      <div class="callout teal reveal" style="margin-top:14px"><strong>Step 1: Start MCP Inspector.</strong> Open a terminal inside the <code class="inline">product-mcp-server</code> directory and run:</div>
       <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">tool-use trace · input</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>{
-  "owner": "company",
-  "repo": "old-task-management",
-  "state": "open"
-}</pre>
+        <div class="code-head"><span class="file">terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>npx @modelcontextprotocol/inspector node src/index.js</pre>
       </div>
-      <div class="callout coral reveal" style="margin-top:14px"><strong>The repository name is incorrect.</strong> Now you know the wrong input was supplied — not that the server failed.</div>
+      <div class="illus-frame reveal" style="margin-top:12px">
+        <img class="illus" loading="lazy" src="https://images.openai.com/static-rsc-4/S2E1kPVGHLqsiq5W8qb1nwk5TB8W3fMLgaDtKH_tfa9CFWHvkUZC3idm2qVfwBv5akoR3ZO2cVS1KfLMUyeShBJ1VIUmNVIXIVAdVKVwzdBvepifh86OwjDAJYlFJimk_wjGPPEy9tNRwMzcHkz1v-PgqfBnbLBihC7TiUbM0mwJbGZ52DyBoBB__2fnbW3d?purpose=fullsize" alt="Starting MCP Inspector in the terminal">
+        <div class="illus-cap">MCP Inspector startup. Click the image to open it in a new tab.</div>
+      </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">66 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">23 / 26</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 67 — CORRECT INPUT, SERVER ERROR
+     SLIDE 24 — STEPS 2 AND 3
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> 6.4 · Debugging example</span><h2>Input is correct, server still errors</h2><p class="subtitle">Second: check network/server logs.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">server logs</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>Request received successfully
-GitHub API returned 403 Forbidden</pre>
-      </div>
-      <div class="callout amber reveal" style="margin-top:14px"><strong>Now the problem is likely related to permissions or access restrictions</strong> — not the tool input.</div>
-      <p class="mini-head reveal" style="margin-top:10px">Reference concept illustrated by dev.tools</p>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">67 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 68 — DEBUGGING SEQUENCE 1-3
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Sequence · 1 of 2</span><h2>A simple debugging sequence</h2><p class="subtitle">Start with the request and the trace.</p></div>
-        <span class="num">06 · DEBUGGING</span>
+        <div><span class="kicker"><span class="dot"></span> Steps 2–3</span><h2>Tools tab and manual execution</h2><p class="subtitle">Verify what the server exposes, then run a tool yourself.</p></div>
+        <span class="num">06 · INSPECTOR</span>
       </div>
       <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><h3>Check the user's request</h3><p>What exactly did the user ask Claude to do?</p></div>
-        <div class="card"><div class="ico">2</div><h3>Check the tool-use trace</h3><p>Did Claude select the correct tool?</p></div>
-        <div class="card" style="grid-column:1/-1"><div class="ico">3</div><h3>Check input parameters</h3><p>Are repository name, IDs and filters correct?</p></div>
-      </div>
-      <div class="scribble reveal" style="margin-top:14px">Trace first — it is closest to Claude's decision.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">68 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 69 — DEBUGGING SEQUENCE 4-6
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Sequence · 2 of 2</span><h2>A simple debugging sequence</h2><p class="subtitle">Then follow the request through the system.</p></div>
-        <span class="num">06 · DEBUGGING</span>
-      </div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">4</div><h3>Check network and server logs</h3><p>Did the server receive the request? Did authentication or communication fail?</p></div>
-        <div class="card"><div class="ico">5</div><h3>Check the server response</h3><p>Did the external application return the expected information?</p></div>
-        <div class="card" style="grid-column:1/-1"><div class="ico">6</div><h3>Fix and test again</h3><p>Correct the problem and repeat the request.</p></div>
-      </div>
-      <div class="flow reveal" style="margin-top:14px">
-        <div class="fnode"><span class="n">REQUEST</span><span class="s">intent</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">TRACE</span><span class="s">tool + input</span></div><span class="farr">→</span>
-        <div class="fnode alt2"><span class="n">LOGS</span><span class="s">connection</span></div><span class="farr">→</span>
-        <div class="fnode"><span class="n">RETEST</span><span class="s">verify fix</span></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">69 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 70 — QUICK CHECK
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Check yourself</span><h2>Quick knowledge check</h2><p class="subtitle">Click an answer to reveal the explanation.</p></div>
-        <span class="num">QUIZ</span>
-      </div>
-      <div class="quiz-q reveal">
-        <div class="q">1. Which configuration item tells the Client where a remote MCP server is located?</div>
-        <div class="opts">
-          <div class="opt" data-correct="false" data-exp="Headers carry additional request information, not the endpoint location.">Header</div>
-          <div class="opt" data-correct="true" data-exp="Correct — the URL identifies the remote server endpoint.">URL</div>
-          <div class="opt" data-correct="false" data-exp="A token proves authorization; it does not locate the server.">Token</div>
-        </div><div class="expl"></div>
-      </div>
-      <div class="quiz-q reveal">
-        <div class="q">2. What does tool filtering primarily control?</div>
-        <div class="opts">
-          <div class="opt" data-correct="false" data-exp="That is server authentication, not filtering.">Which user logs in</div>
-          <div class="opt" data-correct="true" data-exp="Correct — filtering controls which tools are made available to Claude.">Which tools are exposed to Claude</div>
-          <div class="opt" data-correct="false" data-exp="Filtering does not change model size.">The model's intelligence</div>
-        </div><div class="expl"></div>
-      </div>
-      <div class="quiz-q reveal">
-        <div class="q">3. GitHub works but Jira times out. What is the best response?</div>
-        <div class="opts">
-          <div class="opt" data-correct="false" data-exp="That discards useful information.">Return nothing</div>
-          <div class="opt" data-correct="true" data-exp="Correct — keep partial results, explain the timeout and allow a retry.">Show GitHub results, explain the timeout, allow retry</div>
-          <div class="opt" data-correct="false" data-exp="Never invent results for a failed tool.">Invent Jira results</div>
-        </div><div class="expl"></div>
-      </div>
-      <div class="quiz-q reveal">
-        <div class="q">4. A tool-use trace shows the correct input but the server returns 403. Which source helps next?</div>
-        <div class="opts">
-          <div class="opt" data-correct="false" data-exp="The trace already showed correct input; the problem is downstream.">Only change the prompt</div>
-          <div class="opt" data-correct="true" data-exp="Correct — network/server logs reveal permission or access restrictions.">Network/server logs</div>
-          <div class="opt" data-correct="false" data-exp="That would hide the real permission problem.">Hide the tool</div>
-        </div><div class="expl"></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">70 / 71</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 71 — FINAL CLOSING
-     ========================================================= -->
-<section class="slide divider">
-  <div class="sheet">
-    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
-    <div class="big-index">✓</div>
-    <div class="sheet-inner">
-      <div class="reveal"><span class="kicker">Module complete</span></div>
-      <div class="reveal"><h2>You're ready to configure<br>and troubleshoot MCP<br>in a real project.</h2></div>
-      <div class="reveal"><p class="subtitle">From connection parameters and multiple servers to filtering, resilient errors and evidence-based debugging.</p></div>
-      <div class="reveal" style="margin-top:8px">
-        <div class="flow" style="justify-content:flex-start;gap:8px">
-          <div class="fnode"><span class="n">CONFIGURE</span><span class="s">URL · headers · tokens</span></div><span class="farr">→</span>
-          <div class="fnode alt"><span class="n">COORDINATE</span><span class="s">multiple servers</span></div><span class="farr">→</span>
-          <div class="fnode alt2"><span class="n">CONTROL</span><span class="s">tool filtering</span></div><span class="farr">→</span>
-          <div class="fnode"><span class="n">DEBUG</span><span class="s">logs + traces</span></div>
+        <div class="card"><div class="ico">2</div><h3>Inspect the Tools tab</h3>
+          <table class="tbl">
+            <thead><tr><th>Tool</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>list_products</code></td><td>List products.</td></tr>
+              <tr><td><code>create_product</code></td><td>Create products.</td></tr>
+              <tr><td><code>run_tests</code></td><td>Execute test suite.</td></tr>
+            </tbody>
+          </table>
+          <p class="mini-head" style="margin-top:8px">Verify</p>
+          <div class="chips"><span class="chip teal">Names correct</span><span class="chip teal">Descriptions meaningful</span><span class="chip teal">Schemas have expected fields</span></div>
+        </div>
+        <div class="card"><div class="ico">3</div><h3>Test a tool manually</h3><p>Select <code class="inline">list_products</code>, provide required parameters if any, and execute it.</p>
+          <p class="mini-head" style="margin-top:8px">Observe</p>
+          <div class="chips"><span class="chip teal">Input parameters</span><span class="chip teal">Server response</span><span class="chip teal">Returned product information</span></div>
+          <div class="callout" style="margin-top:10px">This verifies whether the MCP Server works <strong>independently of Claude Code</strong>.</div>
         </div>
       </div>
-      <div class="reveal"><p class="scribble" style="font-size:26px;margin-top:18px">Configure deliberately · expose carefully · fail gracefully · debug with evidence.</p></div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">71 / 71</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">24 / 26</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 25 — STEPS 4, 5 AND 6
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Steps 4–6</span><h2>Validation, resources and prompts</h2><p class="subtitle">Go beyond a happy-path tool call.</p></div>
+        <span class="num">06 · INSPECTOR</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="card"><div class="ico">4</div><h3>Test invalid input</h3><p>Select <code class="inline">create_product</code> and submit a product <strong>without its required name</strong>.</p><div class="callout coral" style="margin-top:8px">Expect a <strong>validation error</strong>, not an HTTP 500 server error. This confirms input validation works.</div></div>
+        <div class="card"><div class="ico">5</div><h3>Inspect Resources</h3><div class="chips"><span class="chip teal">product://catalogue</span><span class="chip teal">product://openapi</span></div><p style="margin-top:8px">Fetch and verify: resource URI, MIME type, returned content, and whether the catalogue has current product information.</p></div>
+        <div class="card"><div class="ico">6</div><h3>Inspect Prompts</h3><div class="chips"><span class="chip teal">review_product_schema</span><span class="chip teal">seed_test_data</span></div><p style="margin-top:8px">Verify both are registered, descriptions are correct, and <code class="inline">seed_test_data</code> exposes the <code class="inline">count</code> argument.</p></div>
+      </div>
+      <div class="sticky reveal" style="margin:18px auto 0;max-width:860px;text-align:center;font-size:21px">MCP Inspector validates the server itself — separate from Claude's behavior.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 05 · ADVANCED MCP CONFIGURATION</span><span class="page-num">25 / 26</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 26 — FINAL CLOSING
+     ========================================================= -->
+<section class="slide title">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <svg class="orbit" viewBox="0 0 250 250" fill="none" stroke="#69c6f2" stroke-width="1.2">
+        <circle cx="125" cy="125" r="100" opacity=".3"/><circle cx="125" cy="125" r="66" opacity=".45"/>
+        <circle cx="125" cy="125" r="30" opacity=".6"/>
+        <circle cx="125" cy="25" r="7" fill="#69c6f2" stroke="none"/>
+        <circle cx="191" cy="75" r="5" fill="#69c6f2" stroke="none"/>
+        <circle cx="59" cy="185" r="5" fill="#e08a3c" stroke="none"/>
+      </svg>
+      <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
+      <div class="reveal"><div class="badge"><span class="ln"></span> Module 05 · Summary</div></div>
+      <div class="reveal"><h2>Configure deliberately. Debug systematically.</h2></div>
+      <div class="reveal"><p class="sub">URL, headers and tokens tell Claude <strong>where to go and how to authenticate</strong>. Multiple servers, filtering, error handling, logs, traces and MCP Inspector keep the system <strong>focused and observable</strong>.</p></div>
+      <div class="reveal">
+        <div class="meta">
+          <span class="m">◈ Right endpoint</span><span class="m">◈ Valid credentials</span>
+          <span class="m">◈ Specialized servers</span><span class="m">◈ Relevant tools only</span>
+          <span class="m">◈ Honest failures</span><span class="m">◈ Traceable calls</span>
+        </div>
+      </div>
+      <div class="reveal"><div class="sticky" style="max-width:840px;margin:22px auto 0;font-size:23px;text-align:center">Good configuration makes advanced MCP workflows predictable — and fixable.</div></div>
+    </div>
+    <div class="sheet-foot">
+      <span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> KOENIG SOLUTIONS · CLAUDE CODE TRAINING</span>
+      <span class="page-num">26 / 26</span>
+    </div>
   </div>
 </section>
 
@@ -1903,13 +944,13 @@ GitHub API returned 403 Forbidden</pre>
   <button class="nav-btn" id="prev" title="Previous (←)">←</button>
   <div class="dots" id="dots"></div>
   <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
-  <span class="dock-count" id="count">01 / 71</span>
+  <span class="dock-count" id="count">01 / 26</span>
   <button class="nav-btn" id="next" title="Next (→)">→</button>
   <span class="hint-key"><span class="kbd">←</span> <span class="kbd">→</span> navigate</span>
 </div>
 
 <script>
-(function(){
+(function () {
   const slides = Array.from(document.querySelectorAll('.slide'));
   let i = 0;
   const countEl = document.getElementById('count');
@@ -1918,61 +959,52 @@ GitHub API returned 403 Forbidden</pre>
   const next = document.getElementById('next');
   const dotsWrap = document.getElementById('dots');
 
-  slides.forEach((_,k)=>{
-    const b=document.createElement('button');
-    b.className='dot-btn';b.title='Slide '+(k+1);
-    b.addEventListener('click',()=>go(k));
+  slides.forEach((_, k) => {
+    const b = document.createElement('button');
+    b.className = 'dot-btn';
+    b.title = 'Slide ' + (k + 1);
+    b.addEventListener('click', () => go(k));
     dotsWrap.appendChild(b);
   });
   const dots = Array.from(dotsWrap.children);
 
-  function go(n){
-    i = Math.max(0, Math.min(slides.length-1, n));
-    slides.forEach((s,k)=>s.classList.toggle('active', k===i));
-    dots.forEach((d,k)=>d.classList.toggle('active', k===i));
-    countEl.textContent = String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
-    fill.style.width = ((i+1)/slides.length*100)+'%';
-    prev.disabled = i===0; next.disabled = i===slides.length-1;
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    dots.forEach((d, k) => d.classList.toggle('active', k === i));
+    countEl.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    fill.style.width = ((i + 1) / slides.length * 100) + '%';
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
     const inner = slides[i].querySelector('.sheet-inner');
-    if(inner) inner.scrollTop = 0;
+    if (inner) inner.scrollTop = 0;
   }
-  prev.addEventListener('click',()=>go(i-1));
-  next.addEventListener('click',()=>go(i+1));
 
-  document.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(i+1);}
-    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
-    else if(e.key==='Home'){go(0);}
-    else if(e.key==='End'){go(slides.length-1);}
+  prev.addEventListener('click', () => go(i - 1));
+  next.addEventListener('click', () => go(i + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home') { go(0); }
+    else if (e.key === 'End') { go(slides.length - 1); }
   });
 
-  document.querySelectorAll('[data-goto]').forEach(el=>{
-    el.addEventListener('click',()=>go(parseInt(el.dataset.goto,10)));
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', () => go(parseInt(el.dataset.goto, 10) - 1));
   });
 
-  document.querySelectorAll('.quiz-q .opt').forEach(opt=>{
-    opt.addEventListener('click',()=>{
-      const q=opt.closest('.quiz-q');
-      q.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong'));
-      if(opt.dataset.correct==='true') opt.classList.add('correct');
-      else opt.classList.add('wrong');
-      const exp=q.querySelector('.expl');
-      exp.textContent=opt.dataset.exp||'';
-      exp.classList.add('show');
-    });
+  document.querySelectorAll('.illus').forEach(img => {
+    img.addEventListener('click', () => window.open(img.src, '_blank'));
   });
 
-  document.querySelectorAll('.illus').forEach(img=>{
-    img.addEventListener('click',()=>window.open(img.src,'_blank'));
-  });
-
-  window.copyCode=function(btn){
-    const pre=btn.closest('.code-wrap').querySelector('pre');
-    if(!pre)return;
-    navigator.clipboard.writeText(pre.innerText).then(()=>{
-      const old=btn.textContent;btn.textContent='Copied!';
-      setTimeout(()=>btn.textContent=old,1400);
-    }).catch(()=>{btn.textContent='Select text';});
+  window.copyCode = function (btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    if (!pre) return;
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      const old = btn.textContent; btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = old, 1400);
+    }).catch(() => { btn.textContent = 'Select text'; });
   };
 
   go(0);
