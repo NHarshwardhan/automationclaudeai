@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Module 10: Plugins - Architecture and Integration | Claude Code Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root{
+  --ink:#2c353b;
+  --ink-soft:#566169;
+  --paper:#fafbfc;
+  --paper-2:#eef2f5;
+  --surface:#ffffff;
+  --stage:#222b32;
+  --stage-2:#2f3b44;
+  --teal:#0694d1;
+  --teal-d:#0574a4;
+  --teal-l:#e6f4fb;
+  --coral:#e08a3c;
+  --coral-l:#fdf0e2;
+  --amber:#e0a32e;
+  --amber-l:#fcf3dc;
+  --green:#2f8b62;
+  --green-l:#e0f1e8;
+  --red:#c0473f;
+  --red-l:#f8e3e1;
+  --blue:#3c6bb0;
+  --blue-l:#e6eefb;
+  --line:#dfe5e9;
+  --muted:#7b8791;
+  --shadow:0 24px 60px rgba(0,0,0,.45),0 4px 14px rgba(0,0,0,.18);
+  --radius:18px;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-head:'Space Grotesk',var(--font-body);
+  --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --font-hand:'Caveat',cursive;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font-body);
+  background:var(--stage);
+  background-image:radial-gradient(1200px 600px at 50% -10%,#243241 0%,transparent 60%);
+  color:var(--ink);
+  overflow:hidden;
+  height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+
+#deck{position:relative;height:100vh;width:100vw;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:18px 22px 62px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:slideIn .45s cubic-bezier(.2,.8,.25,1)}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+.sheet{
+  position:relative;width:min(1600px,100%);height:100%;
+  background:var(--paper);
+  background-image:linear-gradient(rgba(255,255,255,.55) 1px,transparent 1px),radial-gradient(circle at 12% 8%,rgba(6,148,209,.035),transparent 40%);
+  background-size:100% 28px,100% 100%;
+  border-radius:22px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.6);
+}
+.sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) 78%,var(--amber) 78%,var(--coral) 100%)}
+.sheet-inner{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:26px 38px 22px;scrollbar-width:thin;scrollbar-color:#cbd5dc transparent}
+.sheet-inner::-webkit-scrollbar{width:8px}
+.sheet-inner::-webkit-scrollbar-thumb{background:#cbd5dc;border-radius:8px}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);background:var(--teal-l);padding:6px 12px;border-radius:100px;margin-bottom:14px}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.15;margin:0}
+h1{font-size:clamp(34px,5vw,60px);letter-spacing:-.02em}
+h2{font-size:clamp(26px,3.2vw,38px);letter-spacing:-.015em}
+h3{font-size:19px}
+h4{font-size:15px}
+.subtitle{font-size:15px;color:var(--ink-soft);margin:10px 0 0;max-width:820px;line-height:1.55}
+.lead{font-size:16px;line-height:1.7;color:var(--ink-soft)}
+p{line-height:1.6}
+strong{color:var(--ink);font-weight:700}
+.hl{background:linear-gradient(transparent 62%,rgba(217,149,47,.32) 62%);font-weight:700}
+.hl-teal{background:linear-gradient(transparent 62%,rgba(6,148,209,.18) 62%);font-weight:700}
+code.inline{font-family:var(--font-mono);font-size:.88em;background:var(--paper-2);border:1px solid var(--line);padding:1px 6px;border-radius:6px;color:var(--teal-d)}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px;flex-wrap:wrap}
+.head-row .num{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 12px;background:var(--surface)}
+
+.sheet-foot{position:relative;flex:0 0 44px;width:100%;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-top:1px solid var(--line);background:rgba(250,247,241,.9);backdrop-filter:blur(4px);font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+.sheet-foot .brand{display:flex;align-items:center;gap:9px}
+.brand-logo{height:19px;width:auto;display:block;background:#fff;border-radius:4px;padding:2px 5px;box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.hero-logo{display:inline-block;background:#fff;border-radius:14px;padding:14px 22px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.hero-logo img{display:block;width:205px;height:auto}
+.divider-logo{position:absolute;left:46px;top:30px;background:#fff;border-radius:10px;padding:8px 14px;box-shadow:0 8px 22px rgba(0,0,0,.3);z-index:3}
+.divider-logo img{display:block;width:150px;height:auto}
+.page-num{font-variant-numeric:tabular-nums}
+
+.dock{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:50;background:rgba(20,27,36,.86);border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:100px;backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:17px;display:grid;place-items:center;transition:.2s}
+.nav-btn:hover{background:var(--teal);border-color:var(--teal);transform:translateY(-1px)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.progress-track{width:min(36vw,300px);height:5px;background:rgba(255,255,255,.15);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#8ad4f0);border-radius:100px;transition:width .35s ease}
+.dock-count{color:#cfd8e0;font-size:12px;font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:600}
+.hint-key{color:#7d8b98;font-size:11px;padding:0 4px;white-space:nowrap}
+.dots{display:flex;gap:5px;align-items:center;max-width:min(30vw,260px);overflow:hidden}
+.dot-btn{width:7px;height:7px;border-radius:50%;border:none;background:rgba(255,255,255,.25);padding:0;transition:.2s;flex:0 0 auto}
+.dot-btn:hover{background:#fff;transform:scale(1.3)}
+.dot-btn.active{background:var(--amber);width:20px;border-radius:100px}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.25,1)}
+.slide.active .reveal{opacity:1;transform:none}
+.slide.active .reveal:nth-child(1){transition-delay:.05s}
+.slide.active .reveal:nth-child(2){transition-delay:.12s}
+.slide.active .reveal:nth-child(3){transition-delay:.19s}
+.slide.active .reveal:nth-child(4){transition-delay:.26s}
+.slide.active .reveal:nth-child(5){transition-delay:.33s}
+.slide.active .reveal:nth-child(6){transition-delay:.40s}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;box-shadow:0 2px 0 rgba(24,36,48,.03);transition:transform .2s,box-shadow .2s,border-color .2s}
+.card.hoverable{cursor:pointer}
+.card.hoverable:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(24,36,48,.1);border-color:#c9d8d5}
+.card .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;margin-bottom:12px;background:var(--teal-l);color:var(--teal-d)}
+.card h3{margin-bottom:6px}
+.card p{font-size:13.5px;color:var(--ink-soft);margin:0;line-height:1.55}
+
+.word{position:relative;cursor:pointer;user-select:none;text-align:center;background:var(--surface);border:2px dashed var(--line);border-radius:16px;padding:20px 16px;transition:.25s}
+.word:hover{border-color:var(--teal);transform:translateY(-3px)}
+.word .big{font-family:var(--font-head);font-size:30px;font-weight:700;color:var(--teal-d);letter-spacing:-.02em}
+.word .def{display:none;margin-top:10px;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.word.revealed{border-style:solid;background:var(--teal-l)}
+.word.revealed .def{display:block;animation:fade .3s}
+.word .tap{display:block;font-size:11px;color:var(--muted);margin-top:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.vs{display:grid;grid-template-columns:1fr 40px 1fr;gap:10px;align-items:stretch}
+@media(max-width:780px){.vs{grid-template-columns:1fr}}
+.vs .arrow-mid{display:grid;place-items:center;font-size:22px;color:var(--muted)}
+.panel{border-radius:14px;padding:16px 18px;border:1px solid;transition:.25s}
+.panel.bad{background:var(--red-l);border-color:#f0c4c0}
+.panel.good{background:var(--green-l);border-color:#bfe0cf}
+.panel:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(24,36,48,.08)}
+.panel .tag{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;display:inline-flex;gap:6px;align-items:center;margin-bottom:9px}
+.panel.bad .tag{color:var(--red)}
+.panel.good .tag{color:var(--green)}
+.panel .tag .x,.panel .tag .v{font-size:13px}
+.panel .txt{font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:var(--ink)}
+.panel.bad .txt{opacity:.72;text-decoration:line-through;text-decoration-color:rgba(192,71,63,.4)}
+.panel .note{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5}
+
+.flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:6px 0}
+.fnode{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:11px;padding:10px 13px;text-align:center;min-width:96px;box-shadow:0 3px 8px rgba(24,36,48,.05)}
+.fnode .n{display:block;font-family:var(--font-head);font-size:13px;font-weight:700}
+.fnode .s{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.farr{color:var(--coral);font-weight:800;font-size:18px}
+.fnode.alt{border-top-color:var(--amber)}
+.fnode.alt2{border-top-color:var(--blue)}
+
+.code-wrap{position:relative;margin:12px 0 0}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--stage-2);color:#a9b6c2;padding:7px 12px;border-radius:10px 10px 0 0;font-size:11px;font-family:var(--font-mono)}
+.code-head .file{color:#79cdf5}
+.copy-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#cfd8e0;border-radius:6px;padding:3px 9px;font-size:10.5px;transition:.2s}
+.copy-btn:hover{background:var(--teal);color:#fff}
+pre{margin:0;background:#0f1620;color:#dbe4ec;border-radius:0 0 10px 10px;padding:14px 16px;overflow-x:auto;font-family:var(--font-mono);font-size:12px;line-height:1.65;scrollbar-width:thin}
+pre .k{color:#c792ea}pre .s{color:#c3e88d}pre .c{color:#5f7183;font-style:italic}pre .f{color:#82aaff}pre .n{color:#f78c6c}pre .hl2{background:rgba(6,148,209,.22);display:inline-block;width:100%}
+
+details.note{margin-top:12px;border:1px solid var(--line);border-radius:11px;background:var(--amber-l);overflow:hidden}
+details.note summary{cursor:pointer;padding:10px 14px;font-size:12.5px;font-weight:700;color:#8a5e12;list-style:none;display:flex;align-items:center;gap:9px}
+details.note summary::-webkit-details-marker{display:none}
+details.note summary::before{content:"▸";transition:.2s;display:inline-block;font-size:12px}
+details.note[open] summary::before{transform:rotate(90deg)}
+details.note .body{padding:0 14px 13px;font-size:12.5px;color:#6d521f;line-height:1.6;border-top:1px dashed #e6cd96;padding-top:10px;margin:0 14px;padding-left:0;padding-right:0}
+details.note.teal{background:var(--teal-l)}
+details.note.teal summary{color:var(--teal-d)}
+details.note.teal .body{color:#1c5f80;border-top-color:#bcdfe9}
+
+.scribble{font-family:var(--font-hand);color:var(--coral);font-size:21px;line-height:1.2;transform:rotate(-2deg);display:inline-block}
+.sticky{background:#fff6cf;border:1px solid #ecdc9a;border-radius:4px;box-shadow:2px 4px 10px rgba(120,90,20,.14);padding:12px 14px;font-family:var(--font-hand);font-size:19px;color:#6b5410;transform:rotate(-1.5deg);position:relative}
+.sticky::before{content:"";position:absolute;top:-8px;left:42%;width:52px;height:16px;background:rgba(230,210,140,.6);transform:rotate(2deg)}
+
+.term{border-bottom:2px dotted var(--teal);cursor:help;position:relative;color:var(--teal-d);font-weight:600}
+.term .tip{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%) translateY(6px);background:var(--ink);color:#fff;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:400;width:230px;text-align:left;line-height:1.5;opacity:0;pointer-events:none;transition:.2s;z-index:20;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.term:hover .tip,.term:focus .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.term .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--paper-2);border:1px solid var(--line);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink-soft)}
+.chip.teal{background:var(--teal-l);border-color:#bcdfe9;color:var(--teal-d)}
+.chip.coral{background:var(--coral-l);border-color:#f0c9bd;color:#9b4327}
+.chip.amber{background:var(--amber-l);border-color:#ecd39a;color:#8a5e12}
+.chip.red{background:var(--red-l);border-color:#f0c4c0;color:var(--red)}
+.bignum{font-family:var(--font-head);font-size:46px;font-weight:700;color:var(--teal);line-height:1}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+table.tbl th{background:var(--ink);color:#fff;text-align:left;padding:9px 12px;font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+table.tbl td{border-bottom:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.45}
+table.tbl tr:nth-child(even) td{background:rgba(242,237,227,.5)}
+table.tbl td:first-child{font-weight:600;color:var(--ink)}
+table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)}
+
+.tree{font-family:var(--font-mono);font-size:12.5px;line-height:1.9;background:var(--stage-2);color:#c9d4de;border-radius:10px;padding:14px 18px;overflow-x:auto}
+.tree .folder{color:#82aaff}.tree .file{color:#c3e88d}.tree .mark{color:#f78c6c;font-weight:700}
+.tree .indent{padding-left:20px}
+
+.anatomy{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start}
+@media(max-width:820px){.anatomy{grid-template-columns:1fr}}
+.prompt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(24,36,48,.06);position:relative}
+.seg{display:block;border-radius:8px;padding:8px 11px;margin:5px 0;font-family:var(--font-mono);font-size:11.5px;line-height:1.5;transition:.25s;cursor:default;border-left:4px solid}
+.seg:hover,.seg.lit{transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,.09)}
+.seg.action{background:var(--teal-l);border-color:var(--teal)}
+.seg.what{background:var(--blue-l);border-color:var(--blue)}
+.seg.where{background:var(--amber-l);border-color:var(--amber)}
+.seg.constraints{background:var(--coral-l);border-color:var(--coral)}
+.legend{display:flex;flex-direction:column;gap:8px}
+.leg{display:flex;gap:11px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer;transition:.2s}
+.leg:hover,.leg.lit{transform:translateX(4px);border-color:var(--teal);box-shadow:0 6px 16px rgba(24,36,48,.08)}
+.leg .b{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-family:var(--font-head);font-weight:700;color:#fff;font-size:14px;flex:0 0 auto}
+.leg.a .b{background:var(--teal)}.leg.w .b{background:var(--blue)}.leg.h .b{background:var(--amber)}.leg.c .b{background:var(--coral)}
+.leg .t{font-size:12.5px;line-height:1.4}
+.leg .t b{display:block;font-size:13px}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:700;transition:.2s}
+.tab:hover{border-color:var(--teal)}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tab-body{display:none;animation:fade .3s}
+.tab-body.active{display:block}
+
+.quiz-q{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-bottom:12px}
+.quiz-q .q{font-size:13.5px;font-weight:700;margin-bottom:10px}
+.opts{display:grid;gap:7px}
+.opt{border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:12.5px;cursor:pointer;transition:.18s;background:var(--paper)}
+.opt:hover{border-color:var(--teal);background:var(--teal-l)}
+.opt.correct{background:var(--green-l);border-color:var(--green);color:var(--green);font-weight:700}
+.opt.wrong{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.expl{display:none;margin-top:9px;font-size:12px;color:var(--ink-soft);border-left:3px solid var(--amber);padding-left:10px;line-height:1.5}
+.expl.show{display:block;animation:fade .3s}
+
+.slide.divider .sheet{background:var(--ink);border-color:#2a3947}
+.slide.divider .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0)}
+.slide.divider .sheet-inner{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;background-image:radial-gradient(600px 400px at 85% 40%,rgba(6,148,209,.28),transparent 70%)}
+.slide.divider h2{color:#fff;font-size:clamp(38px,6vw,72px);letter-spacing:-.03em;max-width:820px}
+.slide.divider .kicker{background:rgba(255,255,255,.1);color:#8fd4f5}
+.slide.divider .subtitle{color:#9fb0bd;font-size:17px}
+.slide.divider .big-index{position:absolute;right:46px;top:60px;font-family:var(--font-head);font-size:180px;font-weight:700;color:rgba(255,255,255,.05);line-height:1;pointer-events:none}
+.slide.divider .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+
+.slide.title .sheet{background:var(--ink)}
+.slide.title .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0,var(--amber))}
+.slide.title .sheet-inner{display:flex;flex-direction:column;justify-content:center;background-image:radial-gradient(700px 500px at 80% 30%,rgba(6,148,209,.3),transparent 70%),radial-gradient(500px 400px at 10% 90%,rgba(224,138,60,.18),transparent 70%)}
+.slide.title .badge{display:inline-flex;gap:10px;align-items:center;color:#8fd4f5;font-weight:700;letter-spacing:.18em;font-size:12px;text-transform:uppercase;margin-bottom:18px}
+.slide.title .badge .ln{width:34px;height:2px;background:var(--amber)}
+.slide.title h1{color:#fff;max-width:900px}
+.slide.title h1 .em{color:#69c6f2}
+.slide.title h2{color:#fff;max-width:900px}
+.slide.title .sub{color:#b7c4cf;font-size:18px;margin-top:18px;max-width:680px;line-height:1.6}
+.slide.title .meta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.slide.title .meta .m{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:8px 15px;color:#d6e0e7;font-size:12.5px;font-weight:600}
+.slide.title .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+.slide.title .orbit{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:250px;height:250px;opacity:.5}
+@media(max-width:900px){.slide.title .orbit{display:none}}
+
+.bullets{list-style:none;padding:0;margin:10px 0;display:grid;gap:9px}
+.bullets li{position:relative;padding-left:26px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.bullets li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;background:var(--teal);transform:rotate(45deg)}
+.bullets.coral li::before{background:var(--coral)}
+.bullets.amber li::before{background:var(--amber)}
+.callout{border-left:4px solid var(--teal);background:var(--teal-l);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13px;color:#185d7d;line-height:1.55}
+.callout.coral{border-color:var(--coral);background:var(--coral-l);color:#8c4129}
+.callout.amber{border-color:var(--amber);background:var(--amber-l);color:#7a5616}
+.section-band{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);background:var(--teal-l);border-left:4px solid var(--teal);border-radius:6px;padding:7px 11px;margin-bottom:12px;line-height:1.45}
+.subhead{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-left:3px solid var(--line);padding-left:10px;margin:14px 0 8px;line-height:1.4}
+
+.interactive-head{cursor:pointer;user-select:none;transition:background .18s,border-color .18s,color .18s}
+.section-band.interactive-head{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;max-width:100%}
+.subhead.interactive-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.interactive-head:hover{background:var(--blue-l);border-color:var(--blue);color:var(--teal-d)}
+.interactive-head .chev{font-size:12px;line-height:1;opacity:.65;transition:transform .2s;flex:none}
+.interactive-head[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.collapse-body{animation:fade .25s}
+.collapse-body.collapsed{display:none}
+.bullets li{cursor:pointer;border-radius:6px;padding-right:6px;transition:background .16s,color .16s,opacity .16s}
+.bullets li:hover{background:var(--paper-2)}
+.bullets li.done{color:var(--muted);text-decoration:line-through;opacity:.72}
+.bullets li.done::before{background:var(--green);transform:rotate(45deg) scale(1.15)}
+.fnode,.tbl tbody tr,.card:not([data-goto]){cursor:pointer}
+.fnode{transition:transform .16s,box-shadow .16s,border-color .16s,background .16s}
+.fnode:hover{transform:translateY(-2px);border-color:var(--teal)}
+.fnode.active-step{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.16),0 6px 14px rgba(24,36,48,.12)}
+.fnode.active-step .n{color:var(--teal-d)}
+.tbl tbody tr{transition:background .15s,box-shadow .15s}
+.tbl tbody tr:hover{background:var(--teal-l)}
+.tbl tbody tr.row-active{background:var(--blue-l);box-shadow:inset 3px 0 var(--teal)}
+.card:not([data-goto]){transition:border-color .16s,box-shadow .16s}
+.card.card-focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.14)}
+.mini-head{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.spacer{height:14px}
+.center{text-align:center}
+.kbd{font-family:var(--font-mono);font-size:10px;border:1px solid rgba(255,255,255,.25);border-bottom-width:2px;border-radius:4px;padding:1px 5px;color:#cfd8e0}
+@media print{
+  body{overflow:visible;background:#fff;height:auto}
+  #deck{height:auto}
+  .slide{display:flex!important;position:relative;page-break-after:always;height:100vh;padding:0}
+  .dock{display:none}
+  .sheet{box-shadow:none;border-radius:0}
+}
+/* ============================================================
+   IMAGE ILLUSTRATIONS (external reference screenshots)
+   ============================================================ */
+.illus{display:block;max-width:100%;max-height:290px;margin:8px auto;border:1px solid var(--line);border-radius:12px;background:#fff;object-fit:contain;cursor:zoom-in;transition:transform .2s,box-shadow .2s}
+.illus:hover{transform:scale(1.015);box-shadow:0 12px 26px rgba(24,36,48,.16)}
+.illus-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.illus-row .illus{flex:1 1 220px;max-height:190px}
+.illus-cap{font-size:10.5px;color:var(--muted);text-align:center;margin-top:4px;line-height:1.4}
+.illus-frame{background:var(--paper-2);border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
+.illus-frame .illus{margin:0 auto}
+
+/* ============================================================
+   VISUAL REFINEMENTS
+   ============================================================ */
+html,body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.sheet{
+  background-color:var(--paper);
+  background-image:
+    radial-gradient(rgba(6,148,209,.10) 1px,transparent 1px),
+    radial-gradient(760px 460px at 88% 2%,rgba(6,148,209,.07),transparent 70%),
+    linear-gradient(180deg,#ffffff 0%,var(--paper) 46%);
+  background-size:22px 22px,100% 100%,100% 100%;
+}
+.sheet-inner{scrollbar-color:#b9c8d2 transparent}
+.sheet-inner::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#b9c8d2,#9fb2be)}
+
+.head-row{margin-bottom:20px}
+.head-row h2{position:relative;padding-bottom:12px}
+.head-row h2::after{content:"";position:absolute;left:0;bottom:0;width:58px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(--teal),var(--amber))}
+.head-row .num{background:linear-gradient(180deg,#fff,var(--paper-2));box-shadow:0 2px 6px rgba(24,36,48,.06)}
+.kicker{box-shadow:0 2px 8px rgba(6,148,209,.14)}
+
+.callout{border-radius:0 14px 14px 0;padding:13px 17px;box-shadow:0 4px 14px rgba(24,36,48,.05)}
+.callout.coral,.callout.amber{box-shadow:0 4px 14px rgba(224,138,60,.10)}
+
+.section-band{background:linear-gradient(90deg,var(--teal-l),rgba(255,255,255,.9));border-left:5px solid var(--teal);border-radius:100px;padding:8px 14px;box-shadow:0 4px 12px rgba(6,148,209,.12)}
+.section-band::before{content:"◈";color:var(--teal);font-size:12px;margin-right:8px}
+.section-band.interactive-head{justify-content:flex-start}
+.section-band.interactive-head .chev{margin-left:auto}
+.subhead{border-left:4px solid var(--teal);border-radius:0 8px 8px 0;background:linear-gradient(90deg,rgba(230,244,251,.85),transparent);padding:8px 12px;color:var(--teal-d)}
+.subhead::before{content:"▸";color:var(--teal);margin-right:8px;font-size:11px}
+.subhead.interactive-head{justify-content:flex-start}
+.subhead.interactive-head .chev{margin-left:auto}
+
+.card{position:relative;overflow:hidden;border-radius:16px;padding:20px 18px 17px;box-shadow:0 3px 0 rgba(24,36,48,.03),0 8px 20px rgba(24,36,48,.045)}
+.card::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),#8ad4f0,var(--amber));opacity:.85}
+.card .ico{border-radius:12px;box-shadow:0 4px 10px rgba(6,148,209,.16)}
+.card.hoverable:hover{box-shadow:0 16px 34px rgba(24,36,48,.12)}
+
+.bullets{gap:10px}
+.bullets li{padding:6px 10px 6px 30px;border-radius:9px;line-height:1.6}
+.bullets li::before{left:10px;top:12px;width:9px;height:9px;box-shadow:0 0 0 4px rgba(6,148,209,.12)}
+.bullets.coral li::before{box-shadow:0 0 0 4px rgba(224,138,60,.14)}
+.bullets.amber li::before{box-shadow:0 0 0 4px rgba(224,138,60,.14)}
+
+.opt{position:relative;padding:11px 38px 11px 14px;border-radius:11px;background:linear-gradient(180deg,#fff,var(--paper-2));font-weight:600;color:var(--ink-soft)}
+.opt::after{content:"";position:absolute;right:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;border:2px solid var(--line);border-radius:50%;transition:.18s}
+.opt.correct::after{content:"✓";border-color:var(--green);background:var(--green);color:#fff;font-size:11px;display:grid;place-items:center;line-height:1}
+.opt:hover{transform:translateX(2px)}
+
+.flow{gap:10px;margin:10px 0}
+.fnode{border-radius:13px;padding:11px 15px;min-width:104px;background:linear-gradient(180deg,#fff,var(--paper-2))}
+.fnode .n{font-size:13.5px}
+.farr{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--coral-l);color:var(--coral);font-size:15px;box-shadow:0 2px 6px rgba(224,138,60,.18)}
+
+table.tbl{border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(24,36,48,.05)}
+table.tbl th{background:linear-gradient(90deg,var(--ink),#3b4a55);padding:11px 13px}
+table.tbl th:first-child{border-top-left-radius:12px}
+table.tbl th:last-child{border-top-right-radius:12px}
+table.tbl td{padding:11px 13px}
+table.tbl tbody tr:last-child td{border-bottom:none}
+table.tbl tbody tr:nth-child(even) td{background:rgba(230,238,251,.42)}
+
+.code-wrap{margin-top:12px;border-radius:11px;box-shadow:0 8px 18px rgba(0,0,0,.14)}
+.code-head{border-radius:11px 11px 0 0;padding:8px 13px;background:linear-gradient(90deg,#2b3a45,var(--stage-2))}
+pre{border-radius:0 0 11px 11px;padding:15px 17px;border-top:1px solid #1b2833}
+
+.illus-frame{background:linear-gradient(180deg,#fff,var(--paper-2));border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 22px rgba(24,36,48,.07)}
+.illus{border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 24px rgba(24,36,48,.12)}
+.illus-cap{font-weight:600;color:var(--ink-soft)}
+.prompt-card{border-radius:16px;box-shadow:0 8px 22px rgba(24,36,48,.08);padding:18px}
+
+
+/* ============================================================
+   CLEAN LAYOUT — readability pass
+   ============================================================ */
+.sheet{background:#fff;background-image:linear-gradient(180deg,#fff 0%,var(--paper) 100%)}
+.sheet::before{height:4px}
+.sheet-inner{padding:24px 38px 20px}
+.kicker{box-shadow:none;font-size:10px;padding:5px 10px;margin-bottom:10px}
+.head-row{margin-bottom:14px;align-items:center}
+.head-row h2{font-size:clamp(22px,2.4vw,30px);padding-bottom:9px}
+.head-row h2::after{width:46px;height:3px}
+.head-row .num{font-size:11px;padding:4px 10px;box-shadow:none}
+.subtitle{font-size:13.5px;margin-top:7px;line-height:1.45}
+
+.section-band{background:var(--teal-l);border-left:4px solid var(--teal);border-radius:8px;padding:7px 12px;box-shadow:none;font-size:10px}
+.section-band::before{content:none}
+.subhead{text-transform:none;letter-spacing:0;font-size:12px;font-weight:700;color:var(--teal-d);background:transparent;border-left:3px solid var(--teal);border-radius:0;padding:4px 0 4px 11px;margin:14px 0 7px;line-height:1.35}
+.subhead::before{content:none}
+.interactive-head .chev{font-size:10px;opacity:.5}
+
+.callout{font-size:12.5px;padding:10px 14px;border-radius:0 10px 10px 0;box-shadow:none;line-height:1.5}
+.bullets{gap:6px;margin:8px 0}
+.bullets li{font-size:12.5px;line-height:1.45;padding:4px 8px 4px 26px}
+.bullets li::before{top:9px;left:9px;width:8px;height:8px;box-shadow:none}
+.bullets:has(li:nth-child(5)),.opts:has(.opt:nth-child(5)){columns:2;column-gap:24px}
+.bullets li,.opt{break-inside:avoid}
+.opts{gap:6px}
+.opt{font-size:12px;padding:7px 32px 7px 12px;border-radius:8px;background:var(--paper);font-weight:500;box-shadow:none}
+.opt::after{width:14px;height:14px;right:10px}
+.opt.correct::after{font-size:10px}
+.opt:hover{transform:none}
+
+.card{border-radius:12px;padding:14px;box-shadow:0 1px 0 rgba(24,36,48,.03)}
+.card::before{content:none}
+.card .ico{width:32px;height:32px;font-size:16px;margin-bottom:9px;border-radius:9px;box-shadow:none}
+.card h3{font-size:16px}
+.card p{font-size:12.5px}
+
+.flow{gap:8px;margin:8px 0}
+.fnode{min-width:88px;padding:8px 11px;border-radius:10px;background:var(--surface);box-shadow:0 2px 6px rgba(24,36,48,.04)}
+.fnode .n{font-size:12px}
+.fnode .s{font-size:9.5px}
+.farr{width:22px;height:22px;font-size:13px;background:transparent;box-shadow:none}
+
+table.tbl{font-size:12px;border-radius:10px;box-shadow:none;border:1px solid var(--line)}
+table.tbl th{background:var(--ink);padding:8px 10px;font-size:10px}
+table.tbl td{padding:8px 10px}
+table.tbl tbody tr:nth-child(even) td{background:rgba(238,242,245,.6)}
+
+.code-wrap{margin-top:8px;box-shadow:none;border-radius:8px}
+.code-head{border-radius:8px 8px 0 0;padding:6px 11px;background:var(--stage-2)}
+pre{border-radius:0 0 8px 8px;padding:12px 14px;font-size:11.5px;box-shadow:none}
+
+.illus-frame{border-radius:12px;padding:10px;box-shadow:none;background:var(--paper-2)}
+.illus{max-height:240px;border-radius:10px;box-shadow:0 6px 16px rgba(24,36,48,.10)}
+.illus-cap{font-size:10px}
+.prompt-card{border-radius:12px;padding:14px;box-shadow:none}
+.bignum{font-size:38px}
+.chip{padding:5px 10px;font-size:11px}
+
+.interactive-head[aria-expanded="false"]{margin-top:10px;margin-bottom:4px;background:var(--paper-2);border-radius:8px}
+
+/* ============================================================
+   INTERACTIVE CONTENT COMPONENTS
+   ============================================================ */
+pre{white-space:pre-wrap;word-break:break-word}
+.panel.bad .txt{text-decoration:none;opacity:1}
+.tap-card{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:12px;padding:12px 15px;font-size:13px;line-height:1.55;color:var(--ink-soft);
+  cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s,transform .18s
+}
+.tap-card:hover{background:var(--teal-l);border-color:#bcdfe9;transform:translateY(-1px)}
+.tap-card.selected{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.14);color:var(--ink)}
+.span2{grid-column:1 / -1}
+.step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:8px 0}
+.step-card{display:flex;gap:10px;align-items:flex-start;min-height:64px}
+.step-card .step-n{
+  flex:0 0 auto;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  background:var(--teal-l);color:var(--teal-d);font-family:var(--font-head);font-size:11px;font-weight:700
+}
+.tabset{margin-top:8px}
+.tabbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.tabbar button{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+  border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;transition:.18s
+}
+.tabbar button:hover{border-color:var(--teal);color:var(--teal-d)}
+.tabbar button.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.tabpanel{display:none;animation:fade .25s}
+.tabpanel.active{display:block}
+.code-pair{display:grid;grid-template-columns:minmax(250px,.72fr) minmax(0,1.28fr);gap:14px;align-items:start}
+.reveal-toggle{
+  display:inline-flex;align-items:center;gap:7px;margin-top:9px;border:1px solid var(--line);
+  background:var(--paper-2);color:var(--teal-d);border-radius:100px;padding:6px 12px;
+  font-size:11px;font-weight:800;letter-spacing:.03em;transition:.18s
+}
+.reveal-toggle:hover{background:var(--teal-l);border-color:var(--teal)}
+.reveal-toggle::after{content:"▸";font-size:11px;transition:transform .18s}
+.reveal-toggle[aria-expanded="true"]::after{transform:rotate(90deg)}
+.reveal-body{display:none;margin-top:8px;animation:fade .25s}
+.reveal-body.open{display:block}
+.test-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;
+  box-shadow:0 1px 0 rgba(24,36,48,.03)
+}
+.test-card .prompt-card{margin-top:6px}
+.test-card .reveal-body .callout{margin-bottom:6px}
+@media(max-width:1050px){
+  .code-pair{grid-template-columns:1fr}
+  .step-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){.step-grid{grid-template-columns:1fr}}
+
+
+/* ============================================================
+   FONT LEGIBILITY PASS
+   ============================================================ */
+html,body{font-size:16px}
+.slide{padding:16px 18px 60px}
+.sheet{width:min(1700px,100%)}
+.sheet-inner{padding:24px 38px 20px;font-size:15px;line-height:1.6}
+.kicker{font-size:12px;padding:6px 13px}
+.head-row h2{font-size:clamp(24px,2.6vw,34px)}
+.head-row .num{font-size:12px}
+.subtitle{font-size:15px;line-height:1.55}
+.mini-head{font-size:12.5px;letter-spacing:.09em}
+.subhead{font-size:13.5px;font-weight:750;margin:16px 0 9px}
+.callout{font-size:14.5px;padding:12px 16px;line-height:1.6}
+.bullets{gap:8px}
+.bullets li{font-size:14px;line-height:1.55;padding:5px 9px 5px 28px}
+.tap-card{font-size:14px;line-height:1.6;padding:13px 16px}
+.step-card .step-n{width:28px;height:28px;font-size:12px}
+.tabbar button{font-size:13px;padding:7px 15px}
+.prompt-card{font-size:14px;line-height:1.6}
+.panel .tag{font-size:11.5px}
+.panel .txt{font-size:13.5px}
+.panel .note{font-size:13.5px}
+.code-head{font-size:12px}
+pre{font-size:12.75px;line-height:1.65;padding:13px 16px}
+table.tbl{font-size:13.5px}
+table.tbl th{font-size:11.5px;padding:9px 12px}
+table.tbl td{font-size:13.5px;padding:9px 12px}
+.fnode{padding:9px 12px}
+.fnode .n{font-size:13.5px}
+.fnode .s{font-size:11px}
+.reveal-toggle{font-size:12px;padding:7px 14px}
+.test-card{padding:15px}
+.card h3{font-size:17px}
+.card p{font-size:14px}
+.sheet-foot{font-size:12px}
+.dock-count{font-size:13px}
+.hint-key{font-size:12px}
+.slide.title .badge{font-size:13px}
+.slide.title h1{font-size:clamp(40px,5.8vw,68px)}
+.slide.title .sub{font-size:20px}
+.slide.title .meta .m{font-size:14px}
+
+
+/* ============================================================
+   MODULE 8 — MODERN ANIMATED LAYER
+   ============================================================ */
+@keyframes riseIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+.slide.active .tap-card,.slide.active .step-card,.slide.active .illus-frame,.slide.active .metric{animation:riseIn .45s cubic-bezier(.2,.8,.25,1) both}
+.slide.active .grid .tap-card:nth-child(2),.slide.active .step-grid .step-card:nth-child(2){animation-delay:.05s}
+.slide.active .grid .tap-card:nth-child(3),.slide.active .step-grid .step-card:nth-child(3){animation-delay:.1s}
+.slide.active .grid .tap-card:nth-child(4),.slide.active .step-grid .step-card:nth-child(4){animation-delay:.15s}
+.slide.active .illus{animation:riseIn .55s .1s both}
+.role-layout{display:grid;grid-template-columns:minmax(240px,.72fr) minmax(0,1.28fr);gap:14px;align-items:start}
+@media(max-width:1000px){.role-layout{grid-template-columns:1fr}}
+.illus-frame{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--paper-2);text-align:center}
+.illus-cap{font-size:12px;color:var(--muted);text-align:center;margin-top:5px;line-height:1.45}
+.ticket{border-left:5px solid var(--amber)}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
+.metric{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.metric .v{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--teal-d);line-height:1.15}
+.metric .l{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.bar{height:12px;border-radius:100px;background:var(--paper-2);overflow:hidden;margin-top:7px}
+.bar span{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--teal),var(--amber))}
+.reveal-wrap{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px}
+.reveal-wrap .reveal-body .tap-card{margin-top:7px}
+.slide.active .title .em{animation:riseIn .6s .15s both}
+
+
+/* ============================================================
+   MODULE 9 — HOOK PIPELINE INTERACTION LAYER
+   ============================================================ */
+@keyframes hookRise{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+.slide.active .tap-card,.slide.active .step-card,.slide.active .code-wrap,
+.slide.active .prompt-card,.slide.active .hook-node,.slide.active .scope-card,
+.slide.active .metric{animation:hookRise .45s cubic-bezier(.2,.8,.25,1) both}
+.slide.active .grid .tap-card:nth-child(2),.slide.active .step-grid .step-card:nth-child(2){animation-delay:.05s}
+.slide.active .grid .tap-card:nth-child(3),.slide.active .step-grid .step-card:nth-child(3){animation-delay:.1s}
+.slide.active .grid .tap-card:nth-child(4),.slide.active .step-grid .step-card:nth-child(4){animation-delay:.15s}
+.slide.active .title .em{animation:hookRise .6s .15s both}
+
+.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+@media(max-width:1000px){.two-col{grid-template-columns:1fr}}
+
+.hook-chain{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:9px;margin-top:9px}
+.hook-node{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:12px;padding:12px 13px;cursor:pointer;transition:.18s
+}
+.hook-node:hover{background:var(--teal-l);border-color:#bcdfe9;transform:translateY(-1px)}
+.hook-node.pre{border-left-color:var(--blue)}
+.hook-node.post{border-left-color:var(--amber)}
+.hook-node.ai{border-left-color:var(--coral)}
+.hook-node .hn{display:block;font-family:var(--font-head);font-size:13.5px;font-weight:800;color:var(--ink)}
+.hook-node .hs{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.hook-node.active-step{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.13)}
+
+.gate{border-left:5px solid var(--coral)}
+.gate.ok{border-left-color:var(--green)}
+.gate.warn{border-left-color:var(--amber)}
+
+.scope-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:10px}
+@media(max-width:1000px){.scope-grid{grid-template-columns:1fr}}
+.scope-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+.scope-card .tag2{
+  display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--teal-l);color:var(--teal-d);border-radius:100px;padding:5px 11px;margin-bottom:9px
+}
+.scope-card.user .tag2{background:var(--amber-l);color:#8a5e12}
+
+.mini-flow{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:8px}
+.mini-flow span{background:var(--paper-2);border:1px solid var(--line);border-radius:100px;padding:6px 11px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+.mini-flow i{font-style:normal;color:var(--coral);font-weight:800}
+
+.error-strip{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:8px;margin-top:8px
+}
+.error-strip div{
+  background:var(--paper-2);border:1px solid var(--line);border-left:4px solid var(--green);
+  border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.45
+}
+.error-strip div.fail{border-left-color:var(--coral)}
+.error-strip div b{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+
+.repair{background:var(--amber-l);border:1px solid #ecd39a;border-radius:12px;padding:12px 14px;margin-top:8px}
+.repair .rt{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#8a5e12;margin-bottom:5px}
+
+
+/* ============================================================
+   MODULE 10 — PLUGIN ARCHITECTURE INTERACTION LAYER
+   ============================================================ */
+@keyframes plugRise{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+.slide.active .tap-card,.slide.active .step-card,.slide.active .code-wrap,
+.slide.active .prompt-card,.slide.active .plug-node,.slide.active .api-node,
+.slide.active .market-node,.slide.active .path-card,.slide.active .metric{
+  animation:plugRise .45s cubic-bezier(.2,.8,.25,1) both
+}
+.slide.active .grid .tap-card:nth-child(2),.slide.active .step-grid .step-card:nth-child(2){animation-delay:.05s}
+.slide.active .grid .tap-card:nth-child(3),.slide.active .step-grid .step-card:nth-child(3){animation-delay:.1s}
+.slide.active .grid .tap-card:nth-child(4),.slide.active .step-grid .step-card:nth-child(4){animation-delay:.15s}
+.slide.active .title .em{animation:plugRise .6s .15s both}
+
+.plug-chain{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:9px}
+.plug-node{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:12px;padding:13px 15px;cursor:pointer;transition:.18s
+}
+.plug-node:hover{background:var(--teal-l);border-color:#bcdfe9;transform:translateY(-1px)}
+.plug-node.skill{border-left-color:var(--teal)}
+.plug-node.hook{border-left-color:var(--amber)}
+.plug-node.mcp{border-left-color:var(--coral)}
+.plug-node.package{border-left-color:var(--green)}
+.plug-node .pn{display:block;font-family:var(--font-head);font-size:14px;font-weight:800;color:var(--ink)}
+.plug-node .pd{display:block;font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+.plug-node.active-step{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.13)}
+
+.api-chain{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:9px;margin-top:9px}
+.api-node{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  cursor:pointer;transition:.18s;text-align:center
+}
+.api-node:hover{background:var(--blue-l);border-color:var(--blue);transform:translateY(-1px)}
+.api-node .an{display:block;font-family:var(--font-head);font-size:13.5px;font-weight:800;color:var(--teal-d)}
+.api-node .ad{display:block;font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
+.api-node.active-step{background:var(--blue-l);border-color:var(--blue);box-shadow:0 0 0 3px rgba(6,148,209,.12)}
+
+.market-chain{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-top:10px}
+.market-node{
+  background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--blue);
+  border-radius:12px;padding:12px 14px;cursor:pointer;transition:.18s
+}
+.market-node:hover{background:var(--blue-l);transform:translateY(-1px)}
+.market-node .mn{display:block;font-family:var(--font-head);font-size:13.5px;font-weight:800}
+.market-node .md{display:block;font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
+.market-node.active-step{background:var(--blue-l);box-shadow:0 0 0 3px rgba(6,148,209,.12)}
+
+.path-card{
+  background:var(--paper-2);border:1px solid var(--line);border-radius:12px;
+  padding:12px 15px;font-family:var(--font-mono);font-size:12.5px;line-height:1.65;color:var(--ink-soft)
+}
+.cite{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.02em;margin-top:4px;display:inline-block}
+.remember{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.remember span{
+  background:var(--surface);border:1px solid var(--line);border-radius:100px;
+  padding:7px 13px;font-size:13px;font-weight:800;color:var(--teal-d)
+}
+.endpoint{font-family:var(--font-mono);font-size:13px;font-weight:800;color:var(--teal-d)}
+
+</style>
+</head>
+<body>
+<div id="deck">
+<section class="slide title active">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <svg class="orbit" viewBox="0 0 250 250" fill="none" stroke="#69c6f2" stroke-width="1.2">
+        <circle cx="125" cy="125" r="100" opacity=".3"/><circle cx="125" cy="125" r="66" opacity=".45"/>
+        <circle cx="125" cy="125" r="30" opacity=".6"/>
+        <circle cx="125" cy="25" r="7" fill="#69c6f2" stroke="none"/>
+        <circle cx="191" cy="75" r="5" fill="#69c6f2" stroke="none"/>
+        <circle cx="59" cy="185" r="5" fill="#e08a3c" stroke="none"/>
+        <path d="M125 25 A100 100 0 0 1 191 75" stroke="#69c6f2" stroke-width="2"/>
+        <path d="M191 75 A100 100 0 0 1 59 185" stroke="#69c6f2" stroke-width="2"/>
+      </svg>
+      <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
+      <div class="reveal"><div class="badge"><span class="ln"></span> Claude Code Training · Module 10</div></div>
+      <div class="reveal"><h1>Plugins<br><span class="em">Architecture</span><br>&amp; Integration</h1></div>
+      <div class="reveal"><p class="sub">Package skills, hooks, agents and MCP connections into one reusable capability.</p></div>
+      <div class="reveal">
+        <div class="meta">
+          <span class="m">◈ What is a Plugin?</span><span class="m">◈ Plugins vs MCP vs Skills</span>
+          <span class="m">◈ Manifest Structure</span><span class="m">◈ API Read &amp; Write</span>
+          <span class="m">◈ Project &amp; User Scope</span><span class="m">◈ Publishing</span>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">01 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Meaning</span><h2>What is a Plugin?</h2><p class="subtitle">A package that makes additional capabilities available inside Claude Code.</p></div>
+        <span class="num">01 · PLUGINS</span>
+      </div>
+      <div class="tap-card reveal">A plugin is a package that combines additional capabilities and makes them available inside Claude Code.</div>
+      <div class="callout reveal" style="margin-top:8px">Think about installing an application on your mobile phone.</div>
+      <div class="subhead reveal">For example, when you install WhatsApp, you get several capabilities together:</div>
+      <div class="grid g4 reveal">
+        <div class="tap-card">Send messages.</div>
+        <div class="tap-card">Share files.</div>
+        <div class="tap-card">Make calls.</div>
+        <div class="tap-card">Share images.</div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">Similarly, a Claude Code plugin can package multiple capabilities together:</div>
+      <div class="plug-chain reveal">
+        <div class="plug-node skill"><span class="pn">Skills:</span><span class="pd">Give Claude specialized instructions.</span></div>
+        <div class="plug-node hook"><span class="pn">Hooks:</span><span class="pd">Automatically execute actions when events occur.</span></div>
+        <div class="plug-node mcp"><span class="pn">MCP servers:</span><span class="pd">Connect Claude to external applications and APIs.</span></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:9px">Instead of configuring each capability separately in every project, we can package them together and distribute them as one plugin.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">02 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Comparison</span><h2>Difference between Plugins, MCP servers and Skills</h2><p class="subtitle">Related concepts, different jobs.</p></div>
+        <span class="num">01 · COMPARISON</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">These three are related, but they do different jobs.</div>
+        <div class="tap-card">Imagine Claude needs to manage products in your company application.</div>
+      </div>
+      <table class="tbl reveal" style="margin-top:10px">
+        <thead><tr><th>Component</th><th>Simple meaning</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Skill</td><td>Teaches Claude how to do something</td><td>Instructions for checking low-stock products</td></tr>
+          <tr><td>MCP server</td><td>Connects Claude to an external application</td><td>Connects Claude to your Product API</td></tr>
+          <tr><td>Plugin</td><td>Packages multiple capabilities together</td><td>Product Management toolkit containing skills and MCP connection</td></tr>
+        </tbody>
+      </table>
+      <div class="subhead reveal">Remember this:</div>
+      <div class="remember reveal"><span>Skill = Instructions</span><span>MCP = Connection</span><span>Plugin = Package</span></div>
+      <div class="callout teal reveal" style="margin-top:9px">A plugin can contain skills, commands, agents, hooks and MCP server configurations.</div>
+      <div class="cite reveal">Claude Platform Docs+1</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">03 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Structure</span><h2>3. Plugin manifest structure</h2><p class="subtitle">A manifest describes your plugin.</p></div>
+        <span class="num">02 · MANIFEST</span>
+      </div>
+      <div class="tap-card reveal">A manifest is simply a configuration file that describes your plugin.</div>
+      <div class="callout reveal" style="margin-top:8px">For Claude Code, the file is:</div>
+      <div class="path-card reveal" style="margin-top:7px">product-plugin/
+    .claude-plugin/
+        plugin.json</div>
+      <div class="subhead reveal">Example:</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span>plugin.json</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "name": "product-management",
+  "description": "Helps manage company products",
+  "version": "1.0.0",
+  "author": {
+    "name": "Training Team"
+  }
+}</pre>
+      </div>
+      <div class="subhead reveal">Let's understand the fields:</div>
+      <table class="tbl reveal">
+        <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>name</td><td>Plugin's unique name</td></tr>
+          <tr><td>description</td><td>What the plugin does</td></tr>
+          <tr><td>version</td><td>Current plugin version</td></tr>
+          <tr><td>author</td><td>Who created it</td></tr>
+        </tbody>
+      </table>
+      <div class="callout amber reveal" style="margin-top:8px">Authentication and API endpoints are not normally fields in this basic plugin.json manifest. In Claude Code, connection details generally belong in the MCP server configuration, often .mcp.json.</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>.mcp.json</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "mcpServers": {
+    "product-api": {
+      "type": "http",
+      "url": "https://example.com/mcp"
+    }
+  }
+}</pre>
+      </div>
+      <div class="subhead reveal">Here:</div>
+      <ul class="bullets reveal">
+        <li>url tells Claude where the MCP server is.</li>
+        <li>Authentication may be configured separately, depending on the server.</li>
+        <li>The MCP server communicates with your actual application or API.</li>
+      </ul>
+      <div class="callout coral reveal" style="margin-top:8px">So, don't confuse the plugin's description with the API connection details.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">04 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> API Endpoints</span><h2>Reading and writing data through API endpoints</h2><p class="subtitle">Let's use a real situation.</p></div>
+        <span class="num">03 · API</span>
+      </div>
+      <div class="tap-card reveal">Your Product Management application has two API endpoints:</div>
+      <div class="grid g2 reveal" style="margin-top:9px">
+        <div class="plug-node package">
+          <span class="pn endpoint">GET  /api/products</span>
+          <span class="pd">GET – Read data. Claude asks the Product API to retrieve products.</span>
+        </div>
+        <div class="plug-node package">
+          <span class="pn endpoint">POST /api/products</span>
+          <span class="pd">POST – Write data. The application can receive a new product.</span>
+        </div>
+      </div>
+      <div class="subhead reveal">What do they do?</div>
+      <div class="two-col reveal">
+        <div>
+          <div class="callout teal"><strong>GET – Read data</strong></div>
+          <div class="callout" style="margin-top:7px">Claude asks the Product API to retrieve products.</div>
+          <div class="code-wrap" style="margin-top:7px">
+            <div class="code-head"><span>Request</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>GET /api/products</pre>
+          </div>
+        </div>
+        <div>
+          <div class="callout amber"><strong>POST – Write data</strong></div>
+          <div class="callout" style="margin-top:7px">Now ask Claude to add a new product. The application can receive a POST request.</div>
+          <div class="code-wrap" style="margin-top:7px">
+            <div class="code-head"><span>Request</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>POST /api/products</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">05 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Read data</span><h2>GET – Read data</h2><p class="subtitle">Retrieve products, then identify the low-stock item.</p></div>
+        <span class="num">03 · GET</span>
+      </div>
+      <div class="callout teal reveal">Claude asks the Product API to retrieve products.</div>
+      <div class="subhead reveal">Example:</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span>GET /api/products</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>GET /api/products</pre>
+      </div>
+      <div class="callout reveal" style="margin-top:8px">The API returns:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Response</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>[
+  {
+    "id": 101,
+    "name": "Laptop",
+    "price": 50000,
+    "stock": 5
+  },
+  {
+    "id": 102,
+    "name": "Mouse",
+    "price": 500,
+    "stock": 20
+  }
+]</pre>
+      </div>
+      <div class="callout amber reveal" style="margin-top:8px">You ask Claude: Show me all products whose stock is below 10.</div>
+      <div class="callout teal reveal" style="margin-top:7px">Claude can use an available MCP tool to retrieve the data and identify the Laptop.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">06 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Write data</span><h2>POST – Write data</h2><p class="subtitle">Send a new product to the application.</p></div>
+        <span class="num">03 · POST</span>
+      </div>
+      <div class="callout reveal">Now ask Claude: Add a new product called Keyboard with price 1200 and stock 15.</div>
+      <div class="callout teal reveal" style="margin-top:7px">The application can receive:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>POST /api/products</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>POST /api/products</pre>
+      </div>
+      <div class="callout amber reveal" style="margin-top:8px">With this data:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Request body</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "name": "Keyboard",
+  "price": 1200,
+  "stock": 15
+}</pre>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">The API saves the new product.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">07 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Flow</span><h2>How the connection works</h2><p class="subtitle">The plugin packages the integration; a tool performs the API operation.</p></div>
+        <span class="num">03 · CONNECTION</span>
+      </div>
+      <div class="api-chain reveal">
+        <div class="api-node"><span class="an">User</span><span class="ad">"Add a new product"</span></div>
+        <div class="api-node"><span class="an">Claude</span><span class="ad">Understands the request</span></div>
+        <div class="api-node"><span class="an">MCP server</span><span class="ad">Calls the appropriate API</span></div>
+        <div class="api-node"><span class="an">Product Management API</span><span class="ad">Saves the product in the database</span></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:10px">The important point: The plugin packages the integration, but the MCP server or other tool performs the actual API operation.</div>
+      <div class="subhead reveal">Putting the pieces together</div>
+      <div class="plug-chain reveal">
+        <div class="plug-node skill"><span class="pn">Skill = Instructions</span><span class="pd">Teaches Claude how to handle product tasks.</span></div>
+        <div class="plug-node mcp"><span class="pn">MCP = Connection</span><span class="pd">Connects Claude to the Product API.</span></div>
+        <div class="plug-node package"><span class="pn">Plugin = Package</span><span class="pd">Distributes the skill and MCP connection together.</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">08 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scope</span><h2>5. Project-scoped plugins vs User-scoped plugins</h2><p class="subtitle">Personal installation or project installation.</p></div>
+        <span class="num">04 · SCOPE</span>
+      </div>
+      <div class="callout reveal">Imagine you have two projects:</div>
+      <div class="grid g2 reveal" style="margin-top:7px">
+        <div class="tap-card">Project A: Product Management API</div>
+        <div class="tap-card">Project B: Student Management API</div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">You install a Product Management plugin.</div>
+      <div class="scope-grid reveal" style="margin-top:10px">
+        <div class="scope-card">
+          <span class="tag2">User-scoped plugin</span>
+          <div class="tap-card">You install it for yourself.</div>
+          <div class="callout teal" style="margin-top:7px">It is available across your different projects.</div>
+          <div class="mini-head" style="margin-top:10px">Example:</div>
+          <div class="path-card">C:\Users\YourName\.claude\</div>
+        </div>
+        <div class="scope-card user">
+          <span class="tag2">Project-scoped plugin</span>
+          <div class="tap-card">You install it for a particular project.</div>
+          <div class="callout teal" style="margin-top:7px">It can be shared with teammates through Git when the project configuration is committed.</div>
+          <div class="mini-head" style="margin-top:10px">Example:</div>
+          <div class="path-card">Product-Management-API/
+    .claude/
+        settings.json</div>
+        </div>
+      </div>
+      <div class="subhead reveal">Difference</div>
+      <table class="tbl reveal">
+        <thead><tr><th>User scope</th><th>Project scope</th></tr></thead>
+        <tbody>
+          <tr><td>Personal installation</td><td>Project installation</td></tr>
+          <tr><td>Available across projects</td><td>Available in that project</td></tr>
+          <tr><td>Not automatically shared with teammates</td><td>Can be shared through Git</td></tr>
+          <tr><td>Stored in user settings</td><td>Stored in project settings</td></tr>
+        </tbody>
+      </table>
+      <div class="cite reveal">GitHub+1</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">09 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Distribution</span><h2>6. Publishing a plugin for your team or organization</h2><p class="subtitle">Share once, install everywhere.</p></div>
+        <span class="num">05 · PUBLISHING</span>
+      </div>
+      <div class="role-layout reveal">
+        <div class="illus-frame">
+          <img class="illus" src="https://images.openai.com/static-rsc-4/fXonnwCBrz9WfMWJtkeOAYksfaUcABDbuxN7aoaRL05xCcVj6hfLIs1gn_gIkwZ46OMXPTQzi6s69thbaGmd31YDQ2rl9M5-GhZMQzZrWvdp3C0UlcMgGOpvLOnAYCZFRZDc0bBOX1U49zmJbe6VaNXw0n-fMezBEPLU0UNDdw7ChVbuiqD43sBVuiwa7bU3?purpose=fullsize" alt="Publishing a plugin for your team">
+          <div class="illus-cap">Publishing a plugin for your team or organization</div>
+        </div>
+        <div>
+          <div class="tap-card">Imagine you created a Product Management plugin on your laptop.</div>
+          <div class="tap-card" style="margin-top:7px">Now five developers in your company also need it.</div>
+          <div class="callout coral" style="margin-top:8px">You don't want to manually copy the plugin folder to five computers.</div>
+          <div class="callout teal" style="margin-top:7px">Instead, you can share it through a GitHub repository and a plugin marketplace.</div>
+        </div>
+      </div>
+      <div class="market-chain reveal">
+        <div class="market-node"><span class="mn">Step 1: Create the plugin</span><span class="md">Build the plugin folder locally.</span></div>
+        <div class="market-node"><span class="mn">Step 2: Push it to GitHub</span><span class="md">Create a repository and upload the plugin.</span></div>
+        <div class="market-node"><span class="mn">Step 3: Share the marketplace</span><span class="md">Teammates add the marketplace.</span></div>
+        <div class="market-node"><span class="mn">Step 4: Install the plugin</span><span class="md">Install from the shared marketplace.</span></div>
+        <div class="market-node"><span class="mn">Step 5: Use it</span><span class="md">Use the plugin in Claude Code.</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">10 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Steps 1–2</span><h2>Create the plugin, push it to GitHub</h2><p class="subtitle">From a local folder to a shared repository.</p></div>
+        <span class="num">05 · PUBLISHING</span>
+      </div>
+      <div class="subhead reveal">Step 1: Create the plugin</div>
+      <div class="path-card reveal">product-management-plugin/
+    .claude-plugin/
+        plugin.json
+    skills/
+        product-search/
+            SKILL.md
+    .mcp.json</div>
+      <div class="callout teal reveal" style="margin-top:8px">This single folder packages the manifest, the skill and the MCP configuration.</div>
+      <div class="subhead reveal">Step 2: Push it to GitHub</div>
+      <div class="tap-card reveal">Create a GitHub repository and upload the plugin.</div>
+      <div class="api-chain reveal" style="margin-top:9px">
+        <div class="api-node"><span class="an">Local plugin folder</span><span class="ad">Create the plugin</span></div>
+        <div class="api-node"><span class="an">GitHub repository</span><span class="ad">Push it to GitHub</span></div>
+        <div class="api-node"><span class="an">Marketplace entry</span><span class="ad">Ready to share with teammates</span></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:9px">For a private company repository, teammates must also have the required repository access.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">11 / 12</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Steps 3–5</span><h2>Share, install and use the plugin</h2><p class="subtitle">The team can now use the packaged functionality.</p></div>
+        <span class="num">05 · PUBLISHING</span>
+      </div>
+      <div class="subhead reveal">Step 3: Share the marketplace</div>
+      <div class="callout reveal">Your teammates add the marketplace:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Add marketplace</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>/plugin marketplace add yourname/company-plugin-marketplace</pre>
+      </div>
+      <div class="subhead reveal">Step 4: Install the plugin</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Install plugin</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>/plugin install product-management@company-marketplace</pre>
+      </div>
+      <div class="subhead reveal">Step 5: Use it</div>
+      <div class="tap-card reveal">The team members can now use the plugin's functionality in their Claude Code environment.</div>
+      <div class="market-chain reveal" style="margin-top:9px">
+        <div class="market-node"><span class="mn">Add marketplace</span><span class="md">Step 3: Share the marketplace</span></div>
+        <div class="market-node"><span class="mn">Install plugin</span><span class="md">Step 4: Install the plugin</span></div>
+        <div class="market-node"><span class="mn">Use functionality</span><span class="md">Step 5: Use it</span></div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:9px">For a private company repository, teammates must also have the required repository access.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 10 · PLUGINS - ARCHITECTURE AND INTEGRATION</span><span class="page-num">12 / 12</span></div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- NAVIGATION DOCK -->
+<div class="dock">
+  <button class="nav-btn" id="prev" title="Previous (←)">←</button>
+  <div class="dots" id="dots"></div>
+  <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+  <span class="dock-count" id="count">01 / 12</span>
+  <button class="nav-btn" id="next" title="Next (→)">→</button>
+  <span class="hint-key"><span class="kbd">←</span> <span class="kbd">→</span> navigate</span>
+</div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  const countEl = document.getElementById('count');
+  const fill = document.getElementById('progress');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const dotsWrap = document.getElementById('dots');
+
+  slides.forEach((_, k) => {
+    const b = document.createElement('button');
+    b.className = 'dot-btn';
+    b.title = 'Slide ' + (k + 1);
+    b.addEventListener('click', () => go(k));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    dots.forEach((d, k) => d.classList.toggle('active', k === i));
+    countEl.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    fill.style.width = ((i + 1) / slides.length * 100) + '%';
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    const inner = slides[i].querySelector('.sheet-inner');
+    if (inner) inner.scrollTop = 0;
+  }
+
+  prev.addEventListener('click', () => go(i - 1));
+  next.addEventListener('click', () => go(i + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home') { go(0); }
+    else if (e.key === 'End') { go(slides.length - 1); }
+  });
+
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', () => go(parseInt(el.dataset.goto, 10) - 1));
+  });
+
+  document.querySelectorAll('.illus').forEach(img => {
+    img.addEventListener('click', () => window.open(img.src, '_blank'));
+  });
+
+  document.querySelectorAll('.opt.checkable').forEach(el => {
+    el.addEventListener('click', () => el.classList.toggle('correct'));
+  });
+
+  window.copyCode = function (btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    if (!pre) return;
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      const old = btn.textContent; btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = old, 1400);
+    }).catch(() => { btn.textContent = 'Select text'; });
+  };
+
+
+  // ---- Interactive content representation ----
+  document.querySelectorAll('.slide').forEach(slide => {
+    const inner = slide.querySelector('.sheet-inner');
+    if (!inner) return;
+    const dense = inner.textContent.length > 1200;
+    const heads = Array.from(inner.querySelectorAll(':scope > .section-band, :scope > .subhead'));
+    heads.forEach(head => {
+      const body = document.createElement('div');
+      body.className = 'collapse-body';
+      let node = head.nextElementSibling;
+      while (node && !heads.includes(node)) {
+        const next = node.nextElementSibling;
+        body.appendChild(node);
+        node = next;
+      }
+      if (!body.childNodes.length) return;
+      head.after(body);
+      head.classList.add('interactive-head');
+      head.tabIndex = 0;
+      head.setAttribute('role', 'button');
+      const startCollapsed = dense && heads.indexOf(head) > 0;
+      if (startCollapsed) body.classList.add('collapsed');
+      head.setAttribute('aria-expanded', startCollapsed ? 'false' : 'true');
+      const chev = document.createElement('span');
+      chev.className = 'chev';
+      chev.textContent = '\u25be';
+      head.appendChild(chev);
+      const toggle = () => {
+        const collapsed = body.classList.toggle('collapsed');
+        head.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      };
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+      });
+    });
+  });
+
+  function bindCheckable(selector, className) {
+    document.querySelectorAll(selector).forEach(el => {
+      el.tabIndex = 0;
+      el.setAttribute('role', 'checkbox');
+      el.setAttribute('aria-checked', 'false');
+      const toggle = () => {
+        const on = el.classList.toggle(className);
+        el.setAttribute('aria-checked', on ? 'true' : 'false');
+      };
+      el.addEventListener('click', toggle);
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+      });
+    });
+  }
+  bindCheckable('.bullets li', 'done');
+
+  document.querySelectorAll('.flow, .hook-chain, .plug-chain, .api-chain, .market-chain').forEach(flow => {
+    const nodes = Array.from(flow.querySelectorAll('.fnode, .hook-node, .plug-node, .api-node, .market-node'));
+    nodes.forEach(node => {
+      node.tabIndex = 0;
+      node.setAttribute('role', 'button');
+      node.setAttribute('aria-pressed', 'false');
+      const activate = e => {
+        if (e) e.stopPropagation();
+        const was = node.classList.contains('active-step');
+        nodes.forEach(n => { n.classList.remove('active-step'); n.setAttribute('aria-pressed', 'false'); });
+        if (!was) { node.classList.add('active-step'); node.setAttribute('aria-pressed', 'true'); }
+      };
+      node.addEventListener('click', activate);
+      node.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(e); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.tbl tbody tr').forEach(tr => {
+    tr.tabIndex = 0;
+    tr.setAttribute('role', 'button');
+    tr.setAttribute('aria-pressed', 'false');
+    const toggle = () => {
+      const on = tr.classList.toggle('row-active');
+      tr.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    tr.addEventListener('click', toggle);
+    tr.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+    });
+  });
+
+  document.querySelectorAll('.card:not([data-goto])').forEach(card => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    const toggle = e => {
+      if (e && e.target && e.target.closest('button, .code-wrap')) return;
+      if (e) e.stopPropagation();
+      const on = card.classList.toggle('card-focus');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); }
+    });
+  });
+
+
+  // ---- Interactive cards, tabs and reveal panels ----
+  document.querySelectorAll('.tabset').forEach(set => {
+    const tabs = Array.from(set.querySelectorAll('.tabbar button'));
+    const panels = Array.from(set.querySelectorAll('.tabpanel'));
+    const activate = tab => {
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach(p => p.classList.toggle('active', p.dataset.panel === tab.dataset.tab));
+    };
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', e => { e.stopPropagation(); activate(tab); });
+      tab.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); e.stopPropagation(); activate(tab);
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault(); e.stopPropagation();
+          const next = tabs[(idx + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+          next.focus(); activate(next);
+        }
+      });
+    });
+    if (tabs.length) activate(tabs[0]);
+  });
+
+  document.querySelectorAll('.tap-card').forEach(card => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    const toggle = e => {
+      if (e && e.target && e.target.closest('button, pre, .copy-btn')) return;
+      if (e) e.stopPropagation();
+      const on = card.classList.toggle('selected');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(e); }
+    });
+  });
+
+  document.querySelectorAll('.reveal-toggle').forEach(btn => {
+    const card = btn.closest('.test-card, .qa-card, .reveal-wrap');
+    const body = card ? card.querySelector('.reveal-body') : null;
+    if (!body) return;
+    btn.setAttribute('aria-expanded', 'false');
+    const toggle = e => {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const open = body.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    btn.addEventListener('click', toggle);
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') toggle(e);
+    });
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>
+
