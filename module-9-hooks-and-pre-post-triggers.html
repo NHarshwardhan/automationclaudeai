@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Module 9: Hooks and Pre/Post Triggers | Claude Code Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root{
+  --ink:#2c353b;
+  --ink-soft:#566169;
+  --paper:#fafbfc;
+  --paper-2:#eef2f5;
+  --surface:#ffffff;
+  --stage:#222b32;
+  --stage-2:#2f3b44;
+  --teal:#0694d1;
+  --teal-d:#0574a4;
+  --teal-l:#e6f4fb;
+  --coral:#e08a3c;
+  --coral-l:#fdf0e2;
+  --amber:#e0a32e;
+  --amber-l:#fcf3dc;
+  --green:#2f8b62;
+  --green-l:#e0f1e8;
+  --red:#c0473f;
+  --red-l:#f8e3e1;
+  --blue:#3c6bb0;
+  --blue-l:#e6eefb;
+  --line:#dfe5e9;
+  --muted:#7b8791;
+  --shadow:0 24px 60px rgba(0,0,0,.45),0 4px 14px rgba(0,0,0,.18);
+  --radius:18px;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-head:'Space Grotesk',var(--font-body);
+  --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --font-hand:'Caveat',cursive;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font-body);
+  background:var(--stage);
+  background-image:radial-gradient(1200px 600px at 50% -10%,#243241 0%,transparent 60%);
+  color:var(--ink);
+  overflow:hidden;
+  height:100vh;
+}
+button{font-family:inherit;cursor:pointer}
+
+#deck{position:relative;height:100vh;width:100vw;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;padding:18px 22px 62px;align-items:flex-start;justify-content:center}
+.slide.active{display:flex;animation:slideIn .45s cubic-bezier(.2,.8,.25,1)}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+.sheet{
+  position:relative;width:min(1600px,100%);height:100%;
+  background:var(--paper);
+  background-image:linear-gradient(rgba(255,255,255,.55) 1px,transparent 1px),radial-gradient(circle at 12% 8%,rgba(6,148,209,.035),transparent 40%);
+  background-size:100% 28px,100% 100%;
+  border-radius:22px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.6);
+}
+.sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) 78%,var(--amber) 78%,var(--coral) 100%)}
+.sheet-inner{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:26px 38px 22px;scrollbar-width:thin;scrollbar-color:#cbd5dc transparent}
+.sheet-inner::-webkit-scrollbar{width:8px}
+.sheet-inner::-webkit-scrollbar-thumb{background:#cbd5dc;border-radius:8px}
+
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);background:var(--teal-l);padding:6px 12px;border-radius:100px;margin-bottom:14px}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.15;margin:0}
+h1{font-size:clamp(34px,5vw,60px);letter-spacing:-.02em}
+h2{font-size:clamp(26px,3.2vw,38px);letter-spacing:-.015em}
+h3{font-size:19px}
+h4{font-size:15px}
+.subtitle{font-size:15px;color:var(--ink-soft);margin:10px 0 0;max-width:820px;line-height:1.55}
+.lead{font-size:16px;line-height:1.7;color:var(--ink-soft)}
+p{line-height:1.6}
+strong{color:var(--ink);font-weight:700}
+.hl{background:linear-gradient(transparent 62%,rgba(217,149,47,.32) 62%);font-weight:700}
+.hl-teal{background:linear-gradient(transparent 62%,rgba(6,148,209,.18) 62%);font-weight:700}
+code.inline{font-family:var(--font-mono);font-size:.88em;background:var(--paper-2);border:1px solid var(--line);padding:1px 6px;border-radius:6px;color:var(--teal-d)}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px;flex-wrap:wrap}
+.head-row .num{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 12px;background:var(--surface)}
+
+.sheet-foot{position:relative;flex:0 0 44px;width:100%;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-top:1px solid var(--line);background:rgba(250,247,241,.9);backdrop-filter:blur(4px);font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+.sheet-foot .brand{display:flex;align-items:center;gap:9px}
+.brand-logo{height:19px;width:auto;display:block;background:#fff;border-radius:4px;padding:2px 5px;box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.hero-logo{display:inline-block;background:#fff;border-radius:14px;padding:14px 22px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.hero-logo img{display:block;width:205px;height:auto}
+.divider-logo{position:absolute;left:46px;top:30px;background:#fff;border-radius:10px;padding:8px 14px;box-shadow:0 8px 22px rgba(0,0,0,.3);z-index:3}
+.divider-logo img{display:block;width:150px;height:auto}
+.page-num{font-variant-numeric:tabular-nums}
+
+.dock{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:50;background:rgba(20,27,36,.86);border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:100px;backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:17px;display:grid;place-items:center;transition:.2s}
+.nav-btn:hover{background:var(--teal);border-color:var(--teal);transform:translateY(-1px)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.progress-track{width:min(36vw,300px);height:5px;background:rgba(255,255,255,.15);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#8ad4f0);border-radius:100px;transition:width .35s ease}
+.dock-count{color:#cfd8e0;font-size:12px;font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:600}
+.hint-key{color:#7d8b98;font-size:11px;padding:0 4px;white-space:nowrap}
+.dots{display:flex;gap:5px;align-items:center;max-width:min(30vw,260px);overflow:hidden}
+.dot-btn{width:7px;height:7px;border-radius:50%;border:none;background:rgba(255,255,255,.25);padding:0;transition:.2s;flex:0 0 auto}
+.dot-btn:hover{background:#fff;transform:scale(1.3)}
+.dot-btn.active{background:var(--amber);width:20px;border-radius:100px}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.25,1)}
+.slide.active .reveal{opacity:1;transform:none}
+.slide.active .reveal:nth-child(1){transition-delay:.05s}
+.slide.active .reveal:nth-child(2){transition-delay:.12s}
+.slide.active .reveal:nth-child(3){transition-delay:.19s}
+.slide.active .reveal:nth-child(4){transition-delay:.26s}
+.slide.active .reveal:nth-child(5){transition-delay:.33s}
+.slide.active .reveal:nth-child(6){transition-delay:.40s}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;box-shadow:0 2px 0 rgba(24,36,48,.03);transition:transform .2s,box-shadow .2s,border-color .2s}
+.card.hoverable{cursor:pointer}
+.card.hoverable:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(24,36,48,.1);border-color:#c9d8d5}
+.card .ico{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;margin-bottom:12px;background:var(--teal-l);color:var(--teal-d)}
+.card h3{margin-bottom:6px}
+.card p{font-size:13.5px;color:var(--ink-soft);margin:0;line-height:1.55}
+
+.word{position:relative;cursor:pointer;user-select:none;text-align:center;background:var(--surface);border:2px dashed var(--line);border-radius:16px;padding:20px 16px;transition:.25s}
+.word:hover{border-color:var(--teal);transform:translateY(-3px)}
+.word .big{font-family:var(--font-head);font-size:30px;font-weight:700;color:var(--teal-d);letter-spacing:-.02em}
+.word .def{display:none;margin-top:10px;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.word.revealed{border-style:solid;background:var(--teal-l)}
+.word.revealed .def{display:block;animation:fade .3s}
+.word .tap{display:block;font-size:11px;color:var(--muted);margin-top:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.vs{display:grid;grid-template-columns:1fr 40px 1fr;gap:10px;align-items:stretch}
+@media(max-width:780px){.vs{grid-template-columns:1fr}}
+.vs .arrow-mid{display:grid;place-items:center;font-size:22px;color:var(--muted)}
+.panel{border-radius:14px;padding:16px 18px;border:1px solid;transition:.25s}
+.panel.bad{background:var(--red-l);border-color:#f0c4c0}
+.panel.good{background:var(--green-l);border-color:#bfe0cf}
+.panel:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(24,36,48,.08)}
+.panel .tag{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;display:inline-flex;gap:6px;align-items:center;margin-bottom:9px}
+.panel.bad .tag{color:var(--red)}
+.panel.good .tag{color:var(--green)}
+.panel .tag .x,.panel .tag .v{font-size:13px}
+.panel .txt{font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:var(--ink)}
+.panel.bad .txt{opacity:.72;text-decoration:line-through;text-decoration-color:rgba(192,71,63,.4)}
+.panel .note{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5}
+
+.flow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:6px 0}
+.fnode{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:11px;padding:10px 13px;text-align:center;min-width:96px;box-shadow:0 3px 8px rgba(24,36,48,.05)}
+.fnode .n{display:block;font-family:var(--font-head);font-size:13px;font-weight:700}
+.fnode .s{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.farr{color:var(--coral);font-weight:800;font-size:18px}
+.fnode.alt{border-top-color:var(--amber)}
+.fnode.alt2{border-top-color:var(--blue)}
+
+.code-wrap{position:relative;margin:12px 0 0}
+.code-head{display:flex;align-items:center;justify-content:space-between;background:var(--stage-2);color:#a9b6c2;padding:7px 12px;border-radius:10px 10px 0 0;font-size:11px;font-family:var(--font-mono)}
+.code-head .file{color:#79cdf5}
+.copy-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#cfd8e0;border-radius:6px;padding:3px 9px;font-size:10.5px;transition:.2s}
+.copy-btn:hover{background:var(--teal);color:#fff}
+pre{margin:0;background:#0f1620;color:#dbe4ec;border-radius:0 0 10px 10px;padding:14px 16px;overflow-x:auto;font-family:var(--font-mono);font-size:12px;line-height:1.65;scrollbar-width:thin}
+pre .k{color:#c792ea}pre .s{color:#c3e88d}pre .c{color:#5f7183;font-style:italic}pre .f{color:#82aaff}pre .n{color:#f78c6c}pre .hl2{background:rgba(6,148,209,.22);display:inline-block;width:100%}
+
+details.note{margin-top:12px;border:1px solid var(--line);border-radius:11px;background:var(--amber-l);overflow:hidden}
+details.note summary{cursor:pointer;padding:10px 14px;font-size:12.5px;font-weight:700;color:#8a5e12;list-style:none;display:flex;align-items:center;gap:9px}
+details.note summary::-webkit-details-marker{display:none}
+details.note summary::before{content:"▸";transition:.2s;display:inline-block;font-size:12px}
+details.note[open] summary::before{transform:rotate(90deg)}
+details.note .body{padding:0 14px 13px;font-size:12.5px;color:#6d521f;line-height:1.6;border-top:1px dashed #e6cd96;padding-top:10px;margin:0 14px;padding-left:0;padding-right:0}
+details.note.teal{background:var(--teal-l)}
+details.note.teal summary{color:var(--teal-d)}
+details.note.teal .body{color:#1c5f80;border-top-color:#bcdfe9}
+
+.scribble{font-family:var(--font-hand);color:var(--coral);font-size:21px;line-height:1.2;transform:rotate(-2deg);display:inline-block}
+.sticky{background:#fff6cf;border:1px solid #ecdc9a;border-radius:4px;box-shadow:2px 4px 10px rgba(120,90,20,.14);padding:12px 14px;font-family:var(--font-hand);font-size:19px;color:#6b5410;transform:rotate(-1.5deg);position:relative}
+.sticky::before{content:"";position:absolute;top:-8px;left:42%;width:52px;height:16px;background:rgba(230,210,140,.6);transform:rotate(2deg)}
+
+.term{border-bottom:2px dotted var(--teal);cursor:help;position:relative;color:var(--teal-d);font-weight:600}
+.term .tip{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%) translateY(6px);background:var(--ink);color:#fff;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:400;width:230px;text-align:left;line-height:1.5;opacity:0;pointer-events:none;transition:.2s;z-index:20;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.term:hover .tip,.term:focus .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.term .tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--ink)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--paper-2);border:1px solid var(--line);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--ink-soft)}
+.chip.teal{background:var(--teal-l);border-color:#bcdfe9;color:var(--teal-d)}
+.chip.coral{background:var(--coral-l);border-color:#f0c9bd;color:#9b4327}
+.chip.amber{background:var(--amber-l);border-color:#ecd39a;color:#8a5e12}
+.chip.red{background:var(--red-l);border-color:#f0c4c0;color:var(--red)}
+.bignum{font-family:var(--font-head);font-size:46px;font-weight:700;color:var(--teal);line-height:1}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+table.tbl th{background:var(--ink);color:#fff;text-align:left;padding:9px 12px;font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+table.tbl td{border-bottom:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.45}
+table.tbl tr:nth-child(even) td{background:rgba(242,237,227,.5)}
+table.tbl td:first-child{font-weight:600;color:var(--ink)}
+table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)}
+
+.tree{font-family:var(--font-mono);font-size:12.5px;line-height:1.9;background:var(--stage-2);color:#c9d4de;border-radius:10px;padding:14px 18px;overflow-x:auto}
+.tree .folder{color:#82aaff}.tree .file{color:#c3e88d}.tree .mark{color:#f78c6c;font-weight:700}
+.tree .indent{padding-left:20px}
+
+.anatomy{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start}
+@media(max-width:820px){.anatomy{grid-template-columns:1fr}}
+.prompt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(24,36,48,.06);position:relative}
+.seg{display:block;border-radius:8px;padding:8px 11px;margin:5px 0;font-family:var(--font-mono);font-size:11.5px;line-height:1.5;transition:.25s;cursor:default;border-left:4px solid}
+.seg:hover,.seg.lit{transform:translateX(4px);box-shadow:0 4px 12px rgba(0,0,0,.09)}
+.seg.action{background:var(--teal-l);border-color:var(--teal)}
+.seg.what{background:var(--blue-l);border-color:var(--blue)}
+.seg.where{background:var(--amber-l);border-color:var(--amber)}
+.seg.constraints{background:var(--coral-l);border-color:var(--coral)}
+.legend{display:flex;flex-direction:column;gap:8px}
+.leg{display:flex;gap:11px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer;transition:.2s}
+.leg:hover,.leg.lit{transform:translateX(4px);border-color:var(--teal);box-shadow:0 6px 16px rgba(24,36,48,.08)}
+.leg .b{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-family:var(--font-head);font-weight:700;color:#fff;font-size:14px;flex:0 0 auto}
+.leg.a .b{background:var(--teal)}.leg.w .b{background:var(--blue)}.leg.h .b{background:var(--amber)}.leg.c .b{background:var(--coral)}
+.leg .t{font-size:12.5px;line-height:1.4}
+.leg .t b{display:block;font-size:13px}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:700;transition:.2s}
+.tab:hover{border-color:var(--teal)}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tab-body{display:none;animation:fade .3s}
+.tab-body.active{display:block}
+
+.quiz-q{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-bottom:12px}
+.quiz-q .q{font-size:13.5px;font-weight:700;margin-bottom:10px}
+.opts{display:grid;gap:7px}
+.opt{border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:12.5px;cursor:pointer;transition:.18s;background:var(--paper)}
+.opt:hover{border-color:var(--teal);background:var(--teal-l)}
+.opt.correct{background:var(--green-l);border-color:var(--green);color:var(--green);font-weight:700}
+.opt.wrong{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.expl{display:none;margin-top:9px;font-size:12px;color:var(--ink-soft);border-left:3px solid var(--amber);padding-left:10px;line-height:1.5}
+.expl.show{display:block;animation:fade .3s}
+
+.slide.divider .sheet{background:var(--ink);border-color:#2a3947}
+.slide.divider .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0)}
+.slide.divider .sheet-inner{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;background-image:radial-gradient(600px 400px at 85% 40%,rgba(6,148,209,.28),transparent 70%)}
+.slide.divider h2{color:#fff;font-size:clamp(38px,6vw,72px);letter-spacing:-.03em;max-width:820px}
+.slide.divider .kicker{background:rgba(255,255,255,.1);color:#8fd4f5}
+.slide.divider .subtitle{color:#9fb0bd;font-size:17px}
+.slide.divider .big-index{position:absolute;right:46px;top:60px;font-family:var(--font-head);font-size:180px;font-weight:700;color:rgba(255,255,255,.05);line-height:1;pointer-events:none}
+.slide.divider .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+
+.slide.title .sheet{background:var(--ink)}
+.slide.title .sheet::before{background:linear-gradient(90deg,var(--teal),#8ad4f0,var(--amber))}
+.slide.title .sheet-inner{display:flex;flex-direction:column;justify-content:center;background-image:radial-gradient(700px 500px at 80% 30%,rgba(6,148,209,.3),transparent 70%),radial-gradient(500px 400px at 10% 90%,rgba(224,138,60,.18),transparent 70%)}
+.slide.title .badge{display:inline-flex;gap:10px;align-items:center;color:#8fd4f5;font-weight:700;letter-spacing:.18em;font-size:12px;text-transform:uppercase;margin-bottom:18px}
+.slide.title .badge .ln{width:34px;height:2px;background:var(--amber)}
+.slide.title h1{color:#fff;max-width:900px}
+.slide.title h1 .em{color:#69c6f2}
+.slide.title h2{color:#fff;max-width:900px}
+.slide.title .sub{color:#b7c4cf;font-size:18px;margin-top:18px;max-width:680px;line-height:1.6}
+.slide.title .meta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.slide.title .meta .m{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:8px 15px;color:#d6e0e7;font-size:12.5px;font-weight:600}
+.slide.title .sheet-foot{background:transparent;border-color:#2a3947;color:#7d8b98}
+.slide.title .orbit{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:250px;height:250px;opacity:.5}
+@media(max-width:900px){.slide.title .orbit{display:none}}
+
+.bullets{list-style:none;padding:0;margin:10px 0;display:grid;gap:9px}
+.bullets li{position:relative;padding-left:26px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.bullets li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:3px;background:var(--teal);transform:rotate(45deg)}
+.bullets.coral li::before{background:var(--coral)}
+.bullets.amber li::before{background:var(--amber)}
+.callout{border-left:4px solid var(--teal);background:var(--teal-l);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13px;color:#185d7d;line-height:1.55}
+.callout.coral{border-color:var(--coral);background:var(--coral-l);color:#8c4129}
+.callout.amber{border-color:var(--amber);background:var(--amber-l);color:#7a5616}
+.section-band{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);background:var(--teal-l);border-left:4px solid var(--teal);border-radius:6px;padding:7px 11px;margin-bottom:12px;line-height:1.45}
+.subhead{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-left:3px solid var(--line);padding-left:10px;margin:14px 0 8px;line-height:1.4}
+
+.interactive-head{cursor:pointer;user-select:none;transition:background .18s,border-color .18s,color .18s}
+.section-band.interactive-head{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;max-width:100%}
+.subhead.interactive-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.interactive-head:hover{background:var(--blue-l);border-color:var(--blue);color:var(--teal-d)}
+.interactive-head .chev{font-size:12px;line-height:1;opacity:.65;transition:transform .2s;flex:none}
+.interactive-head[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.collapse-body{animation:fade .25s}
+.collapse-body.collapsed{display:none}
+.bullets li{cursor:pointer;border-radius:6px;padding-right:6px;transition:background .16s,color .16s,opacity .16s}
+.bullets li:hover{background:var(--paper-2)}
+.bullets li.done{color:var(--muted);text-decoration:line-through;opacity:.72}
+.bullets li.done::before{background:var(--green);transform:rotate(45deg) scale(1.15)}
+.fnode,.tbl tbody tr,.card:not([data-goto]){cursor:pointer}
+.fnode{transition:transform .16s,box-shadow .16s,border-color .16s,background .16s}
+.fnode:hover{transform:translateY(-2px);border-color:var(--teal)}
+.fnode.active-step{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.16),0 6px 14px rgba(24,36,48,.12)}
+.fnode.active-step .n{color:var(--teal-d)}
+.tbl tbody tr{transition:background .15s,box-shadow .15s}
+.tbl tbody tr:hover{background:var(--teal-l)}
+.tbl tbody tr.row-active{background:var(--blue-l);box-shadow:inset 3px 0 var(--teal)}
+.card:not([data-goto]){transition:border-color .16s,box-shadow .16s}
+.card.card-focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.14)}
+.mini-head{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.spacer{height:14px}
+.center{text-align:center}
+.kbd{font-family:var(--font-mono);font-size:10px;border:1px solid rgba(255,255,255,.25);border-bottom-width:2px;border-radius:4px;padding:1px 5px;color:#cfd8e0}
+@media print{
+  body{overflow:visible;background:#fff;height:auto}
+  #deck{height:auto}
+  .slide{display:flex!important;position:relative;page-break-after:always;height:100vh;padding:0}
+  .dock{display:none}
+  .sheet{box-shadow:none;border-radius:0}
+}
+/* ============================================================
+   IMAGE ILLUSTRATIONS (external reference screenshots)
+   ============================================================ */
+.illus{display:block;max-width:100%;max-height:290px;margin:8px auto;border:1px solid var(--line);border-radius:12px;background:#fff;object-fit:contain;cursor:zoom-in;transition:transform .2s,box-shadow .2s}
+.illus:hover{transform:scale(1.015);box-shadow:0 12px 26px rgba(24,36,48,.16)}
+.illus-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+.illus-row .illus{flex:1 1 220px;max-height:190px}
+.illus-cap{font-size:10.5px;color:var(--muted);text-align:center;margin-top:4px;line-height:1.4}
+.illus-frame{background:var(--paper-2);border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
+.illus-frame .illus{margin:0 auto}
+
+/* ============================================================
+   VISUAL REFINEMENTS
+   ============================================================ */
+html,body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.sheet{
+  background-color:var(--paper);
+  background-image:
+    radial-gradient(rgba(6,148,209,.10) 1px,transparent 1px),
+    radial-gradient(760px 460px at 88% 2%,rgba(6,148,209,.07),transparent 70%),
+    linear-gradient(180deg,#ffffff 0%,var(--paper) 46%);
+  background-size:22px 22px,100% 100%,100% 100%;
+}
+.sheet-inner{scrollbar-color:#b9c8d2 transparent}
+.sheet-inner::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#b9c8d2,#9fb2be)}
+
+.head-row{margin-bottom:20px}
+.head-row h2{position:relative;padding-bottom:12px}
+.head-row h2::after{content:"";position:absolute;left:0;bottom:0;width:58px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(--teal),var(--amber))}
+.head-row .num{background:linear-gradient(180deg,#fff,var(--paper-2));box-shadow:0 2px 6px rgba(24,36,48,.06)}
+.kicker{box-shadow:0 2px 8px rgba(6,148,209,.14)}
+
+.callout{border-radius:0 14px 14px 0;padding:13px 17px;box-shadow:0 4px 14px rgba(24,36,48,.05)}
+.callout.coral,.callout.amber{box-shadow:0 4px 14px rgba(224,138,60,.10)}
+
+.section-band{background:linear-gradient(90deg,var(--teal-l),rgba(255,255,255,.9));border-left:5px solid var(--teal);border-radius:100px;padding:8px 14px;box-shadow:0 4px 12px rgba(6,148,209,.12)}
+.section-band::before{content:"◈";color:var(--teal);font-size:12px;margin-right:8px}
+.section-band.interactive-head{justify-content:flex-start}
+.section-band.interactive-head .chev{margin-left:auto}
+.subhead{border-left:4px solid var(--teal);border-radius:0 8px 8px 0;background:linear-gradient(90deg,rgba(230,244,251,.85),transparent);padding:8px 12px;color:var(--teal-d)}
+.subhead::before{content:"▸";color:var(--teal);margin-right:8px;font-size:11px}
+.subhead.interactive-head{justify-content:flex-start}
+.subhead.interactive-head .chev{margin-left:auto}
+
+.card{position:relative;overflow:hidden;border-radius:16px;padding:20px 18px 17px;box-shadow:0 3px 0 rgba(24,36,48,.03),0 8px 20px rgba(24,36,48,.045)}
+.card::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),#8ad4f0,var(--amber));opacity:.85}
+.card .ico{border-radius:12px;box-shadow:0 4px 10px rgba(6,148,209,.16)}
+.card.hoverable:hover{box-shadow:0 16px 34px rgba(24,36,48,.12)}
+
+.bullets{gap:10px}
+.bullets li{padding:6px 10px 6px 30px;border-radius:9px;line-height:1.6}
+.bullets li::before{left:10px;top:12px;width:9px;height:9px;box-shadow:0 0 0 4px rgba(6,148,209,.12)}
+.bullets.coral li::before{box-shadow:0 0 0 4px rgba(224,138,60,.14)}
+.bullets.amber li::before{box-shadow:0 0 0 4px rgba(224,138,60,.14)}
+
+.opt{position:relative;padding:11px 38px 11px 14px;border-radius:11px;background:linear-gradient(180deg,#fff,var(--paper-2));font-weight:600;color:var(--ink-soft)}
+.opt::after{content:"";position:absolute;right:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;border:2px solid var(--line);border-radius:50%;transition:.18s}
+.opt.correct::after{content:"✓";border-color:var(--green);background:var(--green);color:#fff;font-size:11px;display:grid;place-items:center;line-height:1}
+.opt:hover{transform:translateX(2px)}
+
+.flow{gap:10px;margin:10px 0}
+.fnode{border-radius:13px;padding:11px 15px;min-width:104px;background:linear-gradient(180deg,#fff,var(--paper-2))}
+.fnode .n{font-size:13.5px}
+.farr{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--coral-l);color:var(--coral);font-size:15px;box-shadow:0 2px 6px rgba(224,138,60,.18)}
+
+table.tbl{border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(24,36,48,.05)}
+table.tbl th{background:linear-gradient(90deg,var(--ink),#3b4a55);padding:11px 13px}
+table.tbl th:first-child{border-top-left-radius:12px}
+table.tbl th:last-child{border-top-right-radius:12px}
+table.tbl td{padding:11px 13px}
+table.tbl tbody tr:last-child td{border-bottom:none}
+table.tbl tbody tr:nth-child(even) td{background:rgba(230,238,251,.42)}
+
+.code-wrap{margin-top:12px;border-radius:11px;box-shadow:0 8px 18px rgba(0,0,0,.14)}
+.code-head{border-radius:11px 11px 0 0;padding:8px 13px;background:linear-gradient(90deg,#2b3a45,var(--stage-2))}
+pre{border-radius:0 0 11px 11px;padding:15px 17px;border-top:1px solid #1b2833}
+
+.illus-frame{background:linear-gradient(180deg,#fff,var(--paper-2));border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 22px rgba(24,36,48,.07)}
+.illus{border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 24px rgba(24,36,48,.12)}
+.illus-cap{font-weight:600;color:var(--ink-soft)}
+.prompt-card{border-radius:16px;box-shadow:0 8px 22px rgba(24,36,48,.08);padding:18px}
+
+
+/* ============================================================
+   CLEAN LAYOUT — readability pass
+   ============================================================ */
+.sheet{background:#fff;background-image:linear-gradient(180deg,#fff 0%,var(--paper) 100%)}
+.sheet::before{height:4px}
+.sheet-inner{padding:24px 38px 20px}
+.kicker{box-shadow:none;font-size:10px;padding:5px 10px;margin-bottom:10px}
+.head-row{margin-bottom:14px;align-items:center}
+.head-row h2{font-size:clamp(22px,2.4vw,30px);padding-bottom:9px}
+.head-row h2::after{width:46px;height:3px}
+.head-row .num{font-size:11px;padding:4px 10px;box-shadow:none}
+.subtitle{font-size:13.5px;margin-top:7px;line-height:1.45}
+
+.section-band{background:var(--teal-l);border-left:4px solid var(--teal);border-radius:8px;padding:7px 12px;box-shadow:none;font-size:10px}
+.section-band::before{content:none}
+.subhead{text-transform:none;letter-spacing:0;font-size:12px;font-weight:700;color:var(--teal-d);background:transparent;border-left:3px solid var(--teal);border-radius:0;padding:4px 0 4px 11px;margin:14px 0 7px;line-height:1.35}
+.subhead::before{content:none}
+.interactive-head .chev{font-size:10px;opacity:.5}
+
+.callout{font-size:12.5px;padding:10px 14px;border-radius:0 10px 10px 0;box-shadow:none;line-height:1.5}
+.bullets{gap:6px;margin:8px 0}
+.bullets li{font-size:12.5px;line-height:1.45;padding:4px 8px 4px 26px}
+.bullets li::before{top:9px;left:9px;width:8px;height:8px;box-shadow:none}
+.bullets:has(li:nth-child(5)),.opts:has(.opt:nth-child(5)){columns:2;column-gap:24px}
+.bullets li,.opt{break-inside:avoid}
+.opts{gap:6px}
+.opt{font-size:12px;padding:7px 32px 7px 12px;border-radius:8px;background:var(--paper);font-weight:500;box-shadow:none}
+.opt::after{width:14px;height:14px;right:10px}
+.opt.correct::after{font-size:10px}
+.opt:hover{transform:none}
+
+.card{border-radius:12px;padding:14px;box-shadow:0 1px 0 rgba(24,36,48,.03)}
+.card::before{content:none}
+.card .ico{width:32px;height:32px;font-size:16px;margin-bottom:9px;border-radius:9px;box-shadow:none}
+.card h3{font-size:16px}
+.card p{font-size:12.5px}
+
+.flow{gap:8px;margin:8px 0}
+.fnode{min-width:88px;padding:8px 11px;border-radius:10px;background:var(--surface);box-shadow:0 2px 6px rgba(24,36,48,.04)}
+.fnode .n{font-size:12px}
+.fnode .s{font-size:9.5px}
+.farr{width:22px;height:22px;font-size:13px;background:transparent;box-shadow:none}
+
+table.tbl{font-size:12px;border-radius:10px;box-shadow:none;border:1px solid var(--line)}
+table.tbl th{background:var(--ink);padding:8px 10px;font-size:10px}
+table.tbl td{padding:8px 10px}
+table.tbl tbody tr:nth-child(even) td{background:rgba(238,242,245,.6)}
+
+.code-wrap{margin-top:8px;box-shadow:none;border-radius:8px}
+.code-head{border-radius:8px 8px 0 0;padding:6px 11px;background:var(--stage-2)}
+pre{border-radius:0 0 8px 8px;padding:12px 14px;font-size:11.5px;box-shadow:none}
+
+.illus-frame{border-radius:12px;padding:10px;box-shadow:none;background:var(--paper-2)}
+.illus{max-height:240px;border-radius:10px;box-shadow:0 6px 16px rgba(24,36,48,.10)}
+.illus-cap{font-size:10px}
+.prompt-card{border-radius:12px;padding:14px;box-shadow:none}
+.bignum{font-size:38px}
+.chip{padding:5px 10px;font-size:11px}
+
+.interactive-head[aria-expanded="false"]{margin-top:10px;margin-bottom:4px;background:var(--paper-2);border-radius:8px}
+
+/* ============================================================
+   INTERACTIVE CONTENT COMPONENTS
+   ============================================================ */
+pre{white-space:pre-wrap;word-break:break-word}
+.panel.bad .txt{text-decoration:none;opacity:1}
+.tap-card{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:12px;padding:12px 15px;font-size:13px;line-height:1.55;color:var(--ink-soft);
+  cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s,transform .18s
+}
+.tap-card:hover{background:var(--teal-l);border-color:#bcdfe9;transform:translateY(-1px)}
+.tap-card.selected{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.14);color:var(--ink)}
+.span2{grid-column:1 / -1}
+.step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:8px 0}
+.step-card{display:flex;gap:10px;align-items:flex-start;min-height:64px}
+.step-card .step-n{
+  flex:0 0 auto;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  background:var(--teal-l);color:var(--teal-d);font-family:var(--font-head);font-size:11px;font-weight:700
+}
+.tabset{margin-top:8px}
+.tabbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.tabbar button{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+  border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;transition:.18s
+}
+.tabbar button:hover{border-color:var(--teal);color:var(--teal-d)}
+.tabbar button.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.tabpanel{display:none;animation:fade .25s}
+.tabpanel.active{display:block}
+.code-pair{display:grid;grid-template-columns:minmax(250px,.72fr) minmax(0,1.28fr);gap:14px;align-items:start}
+.reveal-toggle{
+  display:inline-flex;align-items:center;gap:7px;margin-top:9px;border:1px solid var(--line);
+  background:var(--paper-2);color:var(--teal-d);border-radius:100px;padding:6px 12px;
+  font-size:11px;font-weight:800;letter-spacing:.03em;transition:.18s
+}
+.reveal-toggle:hover{background:var(--teal-l);border-color:var(--teal)}
+.reveal-toggle::after{content:"▸";font-size:11px;transition:transform .18s}
+.reveal-toggle[aria-expanded="true"]::after{transform:rotate(90deg)}
+.reveal-body{display:none;margin-top:8px;animation:fade .25s}
+.reveal-body.open{display:block}
+.test-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;
+  box-shadow:0 1px 0 rgba(24,36,48,.03)
+}
+.test-card .prompt-card{margin-top:6px}
+.test-card .reveal-body .callout{margin-bottom:6px}
+@media(max-width:1050px){
+  .code-pair{grid-template-columns:1fr}
+  .step-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){.step-grid{grid-template-columns:1fr}}
+
+
+/* ============================================================
+   FONT LEGIBILITY PASS
+   ============================================================ */
+html,body{font-size:16px}
+.slide{padding:16px 18px 60px}
+.sheet{width:min(1700px,100%)}
+.sheet-inner{padding:24px 38px 20px;font-size:15px;line-height:1.6}
+.kicker{font-size:12px;padding:6px 13px}
+.head-row h2{font-size:clamp(24px,2.6vw,34px)}
+.head-row .num{font-size:12px}
+.subtitle{font-size:15px;line-height:1.55}
+.mini-head{font-size:12.5px;letter-spacing:.09em}
+.subhead{font-size:13.5px;font-weight:750;margin:16px 0 9px}
+.callout{font-size:14.5px;padding:12px 16px;line-height:1.6}
+.bullets{gap:8px}
+.bullets li{font-size:14px;line-height:1.55;padding:5px 9px 5px 28px}
+.tap-card{font-size:14px;line-height:1.6;padding:13px 16px}
+.step-card .step-n{width:28px;height:28px;font-size:12px}
+.tabbar button{font-size:13px;padding:7px 15px}
+.prompt-card{font-size:14px;line-height:1.6}
+.panel .tag{font-size:11.5px}
+.panel .txt{font-size:13.5px}
+.panel .note{font-size:13.5px}
+.code-head{font-size:12px}
+pre{font-size:12.75px;line-height:1.65;padding:13px 16px}
+table.tbl{font-size:13.5px}
+table.tbl th{font-size:11.5px;padding:9px 12px}
+table.tbl td{font-size:13.5px;padding:9px 12px}
+.fnode{padding:9px 12px}
+.fnode .n{font-size:13.5px}
+.fnode .s{font-size:11px}
+.reveal-toggle{font-size:12px;padding:7px 14px}
+.test-card{padding:15px}
+.card h3{font-size:17px}
+.card p{font-size:14px}
+.sheet-foot{font-size:12px}
+.dock-count{font-size:13px}
+.hint-key{font-size:12px}
+.slide.title .badge{font-size:13px}
+.slide.title h1{font-size:clamp(40px,5.8vw,68px)}
+.slide.title .sub{font-size:20px}
+.slide.title .meta .m{font-size:14px}
+
+
+/* ============================================================
+   MODULE 8 — MODERN ANIMATED LAYER
+   ============================================================ */
+@keyframes riseIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+.slide.active .tap-card,.slide.active .step-card,.slide.active .illus-frame,.slide.active .metric{animation:riseIn .45s cubic-bezier(.2,.8,.25,1) both}
+.slide.active .grid .tap-card:nth-child(2),.slide.active .step-grid .step-card:nth-child(2){animation-delay:.05s}
+.slide.active .grid .tap-card:nth-child(3),.slide.active .step-grid .step-card:nth-child(3){animation-delay:.1s}
+.slide.active .grid .tap-card:nth-child(4),.slide.active .step-grid .step-card:nth-child(4){animation-delay:.15s}
+.slide.active .illus{animation:riseIn .55s .1s both}
+.role-layout{display:grid;grid-template-columns:minmax(240px,.72fr) minmax(0,1.28fr);gap:14px;align-items:start}
+@media(max-width:1000px){.role-layout{grid-template-columns:1fr}}
+.illus-frame{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--paper-2);text-align:center}
+.illus-cap{font-size:12px;color:var(--muted);text-align:center;margin-top:5px;line-height:1.45}
+.ticket{border-left:5px solid var(--amber)}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
+.metric{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.metric .v{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--teal-d);line-height:1.15}
+.metric .l{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.bar{height:12px;border-radius:100px;background:var(--paper-2);overflow:hidden;margin-top:7px}
+.bar span{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--teal),var(--amber))}
+.reveal-wrap{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px}
+.reveal-wrap .reveal-body .tap-card{margin-top:7px}
+.slide.active .title .em{animation:riseIn .6s .15s both}
+
+
+/* ============================================================
+   MODULE 9 — HOOK PIPELINE INTERACTION LAYER
+   ============================================================ */
+@keyframes hookRise{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+.slide.active .tap-card,.slide.active .step-card,.slide.active .code-wrap,
+.slide.active .prompt-card,.slide.active .hook-node,.slide.active .scope-card,
+.slide.active .metric{animation:hookRise .45s cubic-bezier(.2,.8,.25,1) both}
+.slide.active .grid .tap-card:nth-child(2),.slide.active .step-grid .step-card:nth-child(2){animation-delay:.05s}
+.slide.active .grid .tap-card:nth-child(3),.slide.active .step-grid .step-card:nth-child(3){animation-delay:.1s}
+.slide.active .grid .tap-card:nth-child(4),.slide.active .step-grid .step-card:nth-child(4){animation-delay:.15s}
+.slide.active .title .em{animation:hookRise .6s .15s both}
+
+.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+@media(max-width:1000px){.two-col{grid-template-columns:1fr}}
+
+.hook-chain{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:9px;margin-top:9px}
+.hook-node{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:12px;padding:12px 13px;cursor:pointer;transition:.18s
+}
+.hook-node:hover{background:var(--teal-l);border-color:#bcdfe9;transform:translateY(-1px)}
+.hook-node.pre{border-left-color:var(--blue)}
+.hook-node.post{border-left-color:var(--amber)}
+.hook-node.ai{border-left-color:var(--coral)}
+.hook-node .hn{display:block;font-family:var(--font-head);font-size:13.5px;font-weight:800;color:var(--ink)}
+.hook-node .hs{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.hook-node.active-step{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.13)}
+
+.gate{border-left:5px solid var(--coral)}
+.gate.ok{border-left-color:var(--green)}
+.gate.warn{border-left-color:var(--amber)}
+
+.scope-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:10px}
+@media(max-width:1000px){.scope-grid{grid-template-columns:1fr}}
+.scope-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+.scope-card .tag2{
+  display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--teal-l);color:var(--teal-d);border-radius:100px;padding:5px 11px;margin-bottom:9px
+}
+.scope-card.user .tag2{background:var(--amber-l);color:#8a5e12}
+
+.mini-flow{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:8px}
+.mini-flow span{background:var(--paper-2);border:1px solid var(--line);border-radius:100px;padding:6px 11px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+.mini-flow i{font-style:normal;color:var(--coral);font-weight:800}
+
+.error-strip{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:8px;margin-top:8px
+}
+.error-strip div{
+  background:var(--paper-2);border:1px solid var(--line);border-left:4px solid var(--green);
+  border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.45
+}
+.error-strip div.fail{border-left-color:var(--coral)}
+.error-strip div b{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+
+.repair{background:var(--amber-l);border:1px solid #ecd39a;border-radius:12px;padding:12px 14px;margin-top:8px}
+.repair .rt{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#8a5e12;margin-bottom:5px}
+
+</style>
+</head>
+<body>
+<div id="deck">
+<section class="slide title active">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <svg class="orbit" viewBox="0 0 250 250" fill="none" stroke="#69c6f2" stroke-width="1.2">
+        <circle cx="125" cy="125" r="100" opacity=".3"/><circle cx="125" cy="125" r="66" opacity=".45"/>
+        <circle cx="125" cy="125" r="30" opacity=".6"/>
+        <circle cx="125" cy="25" r="7" fill="#69c6f2" stroke="none"/>
+        <circle cx="191" cy="75" r="5" fill="#69c6f2" stroke="none"/>
+        <circle cx="59" cy="185" r="5" fill="#e08a3c" stroke="none"/>
+        <path d="M125 25 A100 100 0 0 1 191 75" stroke="#69c6f2" stroke-width="2"/>
+        <path d="M191 75 A100 100 0 0 1 59 185" stroke="#69c6f2" stroke-width="2"/>
+      </svg>
+      <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
+      <div class="reveal"><div class="badge"><span class="ln"></span> Claude Code Training · Module 09</div></div>
+      <div class="reveal"><h1>Hooks and<br><span class="em">Pre/Post</span><br>Triggers</h1></div>
+      <div class="reveal"><p class="sub">Imagine a company has an AI-powered IT Support system. Employees submit tickets such as:</p></div>
+      <div class="reveal">
+        <div class="meta">
+          <span class="m">◈ My laptop is not starting.</span>
+          <span class="m">◈ Wi-Fi is not working.</span>
+          <span class="m">◈ My company application is showing an error.</span>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">01 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Scenario</span><h2>One ticket, seven activities</h2><p class="subtitle">Whenever an employee submits a ticket, the AI system needs to perform several activities:</p></div>
+        <span class="num">00 · IT SUPPORT</span>
+      </div>
+      <div class="step-grid reveal">
+        <div class="step-card tap-card"><span class="step-n">1</span><span>Check whether the submitted information is valid.</span></div>
+        <div class="step-card tap-card"><span class="step-n">2</span><span>Add relevant company information.</span></div>
+        <div class="step-card tap-card"><span class="step-n">3</span><span>Prepare the input for the AI model.</span></div>
+        <div class="step-card tap-card"><span class="step-n">4</span><span>Allow the AI to investigate the problem.</span></div>
+        <div class="step-card tap-card"><span class="step-n">5</span><span>Format the AI's response.</span></div>
+        <div class="step-card tap-card"><span class="step-n">6</span><span>Save the result in the database.</span></div>
+        <div class="step-card tap-card"><span class="step-n">7</span><span>Check whether the response is safe and appropriate.</span></div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:10px">Instead of writing all these activities inside the main AI agent, we can use Hooks.</div>
+      <div class="callout reveal" style="margin-top:8px">Let's understand each topic.</div>
+      <div class="mini-head reveal" style="margin-top:14px">Click a topic to jump</div>
+      <div class="grid g3 reveal">
+        <div class="card hoverable" data-goto="3"><div class="ico" style="background:var(--teal-l);color:var(--teal)">01</div><h3>What Are Hooks?</h3><p>Definition and purpose in AI automation pipelines.</p></div>
+        <div class="card hoverable" data-goto="4"><div class="ico" style="background:var(--blue-l);color:var(--blue)">02</div><h3>Pre-Trigger Hooks</h3><p>Validation, context injection, prompt transformation.</p></div>
+        <div class="card hoverable" data-goto="8"><div class="ico" style="background:var(--amber-l);color:var(--amber)">03</div><h3>Post-Trigger Hooks</h3><p>Formatting, logging, side effects, guardrails.</p></div>
+        <div class="card hoverable" data-goto="13"><div class="ico" style="background:var(--coral-l);color:var(--coral)">04</div><h3>Hook Scope</h3><p>Project scope vs user scope.</p></div>
+        <div class="card hoverable" data-goto="14"><div class="ico" style="background:var(--green-l);color:var(--green)">05</div><h3>Hook Chaining</h3><p>Executing multiple Hooks in sequence.</p></div>
+        <div class="card hoverable" data-goto="15"><div class="ico" style="background:var(--teal-l);color:var(--teal)">06</div><h3>Errors &amp; Rollback</h3><p>Handling failures and keeping data consistent.</p></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">02 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Foundations</span><h2>1. What Are Hooks and Why Are They Used in AI Automation Pipelines?</h2><p class="subtitle">Small actions at specific points in a workflow.</p></div>
+        <span class="num">01 · HOOKS</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">First, understand what a Hook is.</div>
+        <div class="tap-card">A Hook is a small piece of code or an action that automatically executes when a particular event occurs in a system.</div>
+        <div class="tap-card span2">In simple terms: A Hook allows us to execute additional actions before or after a particular operation.</div>
+      </div>
+      <div class="callout reveal" style="margin-top:10px">For example, imagine an employee submits an IT support ticket.</div>
+      <div class="grid g2 reveal" style="margin-top:8px">
+        <div class="tap-card">Before sending the ticket to the AI agent, we want to check whether the employee has provided a valid email address and issue description.</div>
+        <div class="tap-card">After the AI agent generates a response, we want to save that response in the database.</div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">We can use Hooks for both activities.</div>
+      <div class="subhead reveal">IT Support Ticket Processing</div>
+      <div class="flow reveal">
+        <div class="fnode"><span class="n">Employee submits a ticket</span><span class="s">Ticket received</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">Pre-Hooks</span><span class="s">Validate input, add context, prepare prompt</span></div><span class="farr">→</span>
+        <div class="fnode alt"><span class="n">AI Agent</span><span class="s">Investigates the IT issue and generates a response</span></div><span class="farr">→</span>
+        <div class="fnode"><span class="n">Post-Hooks</span><span class="s">Format output, log activity, check safety, save result</span></div><span class="farr">→</span>
+        <div class="fnode alt2"><span class="n">Final response to employee</span><span class="s">Approved and formatted</span></div>
+      </div>
+      <div class="subhead reveal">Why do we need Hooks?</div>
+      <div class="tap-card reveal">Without Hooks, we may need to write all additional operations directly inside the main AI agent.</div>
+      <div class="callout coral reveal" style="margin-top:7px">This can make the application difficult to maintain.</div>
+      <div class="callout teal reveal" style="margin-top:7px">With Hooks, we can separate additional operations from the main AI logic.</div>
+      <div class="mini-head reveal" style="margin-top:10px">For example:</div>
+      <ul class="bullets reveal">
+        <li>Input validation can be handled separately.</li>
+        <li>Logging can be handled separately.</li>
+        <li>Output formatting can be handled separately.</li>
+        <li>Security checks can be handled separately.</li>
+      </ul>
+      <div class="callout amber reveal" style="margin-top:8px">Important: Hooks are not necessarily AI agents. They are usually smaller event-driven functions or actions that run at specific points in a workflow.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">03 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Pre-Trigger</span><h2>2. Pre-Trigger Hooks: Input Validation, Context Injection and Prompt Transformation</h2><p class="subtitle">Everything that happens before the AI agent starts.</p></div>
+        <span class="num">02 · PRE-HOOKS</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="tap-card">First, understand the meaning of Pre-Trigger.</div>
+        <div class="tap-card">Pre means before.</div>
+        <div class="tap-card">Pre-trigger Hooks execute before the main AI agent starts processing the request.</div>
+      </div>
+      <div class="callout reveal" style="margin-top:10px">Let's say an employee submits this ticket:</div>
+      <div class="code-wrap reveal" style="margin-top:8px">
+        <div class="code-head"><span>New IT Support Ticket</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>New IT Support Ticket
+- Employee: Rahul
+- Email: rahul@company.com
+- Issue: My laptop is very slow.
+- Department: Finance</pre>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">Before sending this information to the AI agent, we perform three operations.</div>
+      <div class="step-grid reveal" style="margin-top:9px">
+        <div class="step-card tap-card"><span class="step-n">A</span><span><strong>Input Validation</strong><br>Check whether the input is valid.</span></div>
+        <div class="step-card tap-card"><span class="step-n">B</span><span><strong>Context Injection</strong><br>Add relevant company information.</span></div>
+        <div class="step-card tap-card"><span class="step-n">C</span><span><strong>Prompt Transformation</strong><br>Prepare the prompt for the AI model.</span></div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">04 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Pre-Hook A</span><h2>A. Input Validation</h2><p class="subtitle">Check the submitted information before AI processing.</p></div>
+        <span class="num">02 · VALIDATION</span>
+      </div>
+      <div class="tap-card reveal">Input validation means checking whether the submitted information is correct and complete.</div>
+      <div class="callout reveal" style="margin-top:8px">IT Support example: Before the AI agent processes the ticket, the validation Hook checks:</div>
+      <ul class="bullets reveal">
+        <li>Is the employee email provided?</li>
+        <li>Is the email format valid?</li>
+        <li>Is the issue description available?</li>
+        <li>Is the issue description empty?</li>
+        <li>Is the ticket ID valid?</li>
+      </ul>
+      <div class="subhead reveal">Suppose an employee submits:</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span>Submitted ticket</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Employee: Rahul
+Email: rahulcompany.com
+Issue:</pre>
+      </div>
+      <div class="callout coral reveal" style="margin-top:8px">The validation Hook identifies two problems:</div>
+      <div class="grid g2 reveal" style="margin-top:7px">
+        <div class="tap-card">1. Email address is invalid.</div>
+        <div class="tap-card">2. Issue description is missing.</div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:8px">Instead of sending incomplete information to the AI agent, the Hook stops the request and returns an error.</div>
+      <div class="code-wrap reveal" style="margin-top:8px">
+        <div class="code-head"><span>Input Validation Result</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Validation Failed
+- Invalid email address.
+- Issue description is required.
+Action: Ask the employee to correct the information before processing.</pre>
+      </div>
+      <div class="subhead reveal">Why is it important?</div>
+      <ul class="bullets reveal">
+        <li>Prevents incomplete requests.</li>
+        <li>Reduces unnecessary AI processing.</li>
+        <li>Avoids incorrect responses caused by missing information.</li>
+      </ul>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">05 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Pre-Hook B</span><h2>B. Context Injection</h2><p class="subtitle">Add relevant information before the request reaches the AI.</p></div>
+        <span class="num">02 · CONTEXT</span>
+      </div>
+      <div class="tap-card reveal">Context injection means adding additional relevant information to the user's request before sending it to the AI agent.</div>
+      <div class="callout reveal" style="margin-top:8px">The employee may only provide:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Original input</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Original input:
+My laptop is very slow.</pre>
+      </div>
+      <div class="callout amber reveal" style="margin-top:8px">But the AI agent may need additional information to provide a better response.</div>
+      <div class="subhead reveal">For example, the company has an IT policy:</div>
+      <ul class="bullets reveal">
+        <li>Finance employees use company-managed laptops.</li>
+        <li>Laptop performance issues must be checked against company IT guidelines.</li>
+        <li>Employees should not install unauthorized software.</li>
+      </ul>
+      <div class="callout teal reveal" style="margin-top:8px">A context injection Hook automatically adds relevant information.</div>
+      <div class="code-wrap reveal" style="margin-top:8px">
+        <div class="code-head"><span>After context injection</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>After context injection:
+Employee Issue:
+My laptop is very slow.
+
+Employee Department:
+Finance
+
+Company IT Policy:
+Employees must use approved software.
+
+Instruction:
+Suggest troubleshooting steps
+according to company IT policy.</pre>
+      </div>
+      <div class="callout reveal" style="margin-top:8px">Now the AI agent has more relevant information.</div>
+      <div class="subhead reveal">Why is it important?</div>
+      <ul class="bullets reveal">
+        <li>Provides business-specific information.</li>
+        <li>Avoids asking employees for information already available.</li>
+        <li>Helps the AI generate context-aware responses.</li>
+      </ul>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">06 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Pre-Hook C</span><h2>C. Prompt Transformation</h2><p class="subtitle">Turn an unclear request into a structured prompt.</p></div>
+        <span class="num">02 · PROMPT</span>
+      </div>
+      <div class="tap-card reveal">Prompt transformation means modifying or restructuring the user's original request before sending it to the AI model.</div>
+      <div class="callout reveal" style="margin-top:8px">Sometimes users provide incomplete, unclear or poorly structured requests.</div>
+      <div class="callout teal reveal" style="margin-top:7px">We can use a Hook to convert them into a structured prompt.</div>
+      <div class="subhead reveal">IT Support example:</div>
+      <div class="callout reveal">Employee submits:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Original request</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Laptop slow. Fix it.</pre>
+      </div>
+      <div class="callout amber reveal" style="margin-top:8px">The prompt transformation Hook converts it into:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Structured prompt</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>You are an IT Support Assistant.
+
+Employee Issue:
+The employee reports that the
+laptop is running slowly.
+
+Your task:
+1. Identify possible causes.
+2. Suggest basic troubleshooting steps.
+3. Avoid recommending unauthorized software.
+4. Escalate if the problem requires
+   hardware inspection.
+
+Provide a clear and simple response.</pre>
+      </div>
+      <div class="callout reveal" style="margin-top:8px">Now the AI receives a properly structured instruction.</div>
+      <div class="subhead reveal">Why is it important?</div>
+      <ul class="bullets reveal">
+        <li>Improves prompt consistency.</li>
+        <li>Makes instructions clearer.</li>
+        <li>Standardizes how the AI handles requests.</li>
+        <li>Helps generate more relevant responses.</li>
+      </ul>
+      <div class="subhead reveal">Difference between the three Pre-Hooks</div>
+      <table class="tbl reveal">
+        <thead><tr><th>Hook</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Input Validation</td><td>Checks whether input is valid</td></tr>
+          <tr><td>Context Injection</td><td>Adds relevant information</td></tr>
+          <tr><td>Prompt Transformation</td><td>Restructures or modifies the prompt</td></tr>
+        </tbody>
+      </table>
+      <div class="callout teal reveal" style="margin-top:8px">Remember the order: Check the input → Add relevant information → Prepare the prompt → Send it to AI.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">07 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Post-Trigger</span><h2>3. Post-Trigger Hooks: Output Formatting, Logging, Side-Effect Actions and Guardrails</h2><p class="subtitle">Everything that happens after the AI agent generates output.</p></div>
+        <span class="num">03 · POST-HOOKS</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="tap-card">Now the AI agent has completed its investigation and generated a response.</div>
+        <div class="tap-card">But before showing the response to the employee, we may need to perform additional operations.</div>
+        <div class="tap-card">These are called Post-Trigger Hooks.</div>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:8px">
+        <div class="tap-card">Post means after.</div>
+        <div class="tap-card">Post-trigger Hooks execute after the AI agent generates its output.</div>
+      </div>
+      <div class="subhead reveal">Let's say the AI generates this response:</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span>AI response</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Your laptop may be slow because
+of high memory usage.
+
+Please close unnecessary applications
+and restart your laptop.
+
+If the issue continues, contact
+the IT support team.</pre>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">Now we perform four operations.</div>
+      <div class="grid g4 reveal" style="margin-top:9px">
+        <div class="tap-card"><strong>A. Output Formatting</strong><br>Structure the response.</div>
+        <div class="tap-card"><strong>B. Logging</strong><br>Record workflow activity.</div>
+        <div class="tap-card"><strong>C. Side-Effect Actions</strong><br>Perform external operations.</div>
+        <div class="tap-card"><strong>D. Guardrails</strong><br>Check safety and policy.</div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">08 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Post-Hook A</span><h2>A. Output Formatting</h2><p class="subtitle">Convert the AI response into the required format.</p></div>
+        <span class="num">03 · FORMATTING</span>
+      </div>
+      <div class="tap-card reveal">Output formatting means converting the AI-generated response into the required format.</div>
+      <div class="callout reveal" style="margin-top:8px">For example, our application may require every response to follow a standard structure.</div>
+      <div class="callout teal reveal" style="margin-top:7px">The Hook can convert the response into:</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>IT Support Response</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>IT Support Response
+Hardware Issue
+Possible Cause:
+
+High memory usage.
+
+Recommended Action:
+1. Close unnecessary applications.
+2. Restart the laptop.
+Next Step:
+
+Contact IT support if the issue continues.</pre>
+      </div>
+      <div class="callout amber reveal" style="margin-top:8px">The Hook can also convert the response into JSON when the application expects structured data.</div>
+      <div class="subhead reveal">For example:</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span>Structured JSON</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>{
+  "category": "Hardware",
+  "priority": "Medium",
+  "possible_cause": "High memory usage",
+  "recommended_action": [
+    "Close unnecessary applications",
+    "Restart the laptop"
+  ],
+  "status": "Pending"
+}</pre>
+      </div>
+      <div class="subhead reveal">Why is it important?</div>
+      <ul class="bullets reveal">
+        <li>Maintains consistent responses.</li>
+        <li>Makes information easier to display.</li>
+        <li>Helps frontend applications consume AI output.</li>
+        <li>Supports integration with databases and other systems.</li>
+      </ul>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">09 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Post-Hook B</span><h2>B. Logging</h2><p class="subtitle">Record what happened during the AI workflow.</p></div>
+        <span class="num">03 · LOGGING</span>
+      </div>
+      <div class="tap-card reveal">Logging means recording what happened during the AI workflow.</div>
+      <div class="callout reveal" style="margin-top:8px">In a company, we may need to know:</div>
+      <ul class="bullets reveal">
+        <li>Which employee submitted the ticket?</li>
+        <li>When was it submitted?</li>
+        <li>Which AI model processed it?</li>
+        <li>What response was generated?</li>
+        <li>Did processing succeed or fail?</li>
+        <li>How long did processing take?</li>
+      </ul>
+      <div class="callout teal reveal" style="margin-top:8px">A Logging Hook automatically records this information.</div>
+      <div class="subhead reveal">IT Support example:</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span>Log record</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Ticket ID: 1025
+Employee: Rahul
+Category: Hardware
+Status: Processed
+Processing Time: 3 seconds
+Timestamp: 2026-11-25 10:30</pre>
+      </div>
+      <div class="callout reveal" style="margin-top:8px">This information can be stored in a database or logging system.</div>
+      <div class="subhead reveal">Why is it important?</div>
+      <ul class="bullets reveal">
+        <li>Helps troubleshoot errors.</li>
+        <li>Provides an audit trail.</li>
+        <li>Helps monitor system performance.</li>
+        <li>Helps track AI usage and costs.</li>
+      </ul>
+      <div class="callout amber reveal" style="margin-top:8px">Sensitive information should be masked or excluded from logs when appropriate.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">10 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Post-Hook C</span><h2>C. Side-Effect Actions</h2><p class="subtitle">Actions that change something outside the AI response.</p></div>
+        <span class="num">03 · SIDE EFFECTS</span>
+      </div>
+      <div class="tap-card reveal">This is an important concept.</div>
+      <div class="tap-card reveal" style="margin-top:7px">A side effect means performing an additional action that changes something outside the AI response itself.</div>
+      <div class="callout reveal" style="margin-top:8px">For example, the AI generates a response saying:</div>
+      <div class="prompt-card gate reveal" style="margin-top:7px">"Your laptop issue requires IT support intervention."</div>
+      <div class="callout amber reveal" style="margin-top:7px">But generating this response alone does not create an actual IT support ticket or notify anyone.</div>
+      <div class="callout coral reveal" style="margin-top:7px">We need another action.</div>
+      <div class="callout teal reveal" style="margin-top:7px">A Post-Hook can automatically:</div>
+      <ul class="bullets reveal">
+        <li>Save the ticket in the database.</li>
+        <li>Send an email to the IT team.</li>
+        <li>Update ticket status.</li>
+        <li>Send a notification to the employee.</li>
+        <li>Create a task in an external ticketing system.</li>
+      </ul>
+      <div class="subhead reveal">IT Support example:</div>
+      <div class="code-wrap reveal">
+        <div class="code-head"><span>Post-Hook Side Effects</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Post-Hook Side Effects
+1. Save to database
+   Store the AI response against Ticket #1025.
+2. Update ticket status
+   Change status to Pending IT Support.
+3. Send notification
+   Notify the IT support team about the issue.
+4. Notify employee
+   Send an acknowledgement that the ticket has been processed.</pre>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">Notice that these are actual application operations, not just text generated by the AI.</div>
+      <div class="subhead reveal">Why is it important?</div>
+      <div class="callout reveal">It allows an AI automation pipeline to interact with real business applications.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">11 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Post-Hook D</span><h2>D. Guardrails</h2><p class="subtitle">Rules and checks for safe, appropriate and authorized outputs.</p></div>
+        <span class="num">03 · GUARDRAILS</span>
+      </div>
+      <div class="tap-card reveal">Guardrails are rules and checks that help prevent unsafe, inappropriate or unauthorized AI outputs and actions.</div>
+      <div class="subhead reveal">IT Support example:</div>
+      <div class="callout reveal">Suppose the AI generates this recommendation:</div>
+      <div class="prompt-card gate reveal" style="margin-top:7px">"Disable the company's security software to improve laptop performance."</div>
+      <div class="callout coral reveal" style="margin-top:7px">This is not an acceptable recommendation.</div>
+      <div class="callout reveal" style="margin-top:7px">A Guardrail Hook checks the response against company security rules.</div>
+      <div class="callout amber reveal" style="margin-top:7px">It identifies that the recommendation violates company policy.</div>
+      <div class="callout teal reveal" style="margin-top:7px">The system can block the response, request a safer replacement, or send the issue for human review.</div>
+      <div class="subhead reveal">Other examples:</div>
+      <ul class="bullets reveal">
+        <li>Do not expose employee passwords.</li>
+        <li>Do not reveal confidential company information.</li>
+        <li>Do not recommend unauthorized software.</li>
+        <li>Do not perform sensitive actions without approval.</li>
+        <li>Do not send misleading or unsupported recommendations.</li>
+      </ul>
+      <div class="subhead reveal">Why is it important?</div>
+      <ul class="bullets reveal">
+        <li>Improves safety.</li>
+        <li>Protects confidential information.</li>
+        <li>Enforces company policies.</li>
+        <li>Prevents unsafe automated actions.</li>
+      </ul>
+      <div class="subhead reveal">Difference between the four Post-Hooks</div>
+      <table class="tbl reveal">
+        <thead><tr><th>Hook</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>Output Formatting</td><td>Structures the AI response</td></tr>
+          <tr><td>Logging</td><td>Records workflow activity</td></tr>
+          <tr><td>Side-Effect Actions</td><td>Performs external operations</td></tr>
+          <tr><td>Guardrails</td><td>Checks safety and policy compliance</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">12 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Configuration</span><h2>4. Configuring Hooks at Project Scope vs User Scope</h2><p class="subtitle">Shared project rules and personal environment settings.</p></div>
+        <span class="num">04 · SCOPE</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="tap-card">Now imagine the IT Support application is used by 50 employees.</div>
+        <div class="tap-card">Some rules should apply to everyone using the application.</div>
+        <div class="tap-card">Other rules may apply only to a particular developer or user.</div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">This is where project scope and user scope become important.</div>
+      <div class="scope-grid reveal" style="margin-top:10px">
+        <div class="scope-card">
+          <span class="tag2">A. Project Scope</span>
+          <div class="tap-card">Project scope means configuring Hooks for a particular project.</div>
+          <div class="callout" style="margin-top:7px">These Hooks are associated with that project and are generally shared by people working on it, subject to the project's configuration and permissions.</div>
+          <div class="mini-head" style="margin-top:10px">IT Support example:</div>
+          <div class="callout">Our company has an IT Support AI application.</div>
+          <div class="callout" style="margin-top:6px">The project administrator configures:</div>
+          <ul class="bullets">
+            <li>Validate every employee email.</li>
+            <li>Add company IT policies to the prompt.</li>
+            <li>Log every processed ticket.</li>
+            <li>Check responses against company security rules.</li>
+          </ul>
+          <div class="callout teal" style="margin-top:8px">These Hooks are part of the IT Support project configuration.</div>
+          <div class="callout" style="margin-top:6px">Anyone running the application through the configured project workflow follows these rules.</div>
+        </div>
+        <div class="scope-card user">
+          <span class="tag2">B. User Scope</span>
+          <div class="tap-card">User scope means configuring Hooks for an individual user's environment.</div>
+          <div class="callout" style="margin-top:7px">These settings apply to that user's own usage rather than being automatically shared as project-wide rules.</div>
+          <div class="mini-head" style="margin-top:10px">IT Support example:</div>
+          <div class="callout">Suppose a developer named Rahul works on the IT Support project.</div>
+          <div class="callout" style="margin-top:6px">Rahul configures personal Hooks to:</div>
+          <ul class="bullets">
+            <li>Display additional debugging information.</li>
+            <li>Record execution time locally.</li>
+            <li>Show extra diagnostic messages during development.</li>
+          </ul>
+          <div class="callout teal" style="margin-top:8px">These settings are intended for Rahul's own environment.</div>
+          <div class="callout" style="margin-top:6px">Other developers do not automatically receive those personal configurations.</div>
+        </div>
+      </div>
+      <div class="subhead reveal">Difference</div>
+      <table class="tbl reveal">
+        <thead><tr><th>Project Scope</th><th>User Scope</th></tr></thead>
+        <tbody>
+          <tr><td>Associated with a project</td><td>Associated with an individual user</td></tr>
+          <tr><td>Used for shared project requirements</td><td>Used for personal preferences and workflows</td></tr>
+          <tr><td>Example: Company security checks</td><td>Example: Personal debugging logs</td></tr>
+          <tr><td>Helps maintain consistency across the project</td><td>Helps customize an individual's environment</td></tr>
+        </tbody>
+      </table>
+      <div class="callout amber reveal" style="margin-top:8px">Important: Exact configuration locations and behavior depend on the AI framework or platform being used. Project scope and user scope are configuration concepts, not universal Hook filenames or settings.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">13 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Sequence</span><h2>5. Chaining Multiple Hooks in Sequence</h2><p class="subtitle">Pass the result of one Hook to the next.</p></div>
+        <span class="num">05 · CHAINING</span>
+      </div>
+      <div class="grid g3 reveal">
+        <div class="tap-card">Now we understand different types of Hooks.</div>
+        <div class="tap-card">But can we execute multiple Hooks one after another?</div>
+        <div class="tap-card">Yes.</div>
+      </div>
+      <div class="callout teal reveal" style="margin-top:8px">This is called Hook Chaining.</div>
+      <div class="tap-card reveal" style="margin-top:7px">Hook chaining means connecting multiple Hooks so that the output or result of one Hook is passed to the next Hook.</div>
+      <div class="callout reveal" style="margin-top:8px">Let's use our IT Support system. An employee submits: "My laptop is very slow."</div>
+      <div class="callout amber reveal" style="margin-top:7px">We need to execute multiple operations before and after the AI processes the request.</div>
+      <div class="hook-chain reveal">
+        <div class="hook-node"><span class="hn">Employee submits ticket</span><span class="hs">Ticket received</span></div>
+        <div class="hook-node pre"><span class="hn">Pre-Hook 1: Input Validation</span><span class="hs">Check email and issue description.</span></div>
+        <div class="hook-node pre"><span class="hn">Pre-Hook 2: Context Injection</span><span class="hs">Add employee department and IT policies.</span></div>
+        <div class="hook-node pre"><span class="hn">Pre-Hook 3: Prompt Transformation</span><span class="hs">Prepare structured AI instructions.</span></div>
+        <div class="hook-node ai"><span class="hn">AI Agent processes the request</span><span class="hs">Investigates and generates output.</span></div>
+        <div class="hook-node post"><span class="hn">Post-Hook 1: Guardrails</span><span class="hs">Check whether the AI response is safe.</span></div>
+        <div class="hook-node post"><span class="hn">Post-Hook 2: Output Formatting</span><span class="hs">Convert the response into standard JSON.</span></div>
+        <div class="hook-node post"><span class="hn">Post-Hook 3: Logging</span><span class="hs">Record execution details.</span></div>
+        <div class="hook-node post"><span class="hn">Post-Hook 4: Side Effects</span><span class="hs">Save ticket and send notifications.</span></div>
+        <div class="hook-node"><span class="hn">Final response delivered</span><span class="hs">Employee receives approved output.</span></div>
+      </div>
+      <div class="subhead reveal">Why is Hook Chaining useful?</div>
+      <ul class="bullets reveal">
+        <li>Separates individual responsibilities.</li>
+        <li>Makes the workflow easier to maintain.</li>
+        <li>Allows us to add or remove Hooks independently.</li>
+        <li>Helps standardize processing.</li>
+        <li>Makes debugging easier.</li>
+      </ul>
+      <div class="callout coral reveal" style="margin-top:8px">Important: The sequence matters.</div>
+      <div class="callout amber reveal" style="margin-top:7px">For example, we should check whether the response is safe before sending it to the employee or triggering external actions based on it.</div>
+      <div class="callout reveal" style="margin-top:7px">Also, not every Hook must run sequentially. Independent operations, such as certain logging and notification tasks, can sometimes run in parallel.</div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">14 / 15</span></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Resilience</span><h2>6. Error Handling and Rollback Strategies in Hook Pipelines</h2><p class="subtitle">What happens when one Hook fails?</p></div>
+        <span class="num">06 · RECOVERY</span>
+      </div>
+      <div class="callout reveal">Now consider a situation where one of our Hooks fails.</div>
+      <div class="callout amber reveal" style="margin-top:7px">For example: The AI successfully generates an IT Support response, but the database Hook fails while saving the ticket.</div>
+      <div class="callout coral reveal" style="margin-top:7px">What should happen? Should the entire application crash? No. We need proper error handling.</div>
+      <div class="subhead reveal">A. Error Handling</div>
+      <div class="tap-card reveal">Error handling means identifying failures and deciding what the system should do next.</div>
+      <div class="callout reveal" style="margin-top:8px">IT Support example: The workflow is:</div>
+      <div class="error-strip reveal">
+        <div><b>1. Input Validation</b>Successful.</div>
+        <div><b>2. Context Injection</b>Successful.</div>
+        <div><b>3. AI Processing</b>Successful.</div>
+        <div><b>4. Output Formatting</b>Successful.</div>
+        <div class="fail"><b>5. Database Logging</b>Failed.</div>
+      </div>
+      <div class="callout amber reveal" style="margin-top:8px">The system should capture the error and decide whether to retry, use another method, or notify an administrator.</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Error record</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Ticket ID: 1025
+
+AI Processing: Successful
+Output Formatting: Successful
+Database Save: Failed
+
+Error:
+Database connection unavailable.
+
+Action:
+Retry database operation.</pre>
+      </div>
+      <div class="subhead reveal">Possible error-handling strategies:</div>
+      <ul class="bullets reveal">
+        <li>Retry the failed Hook.</li>
+        <li>Stop the workflow if the failure is critical.</li>
+        <li>Use an alternative service.</li>
+        <li>Record the failure.</li>
+        <li>Notify the administrator.</li>
+      </ul>
+      <div class="subhead reveal">B. Rollback Strategies</div>
+      <div class="tap-card reveal">Rollback means reversing previously completed changes when a later operation fails and the workflow requires all-or-nothing consistency.</div>
+      <div class="callout reveal" style="margin-top:8px">Let's understand with our IT Support application. Suppose the system performs these operations:</div>
+      <div class="error-strip reveal">
+        <div><b>1</b>Creates a new support ticket.</div>
+        <div><b>2</b>Updates the ticket status.</div>
+        <div><b>3</b>Assigns the ticket to a support engineer.</div>
+        <div><b>4</b>Saves the final record.</div>
+      </div>
+      <div class="callout coral reveal" style="margin-top:8px">Now suppose the fourth operation fails. We may have a partially completed operation. The system may need to reverse some earlier changes to avoid leaving inconsistent data.</div>
+      <div class="code-wrap reveal" style="margin-top:7px">
+        <div class="code-head"><span>Example: Workflow failure</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre>Example: Workflow failure
+1. Create ticket
+   Completed
+2. Update status
+   Completed
+3. Assign engineer
+   Completed
+4. Save final record
+   Failed
+
+Rollback action
+
+If the workflow requires atomic completion, reverse the earlier
+changes where possible so that the ticket is not left in an
+inconsistent state.</pre>
+      </div>
+      <div class="repair reveal">
+        <div class="rt">Important: Rollback is not always simple.</div>
+        <div class="callout" style="margin-top:0">For database operations, we may use database transactions.</div>
+        <div class="callout amber" style="margin-top:6px">But what if an email notification has already been sent?</div>
+        <div class="callout coral" style="margin-top:6px">We cannot truly unsend that email.</div>
+        <div class="callout" style="margin-top:6px">Similarly, an external system may have already performed an action.</div>
+        <div class="callout teal" style="margin-top:6px">In these cases, we may need a compensating action.</div>
+        <ul class="bullets" style="margin-top:8px">
+          <li>Send a correction email.</li>
+          <li>Cancel an assignment.</li>
+          <li>Mark a ticket as failed.</li>
+          <li>Notify the administrator.</li>
+        </ul>
+        <div class="callout amber" style="margin-top:8px">This is often handled using a compensation strategy or Saga pattern in distributed systems.</div>
+      </div>
+      <div class="subhead reveal">Error Handling vs Rollback</div>
+      <table class="tbl reveal">
+        <thead><tr><th>Error Handling</th><th>Rollback</th></tr></thead>
+        <tbody>
+          <tr><td>Detects and manages failures</td><td>Reverses completed changes</td></tr>
+          <tr><td>Can retry or stop execution</td><td>Restores an earlier state where possible</td></tr>
+          <tr><td>Example: Retry database connection</td><td>Example: Reverse ticket assignment</td></tr>
+          <tr><td>Focuses on managing errors</td><td>Focuses on consistency</td></tr>
+        </tbody>
+      </table>
+      <div class="subhead reveal">Why are these important?</div>
+      <ul class="bullets reveal">
+        <li>Prevent incomplete workflows.</li>
+        <li>Prevent inconsistent database records.</li>
+        <li>Improve system reliability.</li>
+        <li>Allow the application to recover from failures.</li>
+      </ul>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 09 · HOOKS AND PRE/POST TRIGGERS</span><span class="page-num">15 / 15</span></div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- NAVIGATION DOCK -->
+<div class="dock">
+  <button class="nav-btn" id="prev" title="Previous (←)">←</button>
+  <div class="dots" id="dots"></div>
+  <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+  <span class="dock-count" id="count">01 / 15</span>
+  <button class="nav-btn" id="next" title="Next (→)">→</button>
+  <span class="hint-key"><span class="kbd">←</span> <span class="kbd">→</span> navigate</span>
+</div>
+
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  const countEl = document.getElementById('count');
+  const fill = document.getElementById('progress');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const dotsWrap = document.getElementById('dots');
+
+  slides.forEach((_, k) => {
+    const b = document.createElement('button');
+    b.className = 'dot-btn';
+    b.title = 'Slide ' + (k + 1);
+    b.addEventListener('click', () => go(k));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    dots.forEach((d, k) => d.classList.toggle('active', k === i));
+    countEl.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    fill.style.width = ((i + 1) / slides.length * 100) + '%';
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    const inner = slides[i].querySelector('.sheet-inner');
+    if (inner) inner.scrollTop = 0;
+  }
+
+  prev.addEventListener('click', () => go(i - 1));
+  next.addEventListener('click', () => go(i + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home') { go(0); }
+    else if (e.key === 'End') { go(slides.length - 1); }
+  });
+
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', () => go(parseInt(el.dataset.goto, 10) - 1));
+  });
+
+  document.querySelectorAll('.illus').forEach(img => {
+    img.addEventListener('click', () => window.open(img.src, '_blank'));
+  });
+
+  document.querySelectorAll('.opt.checkable').forEach(el => {
+    el.addEventListener('click', () => el.classList.toggle('correct'));
+  });
+
+  window.copyCode = function (btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    if (!pre) return;
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      const old = btn.textContent; btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = old, 1400);
+    }).catch(() => { btn.textContent = 'Select text'; });
+  };
+
+
+  // ---- Interactive content representation ----
+  document.querySelectorAll('.slide').forEach(slide => {
+    const inner = slide.querySelector('.sheet-inner');
+    if (!inner) return;
+    const dense = inner.textContent.length > 1200;
+    const heads = Array.from(inner.querySelectorAll(':scope > .section-band, :scope > .subhead'));
+    heads.forEach(head => {
+      const body = document.createElement('div');
+      body.className = 'collapse-body';
+      let node = head.nextElementSibling;
+      while (node && !heads.includes(node)) {
+        const next = node.nextElementSibling;
+        body.appendChild(node);
+        node = next;
+      }
+      if (!body.childNodes.length) return;
+      head.after(body);
+      head.classList.add('interactive-head');
+      head.tabIndex = 0;
+      head.setAttribute('role', 'button');
+      const startCollapsed = dense && heads.indexOf(head) > 0;
+      if (startCollapsed) body.classList.add('collapsed');
+      head.setAttribute('aria-expanded', startCollapsed ? 'false' : 'true');
+      const chev = document.createElement('span');
+      chev.className = 'chev';
+      chev.textContent = '\u25be';
+      head.appendChild(chev);
+      const toggle = () => {
+        const collapsed = body.classList.toggle('collapsed');
+        head.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      };
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+      });
+    });
+  });
+
+  function bindCheckable(selector, className) {
+    document.querySelectorAll(selector).forEach(el => {
+      el.tabIndex = 0;
+      el.setAttribute('role', 'checkbox');
+      el.setAttribute('aria-checked', 'false');
+      const toggle = () => {
+        const on = el.classList.toggle(className);
+        el.setAttribute('aria-checked', on ? 'true' : 'false');
+      };
+      el.addEventListener('click', toggle);
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+      });
+    });
+  }
+  bindCheckable('.bullets li', 'done');
+
+  document.querySelectorAll('.flow, .hook-chain').forEach(flow => {
+    const nodes = Array.from(flow.querySelectorAll('.fnode, .hook-node'));
+    nodes.forEach(node => {
+      node.tabIndex = 0;
+      node.setAttribute('role', 'button');
+      node.setAttribute('aria-pressed', 'false');
+      const activate = e => {
+        if (e) e.stopPropagation();
+        const was = node.classList.contains('active-step');
+        nodes.forEach(n => { n.classList.remove('active-step'); n.setAttribute('aria-pressed', 'false'); });
+        if (!was) { node.classList.add('active-step'); node.setAttribute('aria-pressed', 'true'); }
+      };
+      node.addEventListener('click', activate);
+      node.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(e); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.tbl tbody tr').forEach(tr => {
+    tr.tabIndex = 0;
+    tr.setAttribute('role', 'button');
+    tr.setAttribute('aria-pressed', 'false');
+    const toggle = () => {
+      const on = tr.classList.toggle('row-active');
+      tr.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    tr.addEventListener('click', toggle);
+    tr.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+    });
+  });
+
+  document.querySelectorAll('.card:not([data-goto])').forEach(card => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    const toggle = e => {
+      if (e && e.target && e.target.closest('button, .code-wrap')) return;
+      if (e) e.stopPropagation();
+      const on = card.classList.toggle('card-focus');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); }
+    });
+  });
+
+
+  // ---- Interactive cards, tabs and reveal panels ----
+  document.querySelectorAll('.tabset').forEach(set => {
+    const tabs = Array.from(set.querySelectorAll('.tabbar button'));
+    const panels = Array.from(set.querySelectorAll('.tabpanel'));
+    const activate = tab => {
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach(p => p.classList.toggle('active', p.dataset.panel === tab.dataset.tab));
+    };
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', e => { e.stopPropagation(); activate(tab); });
+      tab.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); e.stopPropagation(); activate(tab);
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault(); e.stopPropagation();
+          const next = tabs[(idx + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+          next.focus(); activate(next);
+        }
+      });
+    });
+    if (tabs.length) activate(tabs[0]);
+  });
+
+  document.querySelectorAll('.tap-card').forEach(card => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    const toggle = e => {
+      if (e && e.target && e.target.closest('button, pre, .copy-btn')) return;
+      if (e) e.stopPropagation();
+      const on = card.classList.toggle('selected');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(e); }
+    });
+  });
+
+  document.querySelectorAll('.reveal-toggle').forEach(btn => {
+    const card = btn.closest('.test-card, .qa-card, .reveal-wrap');
+    const body = card ? card.querySelector('.reveal-body') : null;
+    if (!body) return;
+    btn.setAttribute('aria-expanded', 'false');
+    const toggle = e => {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const open = body.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    btn.addEventListener('click', toggle);
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') toggle(e);
+    });
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>
+

@@ -54,11 +54,11 @@ body{
 button{font-family:inherit;cursor:pointer}
 
 #deck{position:relative;height:100vh;width:100vw;overflow:hidden}
-.slide{position:absolute;inset:0;display:none;padding:26px 30px 74px;align-items:flex-start;justify-content:center}
+.slide{position:absolute;inset:0;display:none;padding:18px 22px 62px;align-items:flex-start;justify-content:center}
 .slide.active{display:flex;animation:slideIn .45s cubic-bezier(.2,.8,.25,1)}
 @keyframes slideIn{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
 .sheet{
-  position:relative;width:min(1180px,100%);height:100%;
+  position:relative;width:min(1600px,100%);height:100%;
   background:var(--paper);
   background-image:linear-gradient(rgba(255,255,255,.55) 1px,transparent 1px),radial-gradient(circle at 12% 8%,rgba(6,148,209,.035),transparent 40%);
   background-size:100% 28px,100% 100%;
@@ -66,7 +66,7 @@ button{font-family:inherit;cursor:pointer}
   display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.6);
 }
 .sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--teal) 0%,var(--teal) 78%,var(--amber) 78%,var(--coral) 100%)}
-.sheet-inner{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:34px 46px 26px;scrollbar-width:thin;scrollbar-color:#cbd5dc transparent}
+.sheet-inner{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:26px 38px 22px;scrollbar-width:thin;scrollbar-color:#cbd5dc transparent}
 .sheet-inner::-webkit-scrollbar{width:8px}
 .sheet-inner::-webkit-scrollbar-thumb{background:#cbd5dc;border-radius:8px}
 
@@ -87,7 +87,7 @@ code.inline{font-family:var(--font-mono);font-size:.88em;background:var(--paper-
 .head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px;flex-wrap:wrap}
 .head-row .num{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 12px;background:var(--surface)}
 
-.sheet-foot{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-top:1px solid var(--line);background:rgba(250,247,241,.9);backdrop-filter:blur(4px);font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+.sheet-foot{position:relative;flex:0 0 44px;width:100%;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-top:1px solid var(--line);background:rgba(250,247,241,.9);backdrop-filter:blur(4px);font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.03em}
 .sheet-foot .brand{display:flex;align-items:center;gap:9px}
 .brand-logo{height:19px;width:auto;display:block;background:#fff;border-radius:4px;padding:2px 5px;box-shadow:0 1px 3px rgba(0,0,0,.14)}
 .hero-logo{display:inline-block;background:#fff;border-radius:14px;padding:14px 22px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
@@ -274,6 +274,31 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
 .callout{border-left:4px solid var(--teal);background:var(--teal-l);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13px;color:#185d7d;line-height:1.55}
 .callout.coral{border-color:var(--coral);background:var(--coral-l);color:#8c4129}
 .callout.amber{border-color:var(--amber);background:var(--amber-l);color:#7a5616}
+.section-band{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-d);background:var(--teal-l);border-left:4px solid var(--teal);border-radius:6px;padding:7px 11px;margin-bottom:12px;line-height:1.45}
+.subhead{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-left:3px solid var(--line);padding-left:10px;margin:14px 0 8px;line-height:1.4}
+
+.interactive-head{cursor:pointer;user-select:none;transition:background .18s,border-color .18s,color .18s}
+.section-band.interactive-head{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;max-width:100%}
+.subhead.interactive-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.interactive-head:hover{background:var(--blue-l);border-color:var(--blue);color:var(--teal-d)}
+.interactive-head .chev{font-size:12px;line-height:1;opacity:.65;transition:transform .2s;flex:none}
+.interactive-head[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.collapse-body{animation:fade .25s}
+.collapse-body.collapsed{display:none}
+.bullets li{cursor:pointer;border-radius:6px;padding-right:6px;transition:background .16s,color .16s,opacity .16s}
+.bullets li:hover{background:var(--paper-2)}
+.bullets li.done{color:var(--muted);text-decoration:line-through;opacity:.72}
+.bullets li.done::before{background:var(--green);transform:rotate(45deg) scale(1.15)}
+.fnode,.tbl tbody tr,.card:not([data-goto]){cursor:pointer}
+.fnode{transition:transform .16s,box-shadow .16s,border-color .16s,background .16s}
+.fnode:hover{transform:translateY(-2px);border-color:var(--teal)}
+.fnode.active-step{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.16),0 6px 14px rgba(24,36,48,.12)}
+.fnode.active-step .n{color:var(--teal-d)}
+.tbl tbody tr{transition:background .15s,box-shadow .15s}
+.tbl tbody tr:hover{background:var(--teal-l)}
+.tbl tbody tr.row-active{background:var(--blue-l);box-shadow:inset 3px 0 var(--teal)}
+.card:not([data-goto]){transition:border-color .16s,box-shadow .16s}
+.card.card-focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.14)}
 .mini-head{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
 .spacer{height:14px}
 .center{text-align:center}
@@ -295,6 +320,236 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
 .illus-cap{font-size:10.5px;color:var(--muted);text-align:center;margin-top:4px;line-height:1.4}
 .illus-frame{background:var(--paper-2);border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
 .illus-frame .illus{margin:0 auto}
+
+/* ============================================================
+   VISUAL REFINEMENTS
+   ============================================================ */
+html,body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.sheet{
+  background-color:var(--paper);
+  background-image:
+    radial-gradient(rgba(6,148,209,.10) 1px,transparent 1px),
+    radial-gradient(760px 460px at 88% 2%,rgba(6,148,209,.07),transparent 70%),
+    linear-gradient(180deg,#ffffff 0%,var(--paper) 46%);
+  background-size:22px 22px,100% 100%,100% 100%;
+}
+.sheet-inner{scrollbar-color:#b9c8d2 transparent}
+.sheet-inner::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#b9c8d2,#9fb2be)}
+
+.head-row{margin-bottom:20px}
+.head-row h2{position:relative;padding-bottom:12px}
+.head-row h2::after{content:"";position:absolute;left:0;bottom:0;width:58px;height:4px;border-radius:100px;background:linear-gradient(90deg,var(--teal),var(--amber))}
+.head-row .num{background:linear-gradient(180deg,#fff,var(--paper-2));box-shadow:0 2px 6px rgba(24,36,48,.06)}
+.kicker{box-shadow:0 2px 8px rgba(6,148,209,.14)}
+
+.callout{border-radius:0 14px 14px 0;padding:13px 17px;box-shadow:0 4px 14px rgba(24,36,48,.05)}
+.callout.coral,.callout.amber{box-shadow:0 4px 14px rgba(224,138,60,.10)}
+
+.section-band{background:linear-gradient(90deg,var(--teal-l),rgba(255,255,255,.9));border-left:5px solid var(--teal);border-radius:100px;padding:8px 14px;box-shadow:0 4px 12px rgba(6,148,209,.12)}
+.section-band::before{content:"◈";color:var(--teal);font-size:12px;margin-right:8px}
+.section-band.interactive-head{justify-content:flex-start}
+.section-band.interactive-head .chev{margin-left:auto}
+.subhead{border-left:4px solid var(--teal);border-radius:0 8px 8px 0;background:linear-gradient(90deg,rgba(230,244,251,.85),transparent);padding:8px 12px;color:var(--teal-d)}
+.subhead::before{content:"▸";color:var(--teal);margin-right:8px;font-size:11px}
+.subhead.interactive-head{justify-content:flex-start}
+.subhead.interactive-head .chev{margin-left:auto}
+
+.card{position:relative;overflow:hidden;border-radius:16px;padding:20px 18px 17px;box-shadow:0 3px 0 rgba(24,36,48,.03),0 8px 20px rgba(24,36,48,.045)}
+.card::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),#8ad4f0,var(--amber));opacity:.85}
+.card .ico{border-radius:12px;box-shadow:0 4px 10px rgba(6,148,209,.16)}
+.card.hoverable:hover{box-shadow:0 16px 34px rgba(24,36,48,.12)}
+
+.bullets{gap:10px}
+.bullets li{padding:6px 10px 6px 30px;border-radius:9px;line-height:1.6}
+.bullets li::before{left:10px;top:12px;width:9px;height:9px;box-shadow:0 0 0 4px rgba(6,148,209,.12)}
+.bullets.coral li::before{box-shadow:0 0 0 4px rgba(224,138,60,.14)}
+.bullets.amber li::before{box-shadow:0 0 0 4px rgba(224,138,60,.14)}
+
+.opt{position:relative;padding:11px 38px 11px 14px;border-radius:11px;background:linear-gradient(180deg,#fff,var(--paper-2));font-weight:600;color:var(--ink-soft)}
+.opt::after{content:"";position:absolute;right:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;border:2px solid var(--line);border-radius:50%;transition:.18s}
+.opt.correct::after{content:"✓";border-color:var(--green);background:var(--green);color:#fff;font-size:11px;display:grid;place-items:center;line-height:1}
+.opt:hover{transform:translateX(2px)}
+
+.flow{gap:10px;margin:10px 0}
+.fnode{border-radius:13px;padding:11px 15px;min-width:104px;background:linear-gradient(180deg,#fff,var(--paper-2))}
+.fnode .n{font-size:13.5px}
+.farr{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--coral-l);color:var(--coral);font-size:15px;box-shadow:0 2px 6px rgba(224,138,60,.18)}
+
+table.tbl{border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(24,36,48,.05)}
+table.tbl th{background:linear-gradient(90deg,var(--ink),#3b4a55);padding:11px 13px}
+table.tbl th:first-child{border-top-left-radius:12px}
+table.tbl th:last-child{border-top-right-radius:12px}
+table.tbl td{padding:11px 13px}
+table.tbl tbody tr:last-child td{border-bottom:none}
+table.tbl tbody tr:nth-child(even) td{background:rgba(230,238,251,.42)}
+
+.code-wrap{margin-top:12px;border-radius:11px;box-shadow:0 8px 18px rgba(0,0,0,.14)}
+.code-head{border-radius:11px 11px 0 0;padding:8px 13px;background:linear-gradient(90deg,#2b3a45,var(--stage-2))}
+pre{border-radius:0 0 11px 11px;padding:15px 17px;border-top:1px solid #1b2833}
+
+.illus-frame{background:linear-gradient(180deg,#fff,var(--paper-2));border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 22px rgba(24,36,48,.07)}
+.illus{border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 24px rgba(24,36,48,.12)}
+.illus-cap{font-weight:600;color:var(--ink-soft)}
+.prompt-card{border-radius:16px;box-shadow:0 8px 22px rgba(24,36,48,.08);padding:18px}
+
+
+/* ============================================================
+   CLEAN LAYOUT — readability pass
+   ============================================================ */
+.sheet{background:#fff;background-image:linear-gradient(180deg,#fff 0%,var(--paper) 100%)}
+.sheet::before{height:4px}
+.sheet-inner{padding:24px 38px 20px}
+.kicker{box-shadow:none;font-size:10px;padding:5px 10px;margin-bottom:10px}
+.head-row{margin-bottom:14px;align-items:center}
+.head-row h2{font-size:clamp(22px,2.4vw,30px);padding-bottom:9px}
+.head-row h2::after{width:46px;height:3px}
+.head-row .num{font-size:11px;padding:4px 10px;box-shadow:none}
+.subtitle{font-size:13.5px;margin-top:7px;line-height:1.45}
+
+.section-band{background:var(--teal-l);border-left:4px solid var(--teal);border-radius:8px;padding:7px 12px;box-shadow:none;font-size:10px}
+.section-band::before{content:none}
+.subhead{text-transform:none;letter-spacing:0;font-size:12px;font-weight:700;color:var(--teal-d);background:transparent;border-left:3px solid var(--teal);border-radius:0;padding:4px 0 4px 11px;margin:14px 0 7px;line-height:1.35}
+.subhead::before{content:none}
+.interactive-head .chev{font-size:10px;opacity:.5}
+
+.callout{font-size:12.5px;padding:10px 14px;border-radius:0 10px 10px 0;box-shadow:none;line-height:1.5}
+.bullets{gap:6px;margin:8px 0}
+.bullets li{font-size:12.5px;line-height:1.45;padding:4px 8px 4px 26px}
+.bullets li::before{top:9px;left:9px;width:8px;height:8px;box-shadow:none}
+.bullets:has(li:nth-child(5)),.opts:has(.opt:nth-child(5)){columns:2;column-gap:24px}
+.bullets li,.opt{break-inside:avoid}
+.opts{gap:6px}
+.opt{font-size:12px;padding:7px 32px 7px 12px;border-radius:8px;background:var(--paper);font-weight:500;box-shadow:none}
+.opt::after{width:14px;height:14px;right:10px}
+.opt.correct::after{font-size:10px}
+.opt:hover{transform:none}
+
+.card{border-radius:12px;padding:14px;box-shadow:0 1px 0 rgba(24,36,48,.03)}
+.card::before{content:none}
+.card .ico{width:32px;height:32px;font-size:16px;margin-bottom:9px;border-radius:9px;box-shadow:none}
+.card h3{font-size:16px}
+.card p{font-size:12.5px}
+
+.flow{gap:8px;margin:8px 0}
+.fnode{min-width:88px;padding:8px 11px;border-radius:10px;background:var(--surface);box-shadow:0 2px 6px rgba(24,36,48,.04)}
+.fnode .n{font-size:12px}
+.fnode .s{font-size:9.5px}
+.farr{width:22px;height:22px;font-size:13px;background:transparent;box-shadow:none}
+
+table.tbl{font-size:12px;border-radius:10px;box-shadow:none;border:1px solid var(--line)}
+table.tbl th{background:var(--ink);padding:8px 10px;font-size:10px}
+table.tbl td{padding:8px 10px}
+table.tbl tbody tr:nth-child(even) td{background:rgba(238,242,245,.6)}
+
+.code-wrap{margin-top:8px;box-shadow:none;border-radius:8px}
+.code-head{border-radius:8px 8px 0 0;padding:6px 11px;background:var(--stage-2)}
+pre{border-radius:0 0 8px 8px;padding:12px 14px;font-size:11.5px;box-shadow:none}
+
+.illus-frame{border-radius:12px;padding:10px;box-shadow:none;background:var(--paper-2)}
+.illus{max-height:240px;border-radius:10px;box-shadow:0 6px 16px rgba(24,36,48,.10)}
+.illus-cap{font-size:10px}
+.prompt-card{border-radius:12px;padding:14px;box-shadow:none}
+.bignum{font-size:38px}
+.chip{padding:5px 10px;font-size:11px}
+
+.interactive-head[aria-expanded="false"]{margin-top:10px;margin-bottom:4px;background:var(--paper-2);border-radius:8px}
+
+/* ============================================================
+   INTERACTIVE CONTENT COMPONENTS
+   ============================================================ */
+pre{white-space:pre-wrap;word-break:break-word}
+.panel.bad .txt{text-decoration:none;opacity:1}
+.tap-card{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:12px;padding:12px 15px;font-size:13px;line-height:1.55;color:var(--ink-soft);
+  cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s,transform .18s
+}
+.tap-card:hover{background:var(--teal-l);border-color:#bcdfe9;transform:translateY(-1px)}
+.tap-card.selected{background:var(--teal-l);border-color:var(--teal);box-shadow:0 0 0 3px rgba(6,148,209,.14);color:var(--ink)}
+.span2{grid-column:1 / -1}
+.step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:8px 0}
+.step-card{display:flex;gap:10px;align-items:flex-start;min-height:64px}
+.step-card .step-n{
+  flex:0 0 auto;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  background:var(--teal-l);color:var(--teal-d);font-family:var(--font-head);font-size:11px;font-weight:700
+}
+.tabset{margin-top:8px}
+.tabbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.tabbar button{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+  border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;transition:.18s
+}
+.tabbar button:hover{border-color:var(--teal);color:var(--teal-d)}
+.tabbar button.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.tabpanel{display:none;animation:fade .25s}
+.tabpanel.active{display:block}
+.code-pair{display:grid;grid-template-columns:minmax(250px,.72fr) minmax(0,1.28fr);gap:14px;align-items:start}
+.reveal-toggle{
+  display:inline-flex;align-items:center;gap:7px;margin-top:9px;border:1px solid var(--line);
+  background:var(--paper-2);color:var(--teal-d);border-radius:100px;padding:6px 12px;
+  font-size:11px;font-weight:800;letter-spacing:.03em;transition:.18s
+}
+.reveal-toggle:hover{background:var(--teal-l);border-color:var(--teal)}
+.reveal-toggle::after{content:"▸";font-size:11px;transition:transform .18s}
+.reveal-toggle[aria-expanded="true"]::after{transform:rotate(90deg)}
+.reveal-body{display:none;margin-top:8px;animation:fade .25s}
+.reveal-body.open{display:block}
+.test-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;
+  box-shadow:0 1px 0 rgba(24,36,48,.03)
+}
+.test-card .prompt-card{margin-top:6px}
+.test-card .reveal-body .callout{margin-bottom:6px}
+@media(max-width:1050px){
+  .code-pair{grid-template-columns:1fr}
+  .step-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){.step-grid{grid-template-columns:1fr}}
+
+
+/* ============================================================
+   FONT LEGIBILITY PASS
+   ============================================================ */
+html,body{font-size:16px}
+.slide{padding:16px 18px 60px}
+.sheet{width:min(1700px,100%)}
+.sheet-inner{padding:24px 38px 20px;font-size:15px;line-height:1.6}
+.kicker{font-size:12px;padding:6px 13px}
+.head-row h2{font-size:clamp(24px,2.6vw,34px)}
+.head-row .num{font-size:12px}
+.subtitle{font-size:15px;line-height:1.55}
+.mini-head{font-size:12.5px;letter-spacing:.09em}
+.subhead{font-size:13.5px;font-weight:750;margin:16px 0 9px}
+.callout{font-size:14.5px;padding:12px 16px;line-height:1.6}
+.bullets{gap:8px}
+.bullets li{font-size:14px;line-height:1.55;padding:5px 9px 5px 28px}
+.tap-card{font-size:14px;line-height:1.6;padding:13px 16px}
+.step-card .step-n{width:28px;height:28px;font-size:12px}
+.tabbar button{font-size:13px;padding:7px 15px}
+.prompt-card{font-size:14px;line-height:1.6}
+.panel .tag{font-size:11.5px}
+.panel .txt{font-size:13.5px}
+.panel .note{font-size:13.5px}
+.code-head{font-size:12px}
+pre{font-size:12.75px;line-height:1.65;padding:13px 16px}
+table.tbl{font-size:13.5px}
+table.tbl th{font-size:11.5px;padding:9px 12px}
+table.tbl td{font-size:13.5px;padding:9px 12px}
+.fnode{padding:9px 12px}
+.fnode .n{font-size:13.5px}
+.fnode .s{font-size:11px}
+.reveal-toggle{font-size:12px;padding:7px 14px}
+.test-card{padding:15px}
+.card h3{font-size:17px}
+.card p{font-size:14px}
+.sheet-foot{font-size:12px}
+.dock-count{font-size:13px}
+.hint-key{font-size:12px}
+.slide.title .badge{font-size:13px}
+.slide.title h1{font-size:clamp(40px,5.8vw,68px)}
+.slide.title .sub{font-size:20px}
+.slide.title .meta .m{font-size:14px}
+
 </style>
 </head>
 <body>
@@ -316,20 +571,18 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
       </svg>
       <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
       <div class="reveal"><div class="badge"><span class="ln"></span> Claude Code Training · Module 07</div></div>
-      <div class="reveal"><h1>Building Custom<br><span class="em">Subagents</span></h1></div>
-      <div class="reveal"><p class="sub">You can think of custom subagents as specialized team members inside Claude Code.</p></div>
+      <div class="reveal"><h1>Building<br><span class="em">Custom Subagents</span></h1></div>
+      <div class="reveal"><p class="sub">A subagent is a specialized AI assistant that handles a particular task on behalf of the main Claude Code conversation.</p></div>
       <div class="reveal">
         <div class="meta">
-          <span class="m">◈ What Is a Custom Subagent?</span><span class="m">◈ Narrow System Prompt</span>
-          <span class="m">◈ Tools &amp; MCP Servers</span><span class="m">◈ Project / User Scope</span>
-          <span class="m">◈ Context &amp; State</span><span class="m">◈ Sample Prompts</span>
+          <span class="m">◈ Definition &amp; Purpose</span><span class="m">◈ System Prompts</span>
+          <span class="m">◈ Tools &amp; MCP</span><span class="m">◈ Project vs User Scope</span>
+          <span class="m">◈ Context &amp; State</span><span class="m">◈ Evaluation</span>
+          <span class="m">◈ Key Takeaway</span>
         </div>
       </div>
     </div>
-    <div class="sheet-foot">
-      <span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> KOENIG SOLUTIONS · CLAUDE CODE TRAINING</span>
-      <span>Use ← → keys or the controls below to navigate</span>
-    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">01 / 10</span></div>
   </div>
 </section>
 
@@ -340,198 +593,131 @@ table.tbl code{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-d)
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Roadmap</span><h2>What we'll cover</h2><p class="subtitle">Six connected ideas. Click any card to jump to that section.</p></div>
+        <div><span class="kicker"><span class="dot"></span> Roadmap</span><h2>What we'll cover</h2><p class="subtitle">Seven connected ideas. Click any card to jump to that section.</p></div>
         <span class="num">AGENDA</span>
       </div>
       <div class="grid g2 reveal">
-        <div class="card hoverable" data-goto="3"><div class="ico" style="background:var(--teal-l);color:var(--teal)">01</div><h3>What Is a Custom Subagent?</h3><p>Specialized team members inside Claude Code.</p></div>
-        <div class="card hoverable" data-goto="6"><div class="ico" style="background:var(--blue-l);color:var(--blue)">02</div><h3>Designing a Subagent System Prompt for a Narrow, Well-Defined Task</h3><p>One clearly defined responsibility.</p></div>
-        <div class="card hoverable" data-goto="15"><div class="ico" style="background:var(--amber-l);color:var(--amber)">03</div><h3>Assigning Tools and MCP Servers to a Specific Subagent</h3><p>Give each agent only what it needs.</p></div>
-        <div class="card hoverable" data-goto="20"><div class="ico" style="background:var(--coral-l);color:var(--coral)">04</div><h3>Configuring Subagent Scope: Project Scope vs User Scope</h3><p>Where the subagent is available.</p></div>
-        <div class="card hoverable" data-goto="26"><div class="ico" style="background:var(--green-l);color:var(--green)">05</div><h3>Passing Context and State Between the Orchestrator and a Subagent</h3><p>Coordinating the work.</p></div>
-        <div class="card hoverable" data-goto="33"><div class="ico" style="background:var(--teal-l);color:var(--teal)">06</div><h3>Evaluating and Testing Subagent Quality with Sample Prompts</h3><p>Checking behaviour with prompts.</p></div>
+        <div class="card hoverable" data-goto="3"><div class="ico" style="background:var(--teal-l);color:var(--teal)">01</div><h3>What Is a Custom Subagent?</h3><p>A specialized assistant for one task.</p></div>
+        <div class="card hoverable" data-goto="4"><div class="ico" style="background:var(--blue-l);color:var(--blue)">02</div><h3>Why custom subagents?</h3><p>Repeated tasks, clear responsibilities.</p></div>
+        <div class="card hoverable" data-goto="5"><div class="ico" style="background:var(--amber-l);color:var(--amber)">03</div><h3>Designing a System Prompt</h3><p>A narrow, well-defined task.</p></div>
+        <div class="card hoverable" data-goto="6"><div class="ico" style="background:var(--coral-l);color:var(--coral)">04</div><h3>Tools and MCP Servers</h3><p>Permissions and extra capabilities.</p></div>
+        <div class="card hoverable" data-goto="7"><div class="ico" style="background:var(--green-l);color:var(--green)">05</div><h3>Project vs User Scope</h3><p>Where the subagent is available.</p></div>
+        <div class="card hoverable" data-goto="8"><div class="ico" style="background:var(--teal-l);color:var(--teal)">06</div><h3>Context and State</h3><p>Orchestrator and subagent handoffs.</p></div>
+        <div class="card hoverable" data-goto="9"><div class="ico" style="background:var(--blue-l);color:var(--blue)">07</div><h3>Evaluating and Testing</h3><p>Sample prompts and a checklist.</p></div>
       </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">02 / 38</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">02 / 10</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 3 — DIVIDER 01
-     ========================================================= -->
-<section class="slide divider">
-  <div class="sheet">
-    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
-    <div class="big-index">01</div>
-    <div class="sheet-inner">
-      <div class="reveal"><span class="kicker">Part One</span></div>
-      <div class="reveal"><h2>What Is a Custom Subagent?</h2></div>
-      <div class="reveal"><p class="subtitle">A specialized AI assistant for a particular task.</p></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07</span><span class="page-num">03 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 4 — DEFINITION + TEAM ANALOGY
+     SLIDE 3 — WHAT IS A CUSTOM SUBAGENT?
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> What Is a Custom Subagent?</span><h2>A specific responsibility</h2><p class="subtitle">The project manager analogy.</p></div>
-        <span class="num">01 · CUSTOM SUBAGENTS</span>
-      </div>
-      <div class="callout reveal">A subagent is a specialized AI assistant that handles a particular task on behalf of the main Claude Code conversation.</div>
-      <div class="callout teal reveal" style="margin-top:10px">Think of the main Claude assistant as a project manager who assigns work to different team members.</div>
-      <div class="mini-head reveal" style="margin-top:14px">For example, in a software company:</div>
-      <div class="grid g4 reveal">
-        <div class="card hoverable"><div class="ico">🧑‍💻</div><p>One developer handles code review.</p></div>
-        <div class="card hoverable"><div class="ico">🧪</div><p>One tester checks application functionality.</p></div>
-        <div class="card hoverable"><div class="ico">📝</div><p>One technical writer prepares documentation.</p></div>
-        <div class="card hoverable"><div class="ico">🛡</div><p>One security specialist checks vulnerabilities.</p></div>
-      </div>
-      <div class="callout amber reveal" style="margin-top:12px">Each person has a specific responsibility.<br>Similarly, in Claude Code, we can create custom subagents for specific development tasks.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">04 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 5 — WHY CUSTOM SUBAGENTS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> The need</span><h2>Why do we need custom subagents?</h2><p class="subtitle">Suppose we are developing the product-management-api project.</p></div>
+        <div><span class="kicker"><span class="dot"></span> Definition</span><h2>What Is a Custom Subagent?</h2><p class="subtitle">A specialized assistant for one responsibility.</p></div>
         <span class="num">01 · CUSTOM SUBAGENTS</span>
       </div>
       <div class="grid g2 reveal">
-        <div class="card"><div class="ico">🔁</div><h3>We regularly need to perform these tasks:</h3><div class="chips"><span class="chip teal">1. Review JavaScript code.</span><span class="chip teal">2. Check API documentation.</span><span class="chip teal">3. Find bugs.</span><span class="chip teal">4. Generate changelog entries.</span><span class="chip teal">5. Review security issues.</span></div><p style="margin-top:10px">Instead of explaining all the instructions every time, we can create specialized subagents.</p></div>
-        <div class="card" style="background:var(--teal-l);border-color:#bcdfe9"><div class="ico">🤖</div><h3>For example:</h3><div class="chips"><span class="chip">code-reviewer – reviews code quality.</span><span class="chip">api-documenter – prepares API documentation.</span><span class="chip">security-reviewer – checks security issues.</span><span class="chip">test-writer – creates test cases.</span></div><p style="margin-top:10px">Each subagent has its own instructions and can have its own permitted tools.</p></div>
+        <div class="tap-card">A subagent is a specialized AI assistant that handles a particular task on behalf of the main Claude Code conversation.</div>
+        <div class="tap-card">Think of the main Claude assistant as a project manager who assigns work to different team members.</div>
+      </div>
+      <div class="mini-head reveal" style="margin-top:14px">For example, in a software company:</div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">One developer handles code review.</div>
+        <div class="tap-card">One tester checks application functionality.</div>
+        <div class="tap-card">One technical writer prepares documentation.</div>
+        <div class="tap-card">One security specialist checks vulnerabilities.</div>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:10px">
+        <div class="tap-card">Each person has a specific responsibility.</div>
+        <div class="tap-card">Similarly, in Claude Code, we can create custom subagents for specific development tasks.</div>
       </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">05 / 38</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">03 / 10</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 6 — DIVIDER 02
-     ========================================================= -->
-<section class="slide divider">
-  <div class="sheet">
-    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
-    <div class="big-index">02</div>
-    <div class="sheet-inner">
-      <div class="reveal"><span class="kicker">Part Two</span></div>
-      <div class="reveal"><h2>Designing a Subagent System Prompt for a Narrow, Well-Defined Task</h2></div>
-      <div class="reveal"><p class="subtitle">Think of it as a job description given to an employee.</p></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07</span><span class="page-num">06 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 7 — WHAT IS A SYSTEM PROMPT
+     SLIDE 4 — WHY CUSTOM SUBAGENTS?
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> System prompt</span><h2>What is a system prompt?</h2><p class="subtitle">A system prompt is a set of instructions that tells the subagent:</p></div>
-        <span class="num">02 · SYSTEM PROMPT</span>
+        <div><span class="kicker"><span class="dot"></span> Motivation</span><h2>Why do we need custom subagents?</h2><p class="subtitle">Repeated tasks become reusable responsibilities.</p></div>
+        <span class="num">01 · CUSTOM SUBAGENTS</span>
       </div>
-      <ul class="bullets reveal">
-        <li>What role it should perform.</li>
-        <li>What task it is responsible for.</li>
-        <li>What rules it must follow.</li>
-        <li>What output it should produce.</li>
-        <li>What it should not do.</li>
-      </ul>
-      <div class="callout teal reveal" style="margin-top:14px">Think of it as a job description given to an employee.</div>
-      <div class="callout amber reveal" style="margin-top:10px">For example, if we hire a code reviewer, we need to explain what the person should check and how they should report problems.</div>
+      <div class="tap-card reveal">Suppose we are developing the product-management-api project.</div>
+      <div class="subhead reveal">We regularly need to perform these tasks:</div>
+      <ol class="bullets reveal">
+        <li>1. Review JavaScript code.</li>
+        <li>2. Check API documentation.</li>
+        <li>3. Find bugs.</li>
+        <li>4. Generate changelog entries.</li>
+        <li>5. Review security issues.</li>
+      </ol>
+      <div class="tap-card reveal" style="margin-top:10px">Instead of explaining all the instructions every time, we can create specialized subagents.</div>
+      <div class="subhead reveal">For example:</div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">code-reviewer – reviews code quality.</div>
+        <div class="tap-card">api-documenter – prepares API documentation.</div>
+        <div class="tap-card">security-reviewer – checks security issues.</div>
+        <div class="tap-card">test-writer – creates test cases.</div>
+      </div>
+      <div class="tap-card reveal" style="margin-top:10px">Each subagent has its own instructions and can have its own permitted tools.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">07 / 38</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">04 / 10</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 8 — WHY NARROW + POOR INSTRUCTION
+     SLIDE 5 — DESIGNING A SUBAGENT SYSTEM PROMPT
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Narrow task</span><h2>Why should the task be narrow?</h2><p class="subtitle">A subagent should have one clearly defined responsibility.</p></div>
+        <div><span class="kicker"><span class="dot"></span> Design</span><h2>2. Designing a Subagent System Prompt for a Narrow, Well-Defined Task</h2><p class="subtitle">One clear responsibility, explicit rules, and a defined output.</p></div>
         <span class="num">02 · SYSTEM PROMPT</span>
       </div>
-      <div class="panel bad reveal">
-        <span class="tag"><span class="x">✗</span> Poor instruction:</span>
-        <div class="txt">"Check my project and improve everything."</div>
-        <div class="note">This is too broad. The subagent does not know exactly what it should focus on.</div>
-      </div>
-      <div class="mini-head reveal" style="margin-top:16px">For example:</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">08 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 9 — BETTER INSTRUCTION
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Compare</span><h2>Better instruction:</h2><p class="subtitle">The responsibility becomes clear.</p></div>
-        <span class="num">02 · SYSTEM PROMPT</span>
+      <div class="subhead reveal">What is a system prompt?</div>
+      <div class="callout reveal">A system prompt is a set of instructions that tells the subagent:</div>
+      <div class="grid g2 reveal">
+        <ul class="bullets">
+          <li>What role it should perform.</li>
+          <li>What task it is responsible for.</li>
+          <li>What rules it must follow.</li>
+          <li>What output it should produce.</li>
+          <li>What it should not do.</li>
+        </ul>
+        <div class="tap-card">Think of it as a job description given to an employee.</div>
+        <div class="tap-card span2">For example, if we hire a code reviewer, we need to explain what the person should check and how they should report problems.</div>
       </div>
-      <div class="panel good reveal">
-        <span class="tag"><span class="v">✓</span> Better instruction:</span>
-        <div class="txt">"Review JavaScript files in the project and identify coding errors, security problems, and maintainability issues. Do not modify any files. Provide findings with file names and line numbers."</div>
-        <div class="note">Now the responsibility is clear.</div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:16px">Poor instruction: "Check my project and improve everything." &nbsp;→&nbsp; Better instruction: the exact task, the boundaries and the output are stated.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">09 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 10 — FILE LOCATION
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Practical example</span><h2>Practical example: Create a code reviewer</h2><p class="subtitle">In Claude Code, create this file:</p></div>
-        <span class="num">02 · SYSTEM PROMPT</span>
+      <div class="subhead reveal">Why should the task be narrow?</div>
+      <div class="callout reveal">A subagent should have one clearly defined responsibility.</div>
+      <div class="mini-head reveal" style="margin-top:10px">For example:</div>
+      <div class="vs reveal">
+        <div class="panel bad tap-card"><span class="tag">Poor instruction:</span><div class="txt">"Check my project and improve everything."</div><div class="note">This is too broad. The subagent does not know exactly what it should focus on.</div></div>
+        <div class="arrow-mid">→</div>
+        <div class="panel good tap-card"><span class="tag">Better instruction:</span><div class="txt">"Review JavaScript files in the project and identify coding errors, security problems, and maintainability issues. Do not modify any files. Provide findings with file names and line numbers."</div><div class="note">Now the responsibility is clear.</div></div>
       </div>
-      <div class="tree reveal">
-<span class="folder">.claude/</span>
-  <span class="folder">agents/</span>
-    <span class="file">code-reviewer.md</span>
-      </div>
-      <div class="callout teal reveal" style="margin-top:16px">The Markdown file holds both the configuration (frontmatter) and the system prompt.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">10 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 11 — COMPLETE CODE REVIEWER FILE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Inside the file</span><h2>Inside code-reviewer.md:</h2><p class="subtitle">Configuration, responsibilities, rules and output format.</p></div>
-        <span class="num">02 · SYSTEM PROMPT</span>
-      </div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">code-reviewer.md</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>---
+      <div class="subhead reveal">Practical example: Create a code reviewer</div>
+      <div class="code-pair reveal">
+        <div>
+          <div class="callout">In Claude Code, create this file:</div>
+          <div class="code-wrap"><div class="code-head"><span class="file">directory</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>.claude/
+  agents/
+    code-reviewer.md</pre></div>
+        </div>
+        <div>
+          <div class="callout">Inside code-reviewer.md:</div>
+          <div class="code-wrap"><div class="code-head"><span class="file">.claude/agents/code-reviewer.md</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>---
 name: code-reviewer
 description: Reviews JavaScript code for bugs, security issues, and code quality. Use when the user requests a code review.
 tools: Read, Grep, Glob
@@ -561,23 +747,10 @@ Output format:
 1. Issue
 2. File and line number
 3. Explanation
-4. Suggested solution</pre>
+4. Suggested solution</pre></div>
+        </div>
       </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">11 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 12 — FIELD TABLE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Breakdown</span><h2>What is happening here?</h2><p class="subtitle">Field and purpose.</p></div>
-        <span class="num">02 · SYSTEM PROMPT</span>
-      </div>
+      <div class="mini-head reveal" style="margin-top:12px">What is happening here?</div>
       <table class="tbl reveal">
         <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
         <tbody>
@@ -587,132 +760,91 @@ Output format:
           <tr><td>Instructions</td><td>Defines its responsibilities and rules</td></tr>
         </tbody>
       </table>
-      <div class="callout teal reveal" style="margin-top:16px">The most important point is that the system prompt defines the subagent's behaviour.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">12 / 38</span></div>
-  </div>
-</section>
+      <div class="tap-card reveal" style="margin-top:10px">The most important point is that the system prompt defines the subagent's behaviour.</div>
 
-<!-- =========================================================
-     SLIDE 13 — TEST IT
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Try it</span><h2>Test it</h2><p class="subtitle">Open Claude Code inside product-management-api and ask:</p></div>
-        <span class="num">02 · SYSTEM PROMPT</span>
-      </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">Review the product model and identify<br>any bugs or security issues.</div>
-      <div class="callout teal reveal" style="margin-top:16px">Claude can delegate the task to the code-reviewer subagent.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">13 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 14 — OBSERVE (CLICKABLE CHECKLIST)
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Observe</span><h2>Observe:</h2><p class="subtitle">Click each item to mark it as checked.</p></div>
-        <span class="num">02 · SYSTEM PROMPT</span>
-      </div>
-      <div class="opts reveal">
-        <div class="opt checkable">Does Claude select the correct subagent?</div>
-        <div class="opt checkable">Does it inspect the product model?</div>
-        <div class="opt checkable">Does it identify meaningful issues?</div>
-        <div class="opt checkable">Does it avoid modifying files?</div>
-      </div>
-      <div class="callout amber reveal" style="margin-top:16px">Each observation checks a different part of the definition: description, task, system prompt and tool restrictions.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">14 / 38</span></div>
-  </div>
-</section>
-
-
-<!-- =========================================================
-     SLIDE 15 — DIVIDER 03
-     ========================================================= -->
-<section class="slide divider">
-  <div class="sheet">
-    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
-    <div class="big-index">03</div>
-    <div class="sheet-inner">
-      <div class="reveal"><span class="kicker">Part Three</span></div>
-      <div class="reveal"><h2>Assigning Tools and MCP Servers to a Specific Subagent</h2></div>
-      <div class="reveal"><p class="subtitle">Give each subagent only the tools required for its responsibility.</p></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07</span><span class="page-num">15 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 16 — TOOLS + MCP SERVERS
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> What does this mean?</span><h2>Tools and MCP servers</h2><p class="subtitle">Tools give a subagent the ability to perform actions.</p></div>
-        <span class="num">03 · TOOLS &amp; MCP</span>
-      </div>
+      <div class="subhead reveal">Test it</div>
       <div class="grid g2 reveal">
-        <div class="card"><div class="ico">🔧</div><h3>For example:</h3><ul class="bullets">
-          <li>Read – read file contents.</li>
-          <li>Grep – search for text in files.</li>
-          <li>Glob – find files using patterns.</li>
-          <li>Write – create or modify files.</li>
-          <li>Bash – execute terminal commands.</li>
-        </ul></div>
-        <div class="card"><div class="ico">🔌</div><h3>MCP servers can provide additional capabilities.</h3><div class="mini-head">For example:</div><ul class="bullets coral">
-          <li>GitHub MCP – interact with GitHub issues and repositories.</li>
-          <li>Filesystem MCP – access permitted files and folders.</li>
-          <li>Custom Product MCP Server – interact with product-related operations.</li>
-        </ul></div>
+        <div>
+          <div class="callout">Open Claude Code inside product-management-api and ask:</div>
+          <div class="prompt-card" style="border-left:5px solid var(--teal);margin-top:8px">Review the product model and identify <br>any bugs or security issues.</div>
+        </div>
+        <div>
+          <div class="tap-card">Claude can delegate the task to the code-reviewer subagent.</div>
+          <div class="mini-head" style="margin-top:10px">Observe:</div>
+          <ul class="bullets">
+            <li>Does Claude select the correct subagent?</li>
+            <li>Does it inspect the product model?</li>
+            <li>Does it identify meaningful issues?</li>
+            <li>Does it avoid modifying files?</li>
+          </ul>
+        </div>
       </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">16 / 38</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">05 / 10</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 17 — WHY SPECIFIC TOOLS
+     SLIDE 6 — TOOLS AND MCP SERVERS
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Least privilege</span><h2>Why assign specific tools?</h2><p class="subtitle">The same principle applies to subagents.</p></div>
+        <div><span class="kicker"><span class="dot"></span> Permissions</span><h2>3. Assigning Tools and MCP Servers to a Specific Subagent</h2><p class="subtitle">Give each subagent only the capabilities its responsibility requires.</p></div>
         <span class="num">03 · TOOLS &amp; MCP</span>
       </div>
-      <div class="callout reveal">Imagine giving a code reviewer access to every operation in a company.<br>The reviewer may only need to read documents, but giving them permission to delete records is unnecessary.<br>The same principle applies to subagents.</div>
-      <div class="callout teal reveal" style="margin-top:10px">Give each subagent only the tools required for its responsibility.</div>
-      <div class="mini-head reveal" style="margin-top:14px">Practical example</div>
-      <div class="grid g2 reveal">
-        <div class="card"><div class="ico">✅</div><h3>Our code-reviewer only needs to inspect files.</h3><div class="code-wrap"><div class="code-head"><span class="file">tools</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>tools: Read, Grep, Glob</pre></div><p style="margin-top:8px">So its configuration contains:</p></div>
-        <div class="card"><div class="ico">🚫</div><h3>It does not need:</h3><div class="chips"><span class="chip coral">Write</span><span class="chip coral">Edit</span><span class="chip coral">Bash</span></div></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">17 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 18 — TEST-RUNNER
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> A different subagent</span><h2>Now consider a different subagent called test-runner.</h2><p class="subtitle">Its job is to execute project tests. Its configuration could include:</p></div>
-        <span class="num">03 · TOOLS &amp; MCP</span>
+      <div class="subhead reveal">What does this mean?</div>
+      <div class="callout reveal">Tools give a subagent the ability to perform actions.</div>
+      <div class="tabset reveal">
+        <div class="tabbar">
+          <button type="button" class="active" data-tab="tools">Tools</button>
+          <button type="button" data-tab="mcp">MCP servers</button>
+        </div>
+        <div class="tabpanel active" data-panel="tools">
+          <div class="mini-head">For example:</div>
+          <ul class="bullets">
+            <li>Read – read file contents.</li>
+            <li>Grep – search for text in files.</li>
+            <li>Glob – find files using patterns.</li>
+            <li>Write – create or modify files.</li>
+            <li>Bash – execute terminal commands.</li>
+          </ul>
+        </div>
+        <div class="tabpanel" data-panel="mcp">
+          <div class="mini-head">MCP servers can provide additional capabilities.</div>
+          <div class="mini-head" style="margin-top:8px">For example:</div>
+          <ul class="bullets">
+            <li>GitHub MCP – interact with GitHub issues and repositories.</li>
+            <li>Filesystem MCP – access permitted files and folders.</li>
+            <li>Custom Product MCP Server – interact with product-related operations.</li>
+          </ul>
+        </div>
       </div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">test-runner</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>---
+
+      <div class="subhead reveal">Why assign specific tools?</div>
+      <div class="step-grid reveal">
+        <div class="step-card tap-card"><span class="step-n">01</span><span>Imagine giving a code reviewer access to every operation in a company.</span></div>
+        <div class="step-card tap-card"><span class="step-n">02</span><span>The reviewer may only need to read documents, but giving them permission to delete records is unnecessary.</span></div>
+        <div class="step-card tap-card"><span class="step-n">03</span><span>The same principle applies to subagents.</span></div>
+        <div class="step-card tap-card span2"><span class="step-n">04</span><span>Give each subagent only the tools required for its responsibility.</span></div>
+      </div>
+
+      <div class="subhead reveal">Practical example</div>
+      <div class="code-pair reveal">
+        <div>
+          <div class="tap-card">Our code-reviewer only needs to inspect files.</div>
+          <div class="tap-card" style="margin-top:7px">So its configuration contains:</div>
+          <div class="code-wrap"><div class="code-head"><span class="file">tools field</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>tools: Read, Grep, Glob</pre></div>
+          <div class="mini-head" style="margin-top:11px">It does not need:</div>
+          <ul class="bullets"><li>Write</li><li>Edit</li><li>Bash</li></ul>
+        </div>
+        <div>
+          <div class="tap-card">Now consider a different subagent called test-runner.</div>
+          <div class="tap-card" style="margin-top:7px">Its job is to execute project tests.</div>
+          <div class="tap-card" style="margin-top:7px">Its configuration could include:</div>
+          <div class="code-wrap"><div class="code-head"><span class="file">test-runner.md</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>---
 name: test-runner
 description: Runs project tests and reports failures.
 tools: Read, Grep, Glob, Bash
@@ -728,473 +860,298 @@ Your responsibilities:
 4. Explain the reason for failures.
 5. Suggest possible fixes.
 
-Do not modify application code.</pre>
+Do not modify application code.</pre></div>
+          <div class="tap-card" style="margin-top:10px">Here, Bash is required because the subagent needs to execute commands such as:</div>
+          <div class="code-wrap"><div class="code-head"><span class="file">terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>npm test</pre></div>
+        </div>
       </div>
-      <div class="callout teal reveal" style="margin-top:12px">Here, Bash is required because the subagent needs to execute commands such as:<br><code class="inline">npm test</code></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">18 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 19 — MCP SERVERS DISTINCTION
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> MCP servers</span><h2>What about MCP servers?</h2><p class="subtitle">Suppose our project has GitHub MCP connected.</p></div>
-        <span class="num">03 · TOOLS &amp; MCP</span>
+      <div class="subhead reveal">What about MCP servers?</div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">Suppose our project has GitHub MCP connected.</div>
+        <div class="tap-card">We want a github-issue-reviewer subagent to inspect GitHub issues.</div>
+        <div class="tap-card span2">Its instructions can specify that it should use the available GitHub MCP tools to retrieve relevant issues.</div>
       </div>
-      <div class="callout reveal">We want a github-issue-reviewer subagent to inspect GitHub issues.<br>Its instructions can specify that it should use the available GitHub MCP tools to retrieve relevant issues.</div>
-      <div class="mini-head reveal" style="margin-top:14px">Important distinction:</div>
-      <ul class="bullets amber reveal">
+      <div class="mini-head reveal" style="margin-top:10px">Important distinction:</div>
+      <ul class="bullets reveal">
         <li>The tools field controls the tools available to the subagent.</li>
         <li>MCP server configuration makes MCP-provided tools available to the Claude Code session.</li>
         <li>Do not assume that writing an MCP server name in a subagent's prompt automatically connects that server or grants access.</li>
       </ul>
-      <div class="callout coral reveal" style="margin-top:10px">The MCP server must already be configured, and the required tools must be available to the subagent.</div>
+      <div class="tap-card reveal" style="margin-top:8px">The MCP server must already be configured, and the required tools must be available to the subagent.</div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">19 / 38</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">06 / 10</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 20 — DIVIDER 04
-     ========================================================= -->
-<section class="slide divider">
-  <div class="sheet">
-    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
-    <div class="big-index">04</div>
-    <div class="sheet-inner">
-      <div class="reveal"><span class="kicker">Part Four</span></div>
-      <div class="reveal"><h2>Configuring Subagent Scope: Project Scope vs User Scope</h2></div>
-      <div class="reveal"><p class="subtitle">Scope determines where the subagent is available.</p></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07</span><span class="page-num">20 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 21 — WHAT IS SCOPE
+     SLIDE 7 — PROJECT SCOPE VS USER SCOPE
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Scope</span><h2>What is scope?</h2><p class="subtitle">Scope determines where the subagent is available.</p></div>
+        <div><span class="kicker"><span class="dot"></span> Scope</span><h2>4. Configuring Subagent Scope: Project Scope vs User Scope</h2><p class="subtitle">Scope determines where the subagent is available.</p></div>
         <span class="num">04 · SCOPE</span>
       </div>
-      <div class="callout reveal">Claude Code supports two commonly used locations for custom subagents.</div>
-      <div class="grid g2 reveal" style="margin-top:14px">
-        <div class="card"><div class="ico">📁</div><h3>Project scope</h3><p>For a specific project.</p></div>
-        <div class="card"><div class="ico">🏠</div><h3>User scope</h3><p>Across projects.</p></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">21 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 22 — PROJECT SCOPE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Specific project</span><h2>Project scope</h2><p class="subtitle">Available when working in this project.</p></div>
-        <span class="num">04 · SCOPE</span>
-      </div>
-      <div class="tree reveal">
-<span class="folder">product-management-api/</span>
-  <span class="folder">.claude/</span>
-    <span class="folder">agents/</span>
-      <span class="file">code-reviewer.md</span>
-      </div>
-      <ul class="bullets reveal" style="margin-top:14px">
-        <li>Available when working in this project.</li>
-        <li>Can be shared with the project team through version control.</li>
-        <li>Useful for project-specific instructions.</li>
-      </ul>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">22 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 23 — USER SCOPE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Across projects</span><h2>User scope</h2><p class="subtitle">Available across the user's projects.</p></div>
-        <span class="num">04 · SCOPE</span>
-      </div>
-      <div class="tree reveal">
-<span class="folder">~/.claude/</span>
-  <span class="folder">agents/</span>
-    <span class="file">code-reviewer.md</span>
-      </div>
-      <ul class="bullets amber reveal" style="margin-top:14px">
-        <li>Available across the user's projects.</li>
-        <li>Useful for common development tasks.</li>
-        <li>Does not need to be recreated in every project.</li>
-      </ul>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">23 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 24 — WHEN TO USE EACH SCOPE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Choosing a scope</span><h2>When should we use project scope?</h2><p class="subtitle">And when should we use user scope?</p></div>
-        <span class="num">04 · SCOPE</span>
-      </div>
+      <div class="subhead reveal">What is scope?</div>
       <div class="grid g2 reveal">
-        <div class="card"><div class="ico">📁</div><h3>When should we use project scope?</h3><p>Suppose we are working on product-management-api.<br>We create a subagent called product-api-reviewer.</p><div class="mini-head" style="margin-top:8px">It understands:</div><ul class="bullets"><li>Our product model.</li><li>Our API structure.</li><li>Our project coding standards.</li><li>Our project-specific review requirements.</li></ul><p style="margin-top:8px">This subagent belongs in project scope because it is designed for this particular application.</p></div>
-        <div class="card"><div class="ico">🏠</div><h3>When should we use user scope?</h3><p>Suppose we regularly work on Angular, React, Laravel, and Node.js projects.</p><p style="margin-top:8px">We want a general javascript-reviewer that follows our common JavaScript coding standards.</p><p style="margin-top:8px">We can place it in user scope so it can be reused across projects.</p></div>
+        <div class="tap-card">Scope determines where the subagent is available.</div>
+        <div class="tap-card">Claude Code supports two commonly used locations for custom subagents.</div>
       </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">24 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 25 — HOW TO TEST SCOPE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Verify</span><h2>How do we test scope?</h2><p class="subtitle">Click a step to mark it as done.</p></div>
-        <span class="num">04 · SCOPE</span>
-      </div>
-      <div class="opts reveal">
-        <div class="opt checkable">1. Create code-reviewer.md inside .claude/agents/.</div>
-        <div class="opt checkable">2. Open Claude Code in the project.</div>
-        <div class="opt checkable">3. Ask Claude to review a file.</div>
-        <div class="opt checkable">4. Confirm that it can use the subagent.</div>
-        <div class="opt checkable">5. Create another agent inside ~/.claude/agents/.</div>
-        <div class="opt checkable">6. Open a different project and check whether that user-level agent is available.</div>
-      </div>
-      <div class="callout teal reveal" style="margin-top:14px">Remember:<br>Project scope = specific project.<br>User scope = multiple projects for the same user.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">25 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 26 — DIVIDER 05
-     ========================================================= -->
-<section class="slide divider">
-  <div class="sheet">
-    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
-    <div class="big-index">05</div>
-    <div class="sheet-inner">
-      <div class="reveal"><span class="kicker">Part Five</span></div>
-      <div class="reveal"><h2>Passing Context and State Between the Orchestrator and a Subagent</h2></div>
-      <div class="reveal"><p class="subtitle">The main conversation coordinates the work.</p></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07</span><span class="page-num">26 / 38</span></div>
-  </div>
-</section>
-
-
-<!-- =========================================================
-     SLIDE 27 — ORCHESTRATOR + EXAMPLE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> First, understand the orchestrator</span><h2>The main conversation orchestrates</h2><p class="subtitle"><span class="term" tabindex="0">Main Claude assistant (Orchestrator)<span class="tip">The main Claude Code conversation acts as an orchestrator.</span></span></p></div>
-        <span class="num">05 · CONTEXT &amp; STATE</span>
-      </div>
-      <div class="callout reveal">The main Claude Code conversation acts as an orchestrator.<br>An orchestrator is responsible for understanding the user's request and deciding which subagent should perform the work.</div>
-      <div class="mini-head reveal" style="margin-top:14px">Example:</div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">User asks:<br>Review the product model and prepare<br>a summary of the problems.</div>
-      <div class="callout teal reveal" style="margin-top:12px">The main Claude assistant can delegate the code-review task to the code-reviewer subagent.<br>The subagent performs the review and returns its findings to the main conversation.<br>The main Claude assistant then presents the final response.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">27 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 28 — FLOW DIAGRAM
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Example flow</span><h2>From user request to final response</h2><p class="subtitle">Each stage is shown with its exact label.</p></div>
-        <span class="num">05 · CONTEXT &amp; STATE</span>
-      </div>
-      <div class="flow reveal" style="margin-top:24px">
-        <div class="fnode"><span class="n">User request</span><span class="s">Review the product model</span></div><span class="farr">→</span>
-        <div class="fnode alt"><span class="n">Main Claude assistant (Orchestrator)</span><span class="s">Understands the request and delegates the task</span></div>
-      </div>
-      <div class="flow reveal" style="margin-top:20px">
-        <div class="fnode alt2"><span class="n">Code Reviewer Subagent</span><span class="s">Reads files, checks code, identifies issues</span></div><span class="farr">→</span>
-        <div class="fnode"><span class="n">Review findings returned</span><span class="s">Issues, file names, line numbers and suggestions</span></div>
-      </div>
-      <div class="flow reveal" style="margin-top:20px">
-        <div class="fnode alt"><span class="n">Main Claude assistant</span><span class="s">Prepares the final response for the user</span></div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">28 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 29 — CONTEXT PASSING
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Context passing</span><h2>What is context passing?</h2><p class="subtitle">Context means the information required by the subagent to complete its task.</p></div>
-        <span class="num">05 · CONTEXT &amp; STATE</span>
-      </div>
-      <div class="callout reveal">For example, the main Claude assistant may delegate:</div>
-      <div class="code-wrap reveal">
-        <div class="code-head"><span class="file">delegated task</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-<pre>Task: Review src/models/product.js.
-
-Project: product-management-api.
-
-Focus:
-- Input validation
-- Data handling
-- Security issues
-
-Return:
-- Findings
-- File names and line numbers
-- Suggested fixes
-
-Do not modify any files.</pre>
-      </div>
-      <div class="callout teal reveal" style="margin-top:12px">This gives the subagent the information it needs.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">29 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 30 — STATE
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> State</span><h2>What is state?</h2><p class="subtitle">State means information about the progress or result of a task.</p></div>
-        <span class="num">05 · CONTEXT &amp; STATE</span>
-      </div>
-      <div class="mini-head reveal">For example:</div>
-      <ul class="bullets reveal">
-        <li>Which files have already been reviewed?</li>
-        <li>Which issues have been identified?</li>
-        <li>Which tests have passed?</li>
-        <li>Which tasks are still pending?</li>
-      </ul>
-      <div class="callout teal reveal" style="margin-top:14px">Suppose the code reviewer finds three issues and returns them to the orchestrator.<br>The orchestrator can use those findings to assign another task to a documentation subagent.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">30 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 31 — PRACTICAL SCENARIO
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Practical scenario</span><h2>Review, then document</h2><p class="subtitle">The workflow could be:</p></div>
-        <span class="num">05 · CONTEXT &amp; STATE</span>
-      </div>
-      <div class="prompt-card reveal" style="border-left:5px solid var(--teal)">User asks:<br>Review the product model and prepare<br>documentation for any problems found.</div>
-      <div class="opts reveal" style="margin-top:14px">
-        <div class="opt checkable">1. Main Claude assigns code inspection to code-reviewer.</div>
-        <div class="opt checkable">2. code-reviewer identifies three issues.</div>
-        <div class="opt checkable">3. Its findings are returned to the main Claude conversation.</div>
-        <div class="opt checkable">4. Main Claude passes those findings to api-documenter.</div>
-        <div class="opt checkable">5. api-documenter prepares a documentation summary.</div>
-        <div class="opt checkable">6. Main Claude presents the final result.</div>
-      </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">31 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 32 — IMPORTANT
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Important</span><h2>Information is passed, not shared automatically</h2><p class="subtitle">Read the full note.</p></div>
-        <span class="num">05 · CONTEXT &amp; STATE</span>
-      </div>
-      <div class="callout coral reveal" style="font-size:15px;line-height:1.75">Important: A subagent does not automatically share every detail of the main conversation. Claude Code provides the task and relevant context when delegating. If another subagent needs the findings, the orchestrator must pass those findings as part of its task. Also, separate subagent invocations should not be assumed to share persistent state automatically.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">32 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 33 — DIVIDER 06
-     ========================================================= -->
-<section class="slide divider">
-  <div class="sheet">
-    <div class="divider-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div>
-    <div class="big-index">06</div>
-    <div class="sheet-inner">
-      <div class="reveal"><span class="kicker">Part Six</span></div>
-      <div class="reveal"><h2>Evaluating and Testing Subagent Quality with Sample Prompts</h2></div>
-      <div class="reveal"><p class="subtitle">Test the behaviour with different prompts.</p></div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07</span><span class="page-num">33 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 34 — EVALUATION MEANING
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Evaluation</span><h2>What does evaluation mean?</h2><p class="subtitle">Creating a subagent does not guarantee that it will perform the task correctly.</p></div>
-        <span class="num">06 · EVALUATION</span>
-      </div>
-      <div class="callout reveal">We need to test whether it follows its instructions and produces useful results.</div>
-      <div class="mini-head reveal" style="margin-top:14px">For example, our code-reviewer should:</div>
-      <ul class="bullets reveal">
-        <li>Identify real issues.</li>
-        <li>Avoid reporting imaginary problems.</li>
-        <li>Mention file names and line numbers.</li>
-        <li>Follow its read-only restriction.</li>
-        <li>Provide useful suggestions.</li>
-      </ul>
-      <div class="callout teal reveal" style="margin-top:12px">Why use sample prompts?<br>Sample prompts help us test the subagent under different situations.<br>We can check whether it behaves consistently.</div>
-      <div class="callout amber reveal" style="margin-top:10px">Practical testing: Code Reviewer<br>Use the following prompts in Claude Code.</div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">34 / 38</span></div>
-  </div>
-</section>
-
-<!-- =========================================================
-     SLIDE 35 — TEST 1 AND TEST 2
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Sample prompts · 1–2</span><h2>Test 1 and Test 2</h2><p class="subtitle">Practical testing: Code Reviewer.</p></div>
-        <span class="num">06 · EVALUATION</span>
-      </div>
+      <div class="subhead reveal">Project scope</div>
       <div class="grid g2 reveal">
-        <div class="card"><div class="ico">1</div><h3>Test 1: Normal code review</h3><div class="prompt-card" style="border-left:5px solid var(--teal)">Review src/models/product.js.
-
-Identify bugs, security issues,
-and code quality problems.</div><div class="mini-head" style="margin-top:10px">Expected result:</div><ul class="bullets"><li>It reads the product model.</li><li>It identifies relevant issues.</li><li>It provides explanations and suggested fixes.</li></ul></div>
-        <div class="card"><div class="ico">2</div><h3>Test 2: Check whether it follows restrictions</h3><div class="prompt-card" style="border-left:5px solid var(--amber)">Review src/models/product.js
-and directly fix all the problems.</div><div class="mini-head" style="margin-top:10px">Expected result:</div><p>Our code-reviewer is configured as a read-only reviewer.</p><p style="margin-top:8px">It should report that it can identify problems but cannot modify files.</p></div>
+        <div class="tap-card"><div class="mini-head">Specific project</div><div class="code-wrap"><div class="code-head"><span class="file">project scope</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>product-management-api/
+  .claude/
+    agents/
+      code-reviewer.md</pre></div></div>
+        <ul class="bullets">
+          <li>Available when working in this project.</li>
+          <li>Can be shared with the project team through version control.</li>
+          <li>Useful for project-specific instructions.</li>
+        </ul>
       </div>
-    </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">35 / 38</span></div>
-  </div>
-</section>
 
-<!-- =========================================================
-     SLIDE 36 — TEST 3 AND TEST 4
-     ========================================================= -->
-<section class="slide">
-  <div class="sheet">
-    <div class="sheet-inner">
-      <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Sample prompts · 3–4</span><h2>Test 3 and Test 4</h2><p class="subtitle">Irrelevant requests and output usefulness.</p></div>
-        <span class="num">06 · EVALUATION</span>
-      </div>
+      <div class="subhead reveal">User scope</div>
       <div class="grid g2 reveal">
-        <div class="card"><div class="ico">3</div><h3>Test 3: Check whether it handles irrelevant requests</h3><div class="prompt-card" style="border-left:5px solid var(--coral)">Create a new React component for the product page.</div><div class="mini-head" style="margin-top:10px">Expected result:</div><p>The code reviewer should not take on unrelated development work. Claude should handle the request itself or delegate it to a more suitable agent.</p></div>
-        <div class="card"><div class="ico">4</div><h3>Test 4: Check whether the output is useful</h3><div class="prompt-card" style="border-left:5px solid var(--green)">Review the product model.
+        <div class="tap-card"><div class="mini-head">Across projects</div><div class="code-wrap"><div class="code-head"><span class="file">user scope</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre>~/.claude/
+  agents/
+    code-reviewer.md</pre></div></div>
+        <ul class="bullets">
+          <li>Available across the user's projects.</li>
+          <li>Useful for common development tasks.</li>
+          <li>Does not need to be recreated in every project.</li>
+        </ul>
+      </div>
 
-For every issue, provide:
-- Severity
-- File name
-- Line number
-- Explanation
-- Recommended fix</div><div class="mini-head" style="margin-top:10px">Expected result:</div><p>The output should be clear and structured.</p></div>
+      <div class="subhead reveal">When should we use project scope?</div>
+      <div class="grid g2 reveal">
+        <div>
+          <div class="tap-card">Suppose we are working on product-management-api.</div>
+          <div class="tap-card" style="margin-top:7px">We create a subagent called product-api-reviewer.</div>
+          <div class="mini-head" style="margin-top:10px">It understands:</div>
+          <ul class="bullets">
+            <li>Our product model.</li>
+            <li>Our API structure.</li>
+            <li>Our project coding standards.</li>
+            <li>Our project-specific review requirements.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="tap-card">This subagent belongs in project scope because it is designed for this particular application.</div>
+          <div class="mini-head" style="margin-top:14px">When should we use user scope?</div>
+          <div class="tap-card">Suppose we regularly work on Angular, React, Laravel, and Node.js projects.</div>
+          <div class="tap-card" style="margin-top:7px">We want a general javascript-reviewer that follows our common JavaScript coding standards.</div>
+          <div class="tap-card" style="margin-top:7px">We can place it in user scope so it can be reused across projects.</div>
+        </div>
+      </div>
+
+      <div class="subhead reveal">How do we test scope?</div>
+      <ol class="bullets reveal">
+        <li>1. Create code-reviewer.md inside .claude/agents/.</li>
+        <li>2. Open Claude Code in the project.</li>
+        <li>3. Ask Claude to review a file.</li>
+        <li>4. Confirm that it can use the subagent.</li>
+        <li>5. Create another agent inside ~/.claude/agents/.</li>
+        <li>6. Open a different project and check whether that user-level agent is available.</li>
+      </ol>
+
+      <div class="subhead reveal">Remember:</div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">Project scope = specific project.</div>
+        <div class="tap-card">User scope = multiple projects for the same user.</div>
       </div>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">36 / 38</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">07 / 10</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 37 — EVALUATION CHECKLIST
+     SLIDE 8 — CONTEXT AND STATE
      ========================================================= -->
 <section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="head-row reveal">
-        <div><span class="kicker"><span class="dot"></span> Evaluation checklist</span><h2>Evaluation checklist</h2><p class="subtitle">Click each row to mark it as checked.</p></div>
+        <div><span class="kicker"><span class="dot"></span> Handoff</span><h2>5. Passing Context and State Between the Orchestrator and a Subagent</h2><p class="subtitle">The orchestrator delegates, receives findings, and prepares the final response.</p></div>
+        <span class="num">05 · CONTEXT &amp; STATE</span>
+      </div>
+
+      <div class="subhead reveal">First, understand the orchestrator</div>
+      <div class="step-grid reveal">
+        <div class="step-card tap-card"><span class="step-n">01</span><span>The main Claude Code conversation acts as an orchestrator.</span></div>
+        <div class="step-card tap-card"><span class="step-n">02</span><span>An orchestrator is responsible for understanding the user's request and deciding which subagent should perform the work.</span></div>
+        <div class="step-card tap-card"><span class="step-n">03</span><span>The main Claude assistant can delegate the code-review task to the code-reviewer subagent.</span></div>
+        <div class="step-card tap-card"><span class="step-n">04</span><span>The subagent performs the review and returns its findings to the main conversation.</span></div>
+        <div class="step-card tap-card"><span class="step-n">05</span><span>The main Claude assistant then presents the final response.</span></div>
+      </div>
+      <div class="grid g2 reveal" style="margin-top:10px">
+        <div>
+          <div class="mini-head">Example:</div>
+          <div class="prompt-card" style="border-left:5px solid var(--teal)">User asks:<br>Review the product model and prepare <br>a summary of the problems.</div>
+        </div>
+        <div class="flow">
+          <div class="fnode"><span class="n">User request</span><span class="s">Review the product model</span></div><span class="farr">→</span>
+          <div class="fnode alt2"><span class="n">Main Claude assistant (Orchestrator)</span><span class="s">Understands the request and delegates the task</span></div><span class="farr">→</span>
+          <div class="fnode"><span class="n">Code Reviewer Subagent</span><span class="s">Reads files, checks code, identifies issues</span></div><span class="farr">→</span>
+          <div class="fnode alt"><span class="n">Review findings returned</span><span class="s">Issues, file names, line numbers and suggestions</span></div><span class="farr">→</span>
+          <div class="fnode alt2"><span class="n">Main Claude assistant</span><span class="s">Prepares the final response for the user</span></div>
+        </div>
+      </div>
+
+      <div class="subhead reveal">What is context passing?</div>
+      <div class="grid g2 reveal">
+        <div>
+          <div class="tap-card">Context means the information required by the subagent to complete its task.</div>
+          <div class="tap-card" style="margin-top:7px">For example, the main Claude assistant may delegate:</div>
+          <div class="tap-card" style="margin-top:7px">This gives the subagent the information it needs.</div>
+        </div>
+        <div class="prompt-card" style="border-left:5px solid var(--teal)">Task: Review src/models/product.js.<br><br>Project: product-management-api.<br><br>Focus:<br>- Input validation<br>- Data handling<br>- Security issues<br><br>Return:<br>- Findings<br>- File names and line numbers<br>- Suggested fixes<br><br>Do not modify any files.</div>
+      </div>
+
+      <div class="subhead reveal">What is state?</div>
+      <div class="grid g2 reveal">
+        <div>
+          <div class="tap-card">State means information about the progress or result of a task.</div>
+          <div class="mini-head" style="margin-top:10px">For example:</div>
+          <ul class="bullets">
+            <li>Which files have already been reviewed?</li>
+            <li>Which issues have been identified?</li>
+            <li>Which tests have passed?</li>
+            <li>Which tasks are still pending?</li>
+          </ul>
+        </div>
+        <div>
+          <div class="tap-card">Suppose the code reviewer finds three issues and returns them to the orchestrator.</div>
+          <div class="tap-card" style="margin-top:7px">The orchestrator can use those findings to assign another task to a documentation subagent.</div>
+        </div>
+      </div>
+
+      <div class="subhead reveal">Practical scenario</div>
+      <div class="grid g2 reveal">
+        <div>
+          <div class="prompt-card" style="border-left:5px solid var(--teal)">User asks:<br>Review the product model and prepare <br>documentation for any problems found.</div>
+          <div class="mini-head" style="margin-top:10px">The workflow could be:</div>
+          <ol class="bullets">
+            <li>1. Main Claude assigns code inspection to code-reviewer.</li>
+            <li>2. code-reviewer identifies three issues.</li>
+            <li>3. Its findings are returned to the main Claude conversation.</li>
+            <li>4. Main Claude passes those findings to api-documenter.</li>
+            <li>5. api-documenter prepares a documentation summary.</li>
+            <li>6. Main Claude presents the final result.</li>
+          </ol>
+        </div>
+        <div class="tap-card" style="align-self:start">Important: A subagent does not automatically share every detail of the main conversation. Claude Code provides the task and relevant context when delegating. If another subagent needs the findings, the orchestrator must pass those findings as part of its task. Also, separate subagent invocations should not be assumed to share persistent state automatically.</div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">08 / 10</span></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SLIDE 9 — EVALUATING AND TESTING
+     ========================================================= -->
+<section class="slide">
+  <div class="sheet">
+    <div class="sheet-inner">
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Evaluation</span><h2>6. Evaluating and Testing Subagent Quality with Sample Prompts</h2><p class="subtitle">Test instructions, restrictions, relevance, and output quality.</p></div>
         <span class="num">06 · EVALUATION</span>
       </div>
+
+      <div class="subhead reveal">What does evaluation mean?</div>
+      <div class="grid g2 reveal">
+        <div>
+          <div class="tap-card">Creating a subagent does not guarantee that it will perform the task correctly.</div>
+          <div class="tap-card" style="margin-top:7px">We need to test whether it follows its instructions and produces useful results.</div>
+        </div>
+        <div>
+          <div class="mini-head">For example, our code-reviewer should:</div>
+          <ul class="bullets">
+            <li>Identify real issues.</li>
+            <li>Avoid reporting imaginary problems.</li>
+            <li>Mention file names and line numbers.</li>
+            <li>Follow its read-only restriction.</li>
+            <li>Provide useful suggestions.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="subhead reveal">Why use sample prompts?</div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">Sample prompts help us test the subagent under different situations.</div>
+        <div class="tap-card">We can check whether it behaves consistently.</div>
+      </div>
+
+      <div class="subhead reveal">Practical testing: Code Reviewer</div>
+      <div class="callout reveal">Use the following prompts in Claude Code.</div>
+      <div class="grid g2 reveal" style="margin-top:10px">
+        <div class="test-card">
+          <div class="mini-head">Test 1: Normal code review</div>
+          <div class="prompt-card" style="border-left:5px solid var(--teal)">Review src/models/product.js.<br><br>Identify bugs, security issues, <br>and code quality problems.</div>
+          <button type="button" class="reveal-toggle">Expected result:</button>
+          <div class="reveal-body"><ul class="bullets"><li>It reads the product model.</li><li>It identifies relevant issues.</li><li>It provides explanations and suggested fixes.</li></ul></div>
+        </div>
+        <div class="test-card">
+          <div class="mini-head">Test 2: Check whether it follows restrictions</div>
+          <div class="prompt-card" style="border-left:5px solid var(--coral)">Review src/models/product.js <br>and directly fix all the problems.</div>
+          <button type="button" class="reveal-toggle">Expected result:</button>
+          <div class="reveal-body"><div class="callout">Our code-reviewer is configured as a read-only reviewer.</div><div class="callout teal">It should report that it can identify problems but cannot modify files.</div></div>
+        </div>
+        <div class="test-card">
+          <div class="mini-head">Test 3: Check whether it handles irrelevant requests</div>
+          <div class="prompt-card" style="border-left:5px solid var(--amber)">Create a new React component for the product page.</div>
+          <button type="button" class="reveal-toggle">Expected result:</button>
+          <div class="reveal-body"><div class="callout">The code reviewer should not take on unrelated development work. Claude should handle the request itself or delegate it to a more suitable agent.</div></div>
+        </div>
+        <div class="test-card">
+          <div class="mini-head">Test 4: Check whether the output is useful</div>
+          <div class="prompt-card" style="border-left:5px solid var(--teal)">Review the product model.<br><br>For every issue, provide:<br>- Severity<br>- File name<br>- Line number<br>- Explanation<br>- Recommended fix</div>
+          <button type="button" class="reveal-toggle">Expected result:</button>
+          <div class="reveal-body"><div class="callout teal">The output should be clear and structured.</div></div>
+        </div>
+      </div>
+
+      <div class="subhead reveal">Evaluation checklist</div>
       <table class="tbl reveal">
         <thead><tr><th>What to evaluate</th><th>What to check</th></tr></thead>
         <tbody>
-          <tr class="checkable" data-row="1"><td>Task accuracy</td><td>Did it perform the correct task?</td></tr>
-          <tr class="checkable" data-row="1"><td>Instruction following</td><td>Did it follow the system prompt?</td></tr>
-          <tr class="checkable" data-row="1"><td>Tool restrictions</td><td>Did it use only permitted tools?</td></tr>
-          <tr class="checkable" data-row="1"><td>Output quality</td><td>Were findings clear and useful?</td></tr>
-          <tr class="checkable" data-row="1"><td>Reliability</td><td>Did it avoid false or irrelevant findings?</td></tr>
-          <tr class="checkable" data-row="1"><td>Scope</td><td>Was it available in the correct projects?</td></tr>
+          <tr><td>Task accuracy</td><td>Did it perform the correct task?</td></tr>
+          <tr><td>Instruction following</td><td>Did it follow the system prompt?</td></tr>
+          <tr><td>Tool restrictions</td><td>Did it use only permitted tools?</td></tr>
+          <tr><td>Output quality</td><td>Were findings clear and useful?</td></tr>
+          <tr><td>Reliability</td><td>Did it avoid false or irrelevant findings?</td></tr>
+          <tr><td>Scope</td><td>Was it available in the correct projects?</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">37 / 38</span></div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">09 / 10</span></div>
   </div>
 </section>
 
 <!-- =========================================================
-     SLIDE 38 — CLOSING
+     SLIDE 10 — CLOSING / KEY TAKEAWAY
      ========================================================= -->
-<section class="slide title">
+<section class="slide">
   <div class="sheet">
     <div class="sheet-inner">
-      <svg class="orbit" viewBox="0 0 250 250" fill="none" stroke="#69c6f2" stroke-width="1.2">
-        <circle cx="125" cy="125" r="100" opacity=".3"/><circle cx="125" cy="125" r="66" opacity=".45"/>
-        <circle cx="125" cy="125" r="30" opacity=".6"/>
-        <circle cx="125" cy="25" r="7" fill="#69c6f2" stroke="none"/>
-        <circle cx="191" cy="75" r="5" fill="#69c6f2" stroke="none"/>
-        <circle cx="59" cy="185" r="5" fill="#e08a3c" stroke="none"/>
-      </svg>
-      <div class="reveal"><div class="hero-logo"><img src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"></div></div>
-      <div class="reveal"><div class="badge"><span class="ln"></span> Module 07 · Summary</div></div>
-      <div class="reveal"><h2>Key takeaway</h2></div>
-      <div class="reveal"><p class="sub">You can think of custom subagents as specialized team members inside Claude Code. Instead of asking one assistant to perform every task, we create separate agents for code review, testing, documentation, and other responsibilities.</p></div>
-      <div class="reveal"><p class="sub">Each subagent has its own instructions and permitted tools. We decide whether it belongs to one project or should be available across projects.</p></div>
-      <div class="reveal"><p class="sub">The main Claude assistant acts as an orchestrator. It delegates work, receives the results, and combines them into a final response.</p></div>
-      <div class="reveal"><p class="sub">Finally, we test each subagent with different prompts to confirm that it performs the assigned task correctly and follows its restrictions.</p></div>
-      <div class="reveal"><div class="sticky" style="max-width:900px;margin:20px auto 0;font-size:20px;text-align:center">Key takeaway: A good custom subagent needs a clearly defined responsibility, appropriate tools, the right scope, relevant context, and proper testing.</div></div>
+      <div class="head-row reveal">
+        <div><span class="kicker"><span class="dot"></span> Wrap-up</span><h2>Custom subagents in one view</h2><p class="subtitle">Specialized team members inside Claude Code.</p></div>
+        <span class="num">07 · SUMMARY</span>
+      </div>
+      <div class="grid g2 reveal">
+        <div class="tap-card">"You can think of custom subagents as specialized team members inside Claude Code. Instead of asking one assistant to perform every task, we create separate agents for code review, testing, documentation, and other responsibilities.</div>
+        <div class="tap-card">Each subagent has its own instructions and permitted tools. We decide whether it belongs to one project or should be available across projects.</div>
+        <div class="tap-card">The main Claude assistant acts as an orchestrator. It delegates work, receives the results, and combines them into a final response.</div>
+        <div class="tap-card">Finally, we test each subagent with different prompts to confirm that it performs the assigned task correctly and follows its restrictions."</div>
+      </div>
+      <div class="tap-card reveal" style="margin-top:14px">Key takeaway: A good custom subagent needs a clearly defined responsibility, appropriate tools, the right scope, relevant context, and proper testing.</div>
     </div>
-    <div class="sheet-foot">
-      <span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> KOENIG SOLUTIONS · CLAUDE CODE TRAINING</span>
-      <span class="page-num">38 / 38</span>
-    </div>
+    <div class="sheet-foot"><span class="brand"><img class="brand-logo" src="https://www.koenig-solutions.com/assets/newimages/koenig-logo.svg" alt="Koenig Solutions"> MODULE 07 · BUILDING CUSTOM SUBAGENTS</span><span class="page-num">10 / 10</span></div>
   </div>
 </section>
-
 </div><!-- /deck -->
 
 <!-- NAVIGATION DOCK -->
@@ -1202,7 +1159,7 @@ For every issue, provide:
   <button class="nav-btn" id="prev" title="Previous (←)">←</button>
   <div class="dots" id="dots"></div>
   <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
-  <span class="dock-count" id="count">01 / 38</span>
+  <span class="dock-count" id="count">01 / 10</span>
   <button class="nav-btn" id="next" title="Next (→)">→</button>
   <span class="hint-key"><span class="kbd">←</span> <span class="kbd">→</span> navigate</span>
 </div>
@@ -1259,13 +1216,6 @@ For every issue, provide:
   document.querySelectorAll('.opt.checkable').forEach(el => {
     el.addEventListener('click', () => el.classList.toggle('correct'));
   });
-  document.querySelectorAll('tr.checkable').forEach(el => {
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', () => {
-      el.classList.toggle('checked-row');
-      el.style.background = el.classList.contains('checked-row') ? 'var(--green-l)' : '';
-    });
-  });
 
   window.copyCode = function (btn) {
     const pre = btn.closest('.code-wrap').querySelector('pre');
@@ -1275,6 +1225,171 @@ For every issue, provide:
       setTimeout(() => btn.textContent = old, 1400);
     }).catch(() => { btn.textContent = 'Select text'; });
   };
+
+
+  // ---- Interactive content representation ----
+  document.querySelectorAll('.slide').forEach(slide => {
+    const inner = slide.querySelector('.sheet-inner');
+    if (!inner) return;
+    const dense = inner.textContent.length > 3200;
+    const heads = Array.from(inner.querySelectorAll(':scope > .section-band, :scope > .subhead'));
+    heads.forEach(head => {
+      const body = document.createElement('div');
+      body.className = 'collapse-body';
+      let node = head.nextElementSibling;
+      while (node && !heads.includes(node)) {
+        const next = node.nextElementSibling;
+        body.appendChild(node);
+        node = next;
+      }
+      if (!body.childNodes.length) return;
+      head.after(body);
+      head.classList.add('interactive-head');
+      head.tabIndex = 0;
+      head.setAttribute('role', 'button');
+      const startCollapsed = dense && heads.indexOf(head) > 0;
+      if (startCollapsed) body.classList.add('collapsed');
+      head.setAttribute('aria-expanded', startCollapsed ? 'false' : 'true');
+      const chev = document.createElement('span');
+      chev.className = 'chev';
+      chev.textContent = '\u25be';
+      head.appendChild(chev);
+      const toggle = () => {
+        const collapsed = body.classList.toggle('collapsed');
+        head.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      };
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+      });
+    });
+  });
+
+  function bindCheckable(selector, className) {
+    document.querySelectorAll(selector).forEach(el => {
+      el.tabIndex = 0;
+      el.setAttribute('role', 'checkbox');
+      el.setAttribute('aria-checked', 'false');
+      const toggle = () => {
+        const on = el.classList.toggle(className);
+        el.setAttribute('aria-checked', on ? 'true' : 'false');
+      };
+      el.addEventListener('click', toggle);
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+      });
+    });
+  }
+  bindCheckable('.bullets li', 'done');
+
+  document.querySelectorAll('.flow').forEach(flow => {
+    const nodes = Array.from(flow.querySelectorAll('.fnode'));
+    nodes.forEach(node => {
+      node.tabIndex = 0;
+      node.setAttribute('role', 'button');
+      node.setAttribute('aria-pressed', 'false');
+      const activate = e => {
+        if (e) e.stopPropagation();
+        const was = node.classList.contains('active-step');
+        nodes.forEach(n => { n.classList.remove('active-step'); n.setAttribute('aria-pressed', 'false'); });
+        if (!was) { node.classList.add('active-step'); node.setAttribute('aria-pressed', 'true'); }
+      };
+      node.addEventListener('click', activate);
+      node.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(e); }
+      });
+    });
+  });
+
+  document.querySelectorAll('.tbl tbody tr').forEach(tr => {
+    tr.tabIndex = 0;
+    tr.setAttribute('role', 'button');
+    tr.setAttribute('aria-pressed', 'false');
+    const toggle = () => {
+      const on = tr.classList.toggle('row-active');
+      tr.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    tr.addEventListener('click', toggle);
+    tr.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+    });
+  });
+
+  document.querySelectorAll('.card:not([data-goto])').forEach(card => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    const toggle = e => {
+      if (e && e.target && e.target.closest('button, .code-wrap')) return;
+      if (e) e.stopPropagation();
+      const on = card.classList.toggle('card-focus');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); }
+    });
+  });
+
+
+  // ---- Interactive cards, tabs and reveal panels ----
+  document.querySelectorAll('.tabset').forEach(set => {
+    const tabs = Array.from(set.querySelectorAll('.tabbar button'));
+    const panels = Array.from(set.querySelectorAll('.tabpanel'));
+    const activate = tab => {
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach(p => p.classList.toggle('active', p.dataset.panel === tab.dataset.tab));
+    };
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', e => { e.stopPropagation(); activate(tab); });
+      tab.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); e.stopPropagation(); activate(tab);
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault(); e.stopPropagation();
+          const next = tabs[(idx + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+          next.focus(); activate(next);
+        }
+      });
+    });
+    if (tabs.length) activate(tabs[0]);
+  });
+
+  document.querySelectorAll('.tap-card').forEach(card => {
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-pressed', 'false');
+    const toggle = e => {
+      if (e && e.target && e.target.closest('button, pre, .copy-btn')) return;
+      if (e) e.stopPropagation();
+      const on = card.classList.toggle('selected');
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(e); }
+    });
+  });
+
+  document.querySelectorAll('.reveal-toggle').forEach(btn => {
+    const card = btn.closest('.test-card, .qa-card');
+    const body = card ? card.querySelector('.reveal-body') : null;
+    if (!body) return;
+    btn.setAttribute('aria-expanded', 'false');
+    const toggle = e => {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const open = body.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    btn.addEventListener('click', toggle);
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') toggle(e);
+    });
+  });
 
   go(0);
 })();
